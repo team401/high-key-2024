@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import frc.robot.constants.DriveConstants;
-// import frc.robot.constants.TunerConstants;
+import frc.robot.constants.TunerConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.VisionConstants.CameraParams;
 import java.util.ArrayList;
@@ -40,7 +40,8 @@ public class CameraContainerSim implements CameraContainer {
 
         visionSim.addAprilTags(VisionConstants.fieldLayout);
 
-        var pose = DriveConstants.initialPose;
+        // TODO: Get actual constant from DriveConstants after constants get fixed
+        var pose = new Pose2d();
         latestOdometryPose =
                 new Pose2d(
                         pose.getX(),
