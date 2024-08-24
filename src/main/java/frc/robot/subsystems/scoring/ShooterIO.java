@@ -15,6 +15,8 @@ public interface ShooterIO {
         public double pendulumGoalAngleRad = 0.0;
 
         public double fromIntakeMotorAppliedVolts = 0.0;
+
+        public double hasNote = 0.0;
     }
 
     public default void updateInputs(ShooterIOInputs inputs) {};
