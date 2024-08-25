@@ -10,6 +10,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.commands.DriveWithJoysticks;
+import frc.robot.constants.FeatureFlags;
+import frc.robot.constants.VisionConstants;
+import frc.robot.subsystems.localization.CameraContainerSim;
+import frc.robot.subsystems.localization.VisionLocalizer;
 
 public class RobotContainer {
     PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
@@ -17,13 +21,30 @@ public class RobotContainer {
     CommandJoystick leftJoystick = new CommandJoystick(0);
     CommandJoystick rightJoystick = new CommandJoystick(1);
 
-    public RobotContainer() {
-        configureBindings();
-    }
+      VisionLocalizer tagVision;
 
-    private void configureBindings() {
+    public RobotContainer() {
+            configureSubsystems();
+        configureBindings();
+      }
+
+      private void configureBindings() {
         drive.registerTelemetry(logger::telemeterize);
         drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
+    }
+
+    private void configureSubsystems() {
+        // TODO: Potentially migrate to Constants.mode
+        if (Robot.isReal()) {
+            if (FeatureFlags.runVision) {
+                // TODO: Real robot vision
+            }
+        } else {
+            if (FeatureFlags.simulateVision) {
+                // TODO: Simulate robot vision
+                tagVision = new VisionLocalizer(new CameraContainerSim(VisionConstants.cameras));
+            }
+        }
     }
 
     public Command getAutonomousCommand() {

@@ -30,5 +30,6 @@
   "cSpell.words": [
     "odometry",
     "telemeterize"
-  ]
+  ],
+  "java.debug.settings.onBuildFailureProceed": true
 }
