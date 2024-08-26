@@ -6,35 +6,41 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.PhoenixDrive;
 
 public final class PhoenixDriveConstants {
-            // Both sets of gains need to be tuned to your individual robot.
+    // Both sets of gains need to be tuned to your individual robot.
 
-        // The steer motor uses any SwerveModule.SteerRequestType control request with the
-        // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
+    // The steer motor uses any SwerveModule.SteerRequestType control request with the
+    // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
         public static final Slot0Configs steerGains =
                 new Slot0Configs()
-                        .withKP(150).withKI(50).withKD(0.2)
-                        .withKS(0.25).withKV(1.5).withKA(0);
-        // When using closed-loop control, the drive motor uses the control
-        // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
+                        .withKP(150)
+                        .withKI(50)
+                        .withKD(0.2)
+                        .withKS(0.25)
+                        .withKV(1.5)
+                        .withKA(0);
+    // When using closed-loop control, the drive motor uses the control
+    // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
         public static final Slot0Configs driveGains =
                 new Slot0Configs()
-                        .withKP(0).withKI(0.02).withKD(0)
-                        .withKS(0.26).withKV(0.12).withKA(0.01);
+                        .withKP(0)
+                        .withKI(0.02)
+                        .withKD(0)
+                        .withKS(0.26)
+                        .withKV(0.12)
+                        .withKA(0.01);
 
         // The closed-loop output type to use for the steer motors;
         // This affects the PID/FF gains for the steer motors
-        private static final ClosedLoopOutputType steerClosedLoopOutput =
-                ClosedLoopOutputType.Voltage;
+        private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
         // The closed-loop output type to use for the drive motors;
         // This affects the PID/FF gains for the drive motors
-        private static final ClosedLoopOutputType driveClosedLoopOutput =
-                ClosedLoopOutputType.Voltage;
+        private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
         // The stator current at which the wheels start to slip;
         // This needs to be tuned to your individual robot
@@ -67,9 +73,7 @@ public final class PhoenixDriveConstants {
         private static final double kDriveFrictionVoltage = 0.25;
 
         private static final SwerveDrivetrainConstants DrivetrainConstants =
-                new SwerveDrivetrainConstants()
-                        .withPigeon2Id(kPigeonId)
-                        .withCANbusName(kCANbusName);
+                new SwerveDrivetrainConstants().withPigeon2Id(kPigeonId).withCANbusName(kCANbusName);
 
         private static final SwerveModuleConstantsFactory ConstantCreator =
                 new SwerveModuleConstantsFactory()
@@ -174,6 +178,5 @@ public final class PhoenixDriveConstants {
                         new Translation2d(BackRight.LocationX, BackRight.LocationY));
 
         public static final PhoenixDrive DriveTrain =
-                new PhoenixDrive(
-                        DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
+                new PhoenixDrive(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
 }
