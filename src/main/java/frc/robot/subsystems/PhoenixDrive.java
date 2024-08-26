@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
@@ -9,6 +10,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -16,8 +18,8 @@ import java.util.function.Supplier;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
-    private Notifier m_simNotifier = null;
-    private double m_lastSimTime;
+    private Notifier simNotifier = null;
+    private double lastSimTime;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
@@ -42,6 +44,10 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             SwerveModuleConstants... modules) {
         super(driveConstants, odometryUpdateFrequency, modules);
 
+        if(Utils.isSimulation()) {
+            startSimThread();
+        }
+
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
@@ -49,7 +55,24 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             SwerveDrivetrainConstants driveConstants, SwerveModuleConstants... modules) {
         super(driveConstants, modules);
 
+        if(Utils.isSimulation()) {
+            startSimThread();
+        }
+
         CommandScheduler.getInstance().registerSubsystem(this);
+    }
+
+    private void startSimThread() {
+        lastSimTime = Utils.getCurrentTimeSeconds();
+        simNotifier = new Notifier(() -> {
+            final double currentTime = Utils.getCurrentTimeSeconds();
+            double deltaTime = currentTime - lastSimTime;
+            lastSimTime = currentTime;
+
+            updateSimState(deltaTime, RobotController.getBatteryVoltage());
+        });
+
+        simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
     public Command applyDriveRequest(Supplier<SwerveRequest> requestSupplier) {
