@@ -16,7 +16,7 @@ public interface ShooterIO {
 
         public double fromIntakeMotorAppliedVolts = 0.0;
 
-        public double hasNote = 0.0;
+        public boolean bannerSensor = false;
     }
 
     public default void updateInputs(ShooterIOInputs inputs) {};
@@ -26,5 +26,8 @@ public interface ShooterIO {
     public default void setFromIntakeMotorVoltage(double kickerVoltage) {};
 
     public default void setAimAngleRad(double angle) {};
+
+    public default void setBrakeMode(boolean brake) {};
+
 
 }
