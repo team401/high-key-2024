@@ -5,6 +5,12 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -14,6 +20,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.constants.PhoenixDriveConstants;
 import java.util.function.Supplier;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
@@ -44,7 +51,9 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             SwerveModuleConstants... modules) {
         super(driveConstants, odometryUpdateFrequency, modules);
 
-        if(Utils.isSimulation()) {
+        configurePathPlanner();
+
+        if (Utils.isSimulation()) {
             startSimThread();
         }
 
@@ -55,22 +64,52 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             SwerveDrivetrainConstants driveConstants, SwerveModuleConstants... modules) {
         super(driveConstants, modules);
 
-        if(Utils.isSimulation()) {
+        configurePathPlanner();
+
+        if (Utils.isSimulation()) {
             startSimThread();
         }
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
+    private void configurePathPlanner() {
+        double driveBaseRadius = 0;
+        for (var moduleLocation : m_moduleLocations) {
+            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+        }
+
+        Pathfinding.setPathfinder(new LocalADStar());
+
+        AutoBuilder.configureHolonomic(
+                () -> this.getState().Pose,
+                this::seedFieldRelative,
+                this::getCurrentSpeeds,
+                (speeds) -> this.setControl(AutoRequest.withSpeeds(speeds)),
+                new HolonomicPathFollowerConfig(
+                        new PIDConstants(2),
+                        new PIDConstants(
+                                PhoenixDriveConstants.autoAlignmentkP,
+                                PhoenixDriveConstants.autoAlignmentkI,
+                                PhoenixDriveConstants.autoAlignmentkD),
+                        PhoenixDriveConstants.kSpeedAt12VoltsMps,
+                        driveBaseRadius,
+                        new ReplanningConfig(false, false)),
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                this);
+    }
+
     private void startSimThread() {
         lastSimTime = Utils.getCurrentTimeSeconds();
-        simNotifier = new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
-            double deltaTime = currentTime - lastSimTime;
-            lastSimTime = currentTime;
+        simNotifier =
+                new Notifier(
+                        () -> {
+                            final double currentTime = Utils.getCurrentTimeSeconds();
+                            double deltaTime = currentTime - lastSimTime;
+                            lastSimTime = currentTime;
 
-            updateSimState(deltaTime, RobotController.getBatteryVoltage());
-        });
+                            updateSimState(deltaTime, RobotController.getBatteryVoltage());
+                        });
 
         simNotifier.startPeriodic(kSimLoopPeriod);
     }

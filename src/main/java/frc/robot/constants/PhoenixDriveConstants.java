@@ -42,13 +42,13 @@ public final class PhoenixDriveConstants {
     // This affects the PID/FF gains for the drive motors
     private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
-    // The stator current at which the wheels start to slip;
-    // This needs to be tuned to your individual robot
     private static final double kSlipCurrentA = 80;
 
-    // Theoretical free speed (m/s) at 12v applied output;
-    // This needs to be tuned to your individual robot
     public static final double kSpeedAt12VoltsMps = 5.02; // 5.21 OR 5.02
+
+    public static final double autoAlignmentkP = 5.0;
+    public static final double autoAlignmentkI = 5.5;
+    public static final double autoAlignmentkD = 0.0;
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
