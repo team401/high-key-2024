@@ -7,9 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
+import frc.robot.subsystems.drive.commands.DriveWithJoysticks;
 
 public class RobotContainer {
   PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
