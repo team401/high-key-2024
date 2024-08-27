@@ -1,10 +1,12 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
@@ -120,6 +122,28 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     public ChassisSpeeds getCurrentSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
+    public void setGoalSpeeds(ChassisSpeeds goalSpeeds, boolean fieldCentric) {
+        this.applyDriveRequest(() -> {
+            if (fieldCentric) {
+                return new SwerveRequest.FieldCentric()
+                    .withVelocityX(goalSpeeds.vxMetersPerSecond)
+                    .withVelocityY(goalSpeeds.vyMetersPerSecond)
+                    .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
+                    .withDeadband(0.0)
+                    .withRotationalDeadband(0.0)
+                    .withDriveRequestType(DriveRequestType.Velocity);
+            } else {
+                return new SwerveRequest.RobotCentric()
+                    .withVelocityX(goalSpeeds.vxMetersPerSecond)
+                    .withVelocityY(goalSpeeds.vyMetersPerSecond)
+                    .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
+                    .withDeadband(0.0)
+                    .withRotationalDeadband(0.0)
+                    .withDriveRequestType(DriveRequestType.Velocity);
+            }
+        });
     }
 
     @Override

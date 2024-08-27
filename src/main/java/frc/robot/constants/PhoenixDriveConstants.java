@@ -9,7 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.PhoenixDrive;
+import frc.robot.subsystems.drive.PhoenixDrive;
 
 public final class PhoenixDriveConstants {
     // Both sets of gains need to be tuned to your individual robot.
