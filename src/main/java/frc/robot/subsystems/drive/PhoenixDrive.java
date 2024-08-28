@@ -54,6 +54,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
         configurePathPlanner();
 
+        System.out.println("create drive");
+
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -65,6 +67,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             SwerveDrivetrainConstants driveConstants, SwerveModuleConstants... modules) {
         super(driveConstants, modules);
 
+        System.out.println("create drive");
         configurePathPlanner();
 
         if (Utils.isSimulation()) {
@@ -124,26 +127,33 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     }
 
     public void setGoalSpeeds(ChassisSpeeds goalSpeeds, boolean fieldCentric) {
+        System.out.println("attempt to apply");
         this.applyDriveRequest(
                 () -> {
                     if (fieldCentric) {
+                        System.out.println("speed set to 1");
                         return new SwerveRequest.FieldCentric()
-                                .withVelocityX(goalSpeeds.vxMetersPerSecond)
-                                .withVelocityY(goalSpeeds.vyMetersPerSecond)
+                                .withVelocityX(1)
+                                .withVelocityY(0.5)
                                 .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
                                 .withDeadband(0.0)
                                 .withRotationalDeadband(0.0)
                                 .withDriveRequestType(DriveRequestType.Velocity);
                     } else {
                         return new SwerveRequest.RobotCentric()
-                                .withVelocityX(goalSpeeds.vxMetersPerSecond)
-                                .withVelocityY(goalSpeeds.vyMetersPerSecond)
+                                .withVelocityX(1)
+                                .withVelocityY(0.5)
                                 .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
                                 .withDeadband(0.0)
                                 .withRotationalDeadband(0.0)
                                 .withDriveRequestType(DriveRequestType.Velocity);
                     }
                 });
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        updateSimState(kSimLoopPeriod, RobotController.getBatteryVoltage());
     }
 
     @Override

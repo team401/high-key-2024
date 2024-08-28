@@ -1,19 +1,18 @@
 package frc.robot.subsystems.drive.commands;
 
 import com.ctre.phoenix6.Utils;
-import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.numbers.N2;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.subsystems.drive.PhoenixDrive;
-import java.util.function.Supplier;
 
 public class DriveWithJoysticks extends Command {
     PhoenixDrive drivetrain;
     CommandJoystick leftJoystick;
     CommandJoystick rightJoystick;
-    Supplier<Vector<N2>> currentVelocitySupplier;
+    NetworkTable driveStats = NetworkTableInstance.getDefault().getTable("Drive");
 
     double commandedXMpS;
     double commandedYMpS;
@@ -30,30 +29,32 @@ public class DriveWithJoysticks extends Command {
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
     public DriveWithJoysticks(
-            PhoenixDrive drivetrain,
-            CommandJoystick leftJoystick,
-            CommandJoystick rightJoystick,
-            Supplier<Vector<N2>> currentVelocitySupplier) {
+            PhoenixDrive drivetrain, CommandJoystick leftJoystick, CommandJoystick rightJoystick) {
+        System.out.println("init command");
         this.drivetrain = drivetrain;
         this.leftJoystick = leftJoystick;
         this.rightJoystick = rightJoystick;
-        this.currentVelocitySupplier = currentVelocitySupplier;
 
-        addRequirements(drivetrain);
+        addRequirements(this.drivetrain);
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+        System.out.println("Start command");
+    }
 
     @Override
     public void execute() {
+        System.out.println("run joystick command");
         chassisSpeeds =
                 new ChassisSpeeds(leftJoystick.getY(), leftJoystick.getX(), rightJoystick.getX());
         drivetrain.setGoalSpeeds(chassisSpeeds, !rightJoystick.trigger().getAsBoolean());
     }
 
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        System.out.println("Command ended" + interrupted);
+    }
 
     @Override
     public boolean isFinished() {
