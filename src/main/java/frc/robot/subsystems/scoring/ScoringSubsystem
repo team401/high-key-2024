@@ -24,7 +24,7 @@ import coppercore.controls.Tunable;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-//import coppercore.math.InterpolateDouble;
+import coppercore.math.InterpolateDouble;
 
 public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private final ShooterIO shooterIo;
@@ -43,11 +43,11 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private DoubleSupplier elevatorPositionSupplier = () -> 0.0;
     private Supplier<Boolean> driveAllignedSupplier = () -> true;
 
-    /*private final InterpolateDouble shooterInterpolated;
+    private final InterpolateDouble shooterInterpolated;
     private final InterpolateDouble aimerInterpolated;
     private final InterpolateDouble timeToPutAimDown;
     private final InterpolateDouble aimerAvoidElevator;
-    private final InterpolateDouble aimerAngleTolerance;*/
+    private final InterpolateDouble aimerAngleTolerance;
 
     private double shooterGoalVelocityRPMTuning = 0.0;
     private double aimerGoalAngleRadTuning = 0.0;
@@ -92,12 +92,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         TRAP_SCORE
     }
 
-    public ScoringSubsystem(ShooterIO shooterIo, AimerIO aimerIo) {
-        this.shooterIo = shooterIo;
-        this.aimerIo = aimerIo;
-    }
-
-    /*private ScoringState state = ScoringState.IDLE;
+    private ScoringState state = ScoringState.IDLE;
 
     private ScoringAction action = ScoringAction.WAIT;
 
@@ -129,6 +124,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
             mechanism = new Mechanism2d(2.2, 2.0);
             rootMechanism = mechanism.getRoot("scoring", 0.6, 0.3);
             aimMechanism = rootMechanism.append(new MechanismLigament2d("aimer", 0.5, 0.0));
+        }
     }
 
     public void setAction(ScoringAction action) {
@@ -247,7 +243,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                 < ScoringConstants.aimAngleVelocityMargin;
         boolean driveReady = driveAllignedSupplier.get();
         boolean fieldLocationReady = true;
-        if (!DriverStation.getAlliance().isPresent()) {
+
+        //TODO FIX
+        /*if (!DriverStation.getAlliance().isPresent()) {
             fieldLocationReady = true;
         } else {
             switch (DriverStation.getAlliance().get()) {
@@ -266,7 +264,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                             && DriverStation.isTeleop());
                     break;
             }
-        }
+        }*/
         boolean notePresent = overrideBeamBreak ? true : hasNote();
 
         boolean primeReady = shooterReady && aimReady && driveReady && fieldLocationReady;
@@ -318,8 +316,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
             shootTimer.stop();
         }
-
-        CommandScheduler.getInstance().schedule(NoteManager.shoot(shootRPM, aimAngleRad));
     }
 
     private void ampShoot() {
@@ -423,7 +419,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private boolean willHitStage() {
-        return (FieldFinder.willIHitThis(
+        /*return (FieldFinder.willIHitThis(
                         poseSupplier.get().getX(),
                         poseSupplier.get().getY(),
                         velocitySupplier.get().get(0, 0)
@@ -438,7 +434,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                 * timeToPutAimDown.getValue(aimerInputs.aimAngleRad),
                         velocitySupplier.get().get(1, 0)
                                 * timeToPutAimDown.getValue(aimerInputs.aimAngleRad),
-                        FieldLocations.RED_STAGE));
+                        FieldLocations.RED_STAGE));*/
+        //TODO CHANGE
+        return false;
     }
 
     public void enabledInit() {
@@ -724,5 +722,5 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     public void setAimerStatorCurrentLimit(double limit) {
         aimerIo.setStatorCurrentLimit(limit);
-    }*/
+    }
 }
