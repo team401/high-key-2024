@@ -20,11 +20,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.ScoringConstants;
-import frc.robot.utils.Tunable;
+import coppercore.controls.Tunable;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import coppercore.math.InterpolateDouble;
+//import coppercore.math.InterpolateDouble;
 
 public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private final ShooterIO shooterIo;
@@ -43,11 +43,11 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private DoubleSupplier elevatorPositionSupplier = () -> 0.0;
     private Supplier<Boolean> driveAllignedSupplier = () -> true;
 
-    private final InterpolateDouble shooterInterpolated;
+    /*private final InterpolateDouble shooterInterpolated;
     private final InterpolateDouble aimerInterpolated;
     private final InterpolateDouble timeToPutAimDown;
     private final InterpolateDouble aimerAvoidElevator;
-    private final InterpolateDouble aimerAngleTolerance;
+    private final InterpolateDouble aimerAngleTolerance;*/
 
     private double shooterGoalVelocityRPMTuning = 0.0;
     private double aimerGoalAngleRadTuning = 0.0;
@@ -92,7 +92,12 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         TRAP_SCORE
     }
 
-    private ScoringState state = ScoringState.IDLE;
+    public ScoringSubsystem(ShooterIO shooterIo, AimerIO aimerIo) {
+        this.shooterIo = shooterIo;
+        this.aimerIo = aimerIo;
+    }
+
+    /*private ScoringState state = ScoringState.IDLE;
 
     private ScoringAction action = ScoringAction.WAIT;
 
@@ -719,5 +724,5 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     public void setAimerStatorCurrentLimit(double limit) {
         aimerIo.setStatorCurrentLimit(limit);
-    }
+    }*/
 }
