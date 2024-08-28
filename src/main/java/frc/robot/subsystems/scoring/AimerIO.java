@@ -1,9 +1,9 @@
 package frc.robot.subsystems.scoring;
 
-//import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface AimerIO {
-    //@AutoLog
+    @AutoLog
     public static class AimerIOInputs {
         public double aimAngleRad = 0.0;
         public double aimGoalAngleRad = 0.0;

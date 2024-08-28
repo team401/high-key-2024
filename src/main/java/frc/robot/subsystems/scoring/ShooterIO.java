@@ -1,9 +1,9 @@
 package frc.robot.subsystems.scoring;
 
-//import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterIO {
-    //@AutoLog
+    @AutoLog
     public static class ShooterIOInputs {
         public double shooterLeftVelocityRPM = 0.0;
         public double shooterLeftGoalVelocityRPM = 0.0;
