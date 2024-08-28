@@ -12,21 +12,18 @@ import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.commands.DriveWithJoysticks;
 
 public class RobotContainer {
-  PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
-  CommandJoystick leftJoystick = new CommandJoystick(0);
-  CommandJoystick rightJoystick = new CommandJoystick(1);
+    PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
+    CommandJoystick leftJoystick = new CommandJoystick(0);
+    CommandJoystick rightJoystick = new CommandJoystick(1);
 
+    public RobotContainer() {
+        drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick, null));
+        configureBindings();
+    }
 
-  public RobotContainer() {
-    drive.setDefaultCommand(
-      new DriveWithJoysticks(drive, leftJoystick, rightJoystick, null)
-    );
-    configureBindings();
-  }
+    private void configureBindings() {}
 
-  private void configureBindings() {}
-
-  public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
-  }
+    public Command getAutonomousCommand() {
+        return Commands.print("No autonomous command configured");
+    }
 }

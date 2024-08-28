@@ -4,14 +4,9 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N2;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class DriveWithJoysticks extends Command {
@@ -38,8 +33,7 @@ public class DriveWithJoysticks extends Command {
             PhoenixDrive drivetrain,
             CommandJoystick leftJoystick,
             CommandJoystick rightJoystick,
-            Supplier<Vector<N2>> currentVelocitySupplier
-    ) {
+            Supplier<Vector<N2>> currentVelocitySupplier) {
         this.drivetrain = drivetrain;
         this.leftJoystick = leftJoystick;
         this.rightJoystick = rightJoystick;
@@ -53,7 +47,8 @@ public class DriveWithJoysticks extends Command {
 
     @Override
     public void execute() {
-        chassisSpeeds = new ChassisSpeeds(leftJoystick.getY(), leftJoystick.getX(), rightJoystick.getX());
+        chassisSpeeds =
+                new ChassisSpeeds(leftJoystick.getY(), leftJoystick.getX(), rightJoystick.getX());
         drivetrain.setGoalSpeeds(chassisSpeeds, !rightJoystick.trigger().getAsBoolean());
     }
 
