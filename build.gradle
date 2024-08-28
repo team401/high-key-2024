@@ -101,7 +101,7 @@ dependencies {
 	nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
 	simulationRelease wpi.sim.enableRelease()
 
-    implementation 'com.github.team401:coppercore:main-SNAPSHOT'
+    implementation 'com.github.team401:coppercore:controls(edit)-SNAPSHOT'
     
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:$akitJson.version"
