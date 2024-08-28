@@ -8,6 +8,12 @@ public class Constants {
 
     public static final double loopTime = 0.02;
 
+    public static enum Mode {
+        REAL,
+        SIM,
+        REPLAY
+    }
+    
     public static final class ConversionConstants {
         public static final double kRadiansPerSecondToRPM = 60.0 / (2.0 * Math.PI);
         public static final double kRPMToRadiansPerSecond = 1.0 / kRadiansPerSecondToRPM;

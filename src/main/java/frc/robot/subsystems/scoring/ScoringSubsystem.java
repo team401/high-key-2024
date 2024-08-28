@@ -20,15 +20,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.ScoringConstants;
-import frc.robot.utils.AllianceUtil;
-import frc.robot.utils.FieldFinder;
-import frc.robot.utils.FieldFinder.FieldLocations;
-import frc.robot.utils.InterpolateDouble;
 import frc.robot.utils.Tunable;
-import frc.robot.utils.notesimulator.NoteManager;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
+import coppercore.math.InterpolateDouble;
 
 public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private final ShooterIO shooterIo;
