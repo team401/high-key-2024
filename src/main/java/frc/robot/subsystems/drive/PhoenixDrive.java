@@ -18,11 +18,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.PhoenixDriveConstants;
-import java.util.function.Supplier;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
@@ -82,7 +80,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         for (var moduleLocation : m_moduleLocations) {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         }
-
         Pathfinding.setPathfinder(new LocalADStar());
 
         AutoBuilder.configureHolonomic(
@@ -118,37 +115,34 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    public Command applyDriveRequest(Supplier<SwerveRequest> requestSupplier) {
-        return run(() -> this.setControl(requestSupplier.get()));
-    }
-
     public ChassisSpeeds getCurrentSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
     public void setGoalSpeeds(ChassisSpeeds goalSpeeds, boolean fieldCentric) {
         System.out.println("attempt to apply");
-        this.applyDriveRequest(
-                () -> {
-                    if (fieldCentric) {
-                        System.out.println("speed set to 1");
-                        return new SwerveRequest.FieldCentric()
-                                .withVelocityX(1)
-                                .withVelocityY(0.5)
-                                .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
-                                .withDeadband(0.0)
-                                .withRotationalDeadband(0.0)
-                                .withDriveRequestType(DriveRequestType.Velocity);
-                    } else {
-                        return new SwerveRequest.RobotCentric()
-                                .withVelocityX(1)
-                                .withVelocityY(0.5)
-                                .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
-                                .withDeadband(0.0)
-                                .withRotationalDeadband(0.0)
-                                .withDriveRequestType(DriveRequestType.Velocity);
-                    }
-                });
+        SwerveRequest request;
+        if (fieldCentric) {
+            System.out.println("speed set to 1");
+            request =
+                    new SwerveRequest.FieldCentric()
+                            .withVelocityX(goalSpeeds.vxMetersPerSecond)
+                            .withVelocityY(goalSpeeds.vyMetersPerSecond)
+                            .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
+                            .withDeadband(0.0)
+                            .withRotationalDeadband(0.0)
+                            .withDriveRequestType(DriveRequestType.Velocity);
+        } else {
+            request =
+                    new SwerveRequest.RobotCentric()
+                            .withVelocityX(goalSpeeds.vxMetersPerSecond)
+                            .withVelocityY(goalSpeeds.vyMetersPerSecond)
+                            .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
+                            .withDeadband(0.0)
+                            .withRotationalDeadband(0.0)
+                            .withDriveRequestType(DriveRequestType.Velocity);
+        }
+        this.setControl(request);
     }
 
     @Override

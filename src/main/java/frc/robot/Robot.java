@@ -21,10 +21,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        System.out.println(
-                CommandScheduler.getInstance()
-                        .getDefaultCommand(m_robotContainer.drive)
-                        .toString());
     }
 
     @Override
