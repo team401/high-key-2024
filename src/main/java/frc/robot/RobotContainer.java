@@ -22,7 +22,6 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        System.out.println("add binding");
         drive.registerTelemetry(logger::telemeterize);
         drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
     }

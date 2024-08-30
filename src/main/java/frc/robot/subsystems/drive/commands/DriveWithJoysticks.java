@@ -30,7 +30,6 @@ public class DriveWithJoysticks extends Command {
 
     public DriveWithJoysticks(
             PhoenixDrive drivetrain, CommandJoystick leftJoystick, CommandJoystick rightJoystick) {
-        System.out.println("init command");
         this.drivetrain = drivetrain;
         this.leftJoystick = leftJoystick;
         this.rightJoystick = rightJoystick;
@@ -39,22 +38,17 @@ public class DriveWithJoysticks extends Command {
     }
 
     @Override
-    public void initialize() {
-        System.out.println("Start command");
-    }
+    public void initialize() {}
 
     @Override
     public void execute() {
-        System.out.println("run joystick command");
         chassisSpeeds =
                 new ChassisSpeeds(leftJoystick.getY(), leftJoystick.getX(), rightJoystick.getX());
         drivetrain.setGoalSpeeds(chassisSpeeds, !rightJoystick.trigger().getAsBoolean());
     }
 
     @Override
-    public void end(boolean interrupted) {
-        System.out.println("Command ended" + interrupted);
-    }
+    public void end(boolean interrupted) {}
 
     @Override
     public boolean isFinished() {

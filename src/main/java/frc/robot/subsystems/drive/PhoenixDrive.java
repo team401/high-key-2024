@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.constants.PhoenixDriveConstants;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
-    private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier simNotifier = null;
     private double lastSimTime;
 
@@ -52,8 +51,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
         configurePathPlanner();
 
-        System.out.println("create drive");
-
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -65,7 +62,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             SwerveDrivetrainConstants driveConstants, SwerveModuleConstants... modules) {
         super(driveConstants, modules);
 
-        System.out.println("create drive");
         configurePathPlanner();
 
         if (Utils.isSimulation()) {
@@ -112,7 +108,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                             updateSimState(deltaTime, RobotController.getBatteryVoltage());
                         });
 
-        simNotifier.startPeriodic(kSimLoopPeriod);
+        simNotifier.startPeriodic(PhoenixDriveConstants.kSimLoopPeriod);
     }
 
     public ChassisSpeeds getCurrentSpeeds() {
@@ -120,10 +116,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     }
 
     public void setGoalSpeeds(ChassisSpeeds goalSpeeds, boolean fieldCentric) {
-        System.out.println("attempt to apply");
         SwerveRequest request;
         if (fieldCentric) {
-            System.out.println("speed set to 1");
             request =
                     new SwerveRequest.FieldCentric()
                             .withVelocityX(goalSpeeds.vxMetersPerSecond)
@@ -147,7 +141,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     @Override
     public void simulationPeriodic() {
-        updateSimState(kSimLoopPeriod, RobotController.getBatteryVoltage());
+        updateSimState(PhoenixDriveConstants.kSimLoopPeriod, RobotController.getBatteryVoltage());
     }
 
     @Override

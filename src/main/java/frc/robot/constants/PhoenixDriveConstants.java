@@ -94,6 +94,9 @@ public final class PhoenixDriveConstants {
                     .withCouplingGearRatio(kCoupleRatio)
                     .withSteerMotorInverted(kSteerMotorReversed);
 
+    // sim constants
+    public static final double kSimLoopPeriod = 0.005;
+
     // Front Left
     private static final int kBackRightDriveMotorId = 2;
     private static final int kBackRightSteerMotorId = 1;
