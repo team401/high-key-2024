@@ -6,6 +6,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 
 public class DriveWithJoysticks extends Command {
@@ -42,9 +43,16 @@ public class DriveWithJoysticks extends Command {
 
     @Override
     public void execute() {
-        chassisSpeeds =
-                new ChassisSpeeds(leftJoystick.getY(), leftJoystick.getX(), rightJoystick.getX());
-        drivetrain.setGoalSpeeds(chassisSpeeds, !rightJoystick.trigger().getAsBoolean());
+        double[] filteredInputs = {leftJoystick.getX(), leftJoystick.getY()};
+        filteredInputs[0] =
+                Math.pow(filteredInputs[0], 1) * PhoenixDriveConstants.maxSpeedMetPerSec;
+        filteredInputs[1] =
+                Math.pow(filteredInputs[1], 1) * PhoenixDriveConstants.maxSpeedMetPerSec;
+        double filteredOmega =
+                Math.pow(rightJoystick.getX(), 1) * PhoenixDriveConstants.MaxAngularRateRadPerSec;
+
+        chassisSpeeds = new ChassisSpeeds(filteredInputs[1], filteredInputs[0], filteredOmega);
+        drivetrain.setGoalSpeeds(chassisSpeeds, true);
     }
 
     @Override

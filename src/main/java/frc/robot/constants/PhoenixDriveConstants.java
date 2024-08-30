@@ -45,6 +45,8 @@ public final class PhoenixDriveConstants {
     private static final double kSlipCurrentA = 80;
 
     public static final double kSpeedAt12VoltsMps = 5.02; // 5.21 OR 5.02
+    public static final double maxSpeedMetPerSec = 6;
+    public static final double MaxAngularRateRadPerSec = Math.PI * 2;
 
     public static final double autoAlignmentkP = 5.0;
     public static final double autoAlignmentkI = 5.5;
