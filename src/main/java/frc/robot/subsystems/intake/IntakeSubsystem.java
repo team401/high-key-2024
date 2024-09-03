@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 import java.util.function.BooleanSupplier;
@@ -47,6 +48,8 @@ public class IntakeSubsystem extends SubsystemBase {
         Logger.recordOutput("intake/belting", inputs.beltVoltage != 0.0);
 
         Logger.recordOutput("intake/state", state.toString());
+
+        SmartDashboard.putBoolean("working", true);
     }
 
     public void setScoringSupplier(BooleanSupplier scorerWantsNote) {

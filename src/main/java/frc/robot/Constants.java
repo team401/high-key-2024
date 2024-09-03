@@ -16,6 +16,18 @@ public class Constants {
         REPLAY
     }
 
+    public enum AlignTarget {
+        NONE,
+        AMP,
+        SPEAKER,
+        SOURCE,
+        ENDGAME,
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
+
     public static final class ConversionConstants {
         public static final double kRadiansPerSecondToRPM = 60.0 / (2.0 * Math.PI);
         public static final double kRPMToRadiansPerSecond = 1.0 / kRadiansPerSecondToRPM;

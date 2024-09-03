@@ -25,6 +25,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 import coppercore.math.InterpolateDouble;
+import coppercore.wpilib_interface.*;
 
 public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private final ShooterIO shooterIo;
@@ -380,7 +381,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private double findDistanceToGoal() {
-        Translation2d speakerPose = AllianceUtil.getFieldToSpeaker();
+        Translation2d speakerPose = new Translation2d(); //AllianceUtil.getFieldToSpeaker();
         Pose2d robotPose = poseSupplier.get();
         double distancetoGoal =
                 Math.sqrt(

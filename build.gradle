@@ -2,16 +2,11 @@ import java.text.SimpleDateFormat
 
 
 plugins {
-<<<<<<< HEAD
 	id "java"
 	id "edu.wpi.first.GradleRIO" version "2024.3.2"
 	id "com.peterabeles.gversion" version "1.10"
 	id "com.diffplug.spotless" version "6.24.0"
 	id 'org.ajoberstar.grgit' version "5.2.1"
-=======
-    id "java"
-    id "edu.wpi.first.GradleRIO" version "2024.3.2"
->>>>>>> b43abfa (commit save)
 }
 
 java {

@@ -1,6 +1,11 @@
 package frc.robot;
 
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj.DriverStation;
+=======
+import org.littletonrobotics.junction.Logger;
+
+>>>>>>> 44c3b70 (nothing is showing up in advantagekit and i don't know why)
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 <<<<<<< HEAD
@@ -25,13 +31,38 @@ import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
 import frc.robot.subsystems.drive.commands.DriveWithJoysticks;
+<<<<<<< HEAD
 import frc.robot.subsystems.localization.CameraContainerReal;
 import frc.robot.subsystems.localization.CameraContainerSim;
 import frc.robot.subsystems.localization.VisionLocalizer;
+=======
+import frc.robot.Constants.AlignTarget;
+import frc.robot.Constants.ConversionConstants;
+import frc.robot.Constants.ScoringConstants;
+import frc.robot.commands.ShootWithGamepad;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem.IntakeAction;
+import frc.robot.subsystems.scoring.AimerIO;
+import frc.robot.subsystems.scoring.AimerIOSim;
+import frc.robot.subsystems.scoring.ScoringSubsystem;
+import frc.robot.subsystems.scoring.ShooterIO;
+import frc.robot.subsystems.scoring.ShooterIOSim;
+import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
+//import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
+//import frc.robot.subsystems.scoring.ScoringSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+>>>>>>> 44c3b70 (nothing is showing up in advantagekit and i don't know why)
 
 public class RobotContainer {
     PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
     Telemetry logger = new Telemetry(6);
+
+    //ScoringSubsystem scoringSubsystem;
+    ScoringSubsystem scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
+    IntakeSubsystem intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+
     CommandJoystick leftJoystick = new CommandJoystick(0);
     CommandJoystick rightJoystick = new CommandJoystick(1);
 <<<<<<< HEAD
@@ -44,10 +75,10 @@ public class RobotContainer {
 =======
     CommandXboxController controller = new CommandXboxController(2);
 
-
     public RobotContainer() {
         //configureSubsystems();
         configureBindings();
+        Logger.recordOutput("w h a t", true);
     }
 
     /*public void configureSubsystems() {
@@ -64,24 +95,21 @@ public class RobotContainer {
 
     // spotless:off
     private void configureBindings() {
-        // Resets bindings
-        controller = new CommandXboxController(2);
-
         if (true) {
-            controller.b()
+            controller.button(0)
                 .onTrue(new InstantCommand(
                         () -> intakeSubsystem.run(IntakeAction.INTAKE)))
                 .onFalse(new InstantCommand(
                     () -> intakeSubsystem.run(IntakeAction.NONE)));
 
-            controller.a()
+            controller.button(1)
                 .onTrue(new InstantCommand(
                     () -> intakeSubsystem.run(IntakeAction.REVERSE)))
                 .onFalse(new InstantCommand(
                     () -> intakeSubsystem.run(IntakeAction.NONE)));
 
             // HACK: This button was added during DCMP to un-jam the intake. Ideally, this functionality should be implemented through a state machine.
-            controller.x()
+            controller.button(2)
                 .onTrue(new SequentialCommandGroup(new InstantCommand(
                         () -> intakeSubsystem.run(IntakeAction.REVERSE)),
                     Commands.waitSeconds(0.1),
@@ -95,7 +123,9 @@ public class RobotContainer {
             
         }
 
-        /*if (true) {
+        if (true) {
+            String alignTarget = "NONE";
+            SmartDashboard.getString("AlignTarget", alignTarget);
             scoringSubsystem.setDefaultCommand(new ShootWithGamepad(
                 () -> rightJoystick.getHID().getRawButton(4),
                 controller.getHID()::getRightBumper,
@@ -103,7 +133,8 @@ public class RobotContainer {
                 () -> controller.getRightTriggerAxis() > 0.5,
                 controller.getHID()::getAButton,
                 controller.getHID()::getBButton, scoringSubsystem,
-                FeatureFlags.runDrive ? drivetrain::getAlignTarget : () -> AlignTarget.NONE));
+                () -> AlignTarget.valueOf(alignTarget)));
+                //FeatureFlags.runDrive ? drivetrain::getAlignTarget : () -> AlignTarget.NONE));
 
             rightJoystick.button(11).onTrue(new InstantCommand(() -> scoringSubsystem.setArmDisabled(true)));
             rightJoystick.button(16).onTrue(new InstantCommand(() -> scoringSubsystem.setArmDisabled(false)));
@@ -119,7 +150,7 @@ public class RobotContainer {
                     scoringSubsystem.setAction(ScoringAction.OVERRIDE);
                     scoringSubsystem.setVolts(-3, 0);
                 }, scoringSubsystem));
-        }*/
+        }
 
 
     } // spotless:on
@@ -127,9 +158,8 @@ public class RobotContainer {
     public void enabledInit() {
 
         intakeSubsystem.run(IntakeAction.NONE);
-        aimerIo.setAimAngleRad(Math.PI/2, false);
-        shooterIo.setKickerVolts(0);
-        shooterIo.setShooterVelocityRPM(0);
+        scoringSubsystem.setAction(ScoringAction.INTAKE);
+
 
     }
 
