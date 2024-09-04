@@ -50,8 +50,6 @@ import frc.robot.subsystems.scoring.ScoringSubsystem;
 import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
-//import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
-//import frc.robot.subsystems.scoring.ScoringSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 >>>>>>> 44c3b70 (nothing is showing up in advantagekit and i don't know why)
 
@@ -60,8 +58,8 @@ public class RobotContainer {
     Telemetry logger = new Telemetry(6);
 
     //ScoringSubsystem scoringSubsystem;
-    ScoringSubsystem scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
-    IntakeSubsystem intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+    ScoringSubsystem scoringSubsystem;
+    IntakeSubsystem intakeSubsystem;
 
     CommandJoystick leftJoystick = new CommandJoystick(0);
     CommandJoystick rightJoystick = new CommandJoystick(1);
@@ -77,8 +75,13 @@ public class RobotContainer {
 
     public RobotContainer() {
         //configureSubsystems();
+
+        scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
+        intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+
         configureBindings();
-        Logger.recordOutput("w h a t", true);
+        System.out.println("containerrunning");
+        SmartDashboard.putString("AlignTarget", "NONE");
     }
 
     /*public void configureSubsystems() {
@@ -96,20 +99,20 @@ public class RobotContainer {
     // spotless:off
     private void configureBindings() {
         if (true) {
-            controller.button(0)
+            controller.button(1)
                 .onTrue(new InstantCommand(
                         () -> intakeSubsystem.run(IntakeAction.INTAKE)))
                 .onFalse(new InstantCommand(
                     () -> intakeSubsystem.run(IntakeAction.NONE)));
 
-            controller.button(1)
+            controller.button(2)
                 .onTrue(new InstantCommand(
                     () -> intakeSubsystem.run(IntakeAction.REVERSE)))
                 .onFalse(new InstantCommand(
                     () -> intakeSubsystem.run(IntakeAction.NONE)));
 
             // HACK: This button was added during DCMP to un-jam the intake. Ideally, this functionality should be implemented through a state machine.
-            controller.button(2)
+            controller.button(3)
                 .onTrue(new SequentialCommandGroup(new InstantCommand(
                         () -> intakeSubsystem.run(IntakeAction.REVERSE)),
                     Commands.waitSeconds(0.1),
@@ -124,8 +127,10 @@ public class RobotContainer {
         }
 
         if (true) {
+            
             String alignTarget = "NONE";
             SmartDashboard.getString("AlignTarget", alignTarget);
+            System.out.println("aligntargetreading");
             scoringSubsystem.setDefaultCommand(new ShootWithGamepad(
                 () -> rightJoystick.getHID().getRawButton(4),
                 controller.getHID()::getRightBumper,

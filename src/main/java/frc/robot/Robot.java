@@ -42,26 +42,35 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
 
-    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+    m_robotContainer = new RobotContainer();
 
+    //System.out.println("robotrunning1");
+    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+    
+    
     if (isReal()) {
+        //System.out.println("robotrunning2a");
         Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
         new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
     } else {
+        //System.out.println("robotrunning2b");
         setUseTiming(false); // Run as fast as possible
+<<<<<<< HEAD
         String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
         Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
         Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
 >>>>>>> 44c3b70 (nothing is showing up in advantagekit and i don't know why)
+=======
+        //String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
+        //Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
+        //Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+>>>>>>> 64fa64e (omg advantagescope displaying values what a breakthrough)
     }
-
     // Logger.disableDeterministicTimestamps() // See "Deterministic Timestamps" in the "Understanding Data Flow" page
     Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
-
-    m_robotContainer = new RobotContainer();
+    //System.out.println("robotrunning3");
   }
-
 
     @Override
     public void robotPeriodic() {

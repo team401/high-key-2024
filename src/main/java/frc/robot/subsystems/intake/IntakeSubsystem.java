@@ -21,6 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private double beltOverrideVolts = 0.0;
 
     public IntakeSubsystem(IntakeIO io) {
+        //System.out.println("intake");
         this.io = io;
     }
 
