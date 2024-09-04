@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.Constants;
 import frc.robot.Constants.ConversionConstants;
 import frc.robot.Constants.ScoringConstants;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class ShooterIOSim implements ShooterIO {
     // TODO: Tune this later
@@ -34,8 +35,6 @@ public class ShooterIOSim implements ShooterIO {
                     ScoringConstants.shooterkA);
 
     private boolean override = false;
-
-    DigitalInput bannerSensor = new DigitalInput(Constants.SensorConstants.indexerSensorPort);
 
     double shooterLeftGoalVelRPM = 0.0;
     double shooterLeftAppliedVolts = 0.0;
@@ -113,6 +112,8 @@ public class ShooterIOSim implements ShooterIO {
         inputs.kickerAppliedVolts = kickerVolts;
         inputs.kickerStatorCurrentAmps = 0.0;
 
-        inputs.bannerSensor = bannerSensor.get();
+        inputs.bannerSensor = false;
     }
+
+    
 }

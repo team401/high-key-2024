@@ -280,6 +280,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         Logger.recordOutput("scoring/notePresent", notePresent);
         Logger.recordOutput("scoring/primeReady", primeReady);
         Logger.recordOutput("scoring/readyToShoot", readyToShoot);
+        
 
         if (action != ScoringAction.SHOOT && action != ScoringAction.AIM) {
             state = ScoringState.IDLE;

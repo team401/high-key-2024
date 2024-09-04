@@ -7,8 +7,12 @@
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
       "/SmartDashboard/Module 3": "Mechanism2d",
+<<<<<<< HEAD
       "/SmartDashboard/PhotonSimField": "Field2d",
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
+=======
+      "/AdvantageKit/RealOutputs/scoring/mechanism2d": "Mechanism2d"
+>>>>>>> f28f4d7 (kind of working i guess??? not fully tested since a bunch of stuff hasn't been included yet:)
     }
   },
   "NetworkTables": {

@@ -30,6 +30,13 @@ public class IntakeSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("intake", inputs);
 
+        Logger.recordOutput("intake/running", inputs.leftIntakeVoltage != 0.0);
+        Logger.recordOutput("intake/belting", inputs.beltVoltage != 0.0);
+
+        Logger.recordOutput("intake/state", state.toString());
+
+        SmartDashboard.putBoolean("working", true);
+
         switch (state) {
             case IDLE:
                 idle();
@@ -45,12 +52,7 @@ public class IntakeSubsystem extends SubsystemBase {
                 break;
         }
 
-        Logger.recordOutput("intake/running", inputs.leftIntakeVoltage != 0.0);
-        Logger.recordOutput("intake/belting", inputs.beltVoltage != 0.0);
-
-        Logger.recordOutput("intake/state", state.toString());
-
-        SmartDashboard.putBoolean("working", true);
+        
     }
 
     public void setScoringSupplier(BooleanSupplier scorerWantsNote) {
