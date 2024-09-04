@@ -43,15 +43,11 @@ public class DriveWithJoysticks extends Command {
 
     @Override
     public void execute() {
-        double[] filteredInputs = {leftJoystick.getX(), leftJoystick.getY()};
-        filteredInputs[0] =
-                Math.pow(filteredInputs[0], 1) * PhoenixDriveConstants.maxSpeedMetPerSec;
-        filteredInputs[1] =
-                Math.pow(filteredInputs[1], 1) * PhoenixDriveConstants.maxSpeedMetPerSec;
-        double filteredOmega =
-                Math.pow(rightJoystick.getX(), 1) * PhoenixDriveConstants.MaxAngularRateRadPerSec;
+        double filteredVY = -leftJoystick.getY() * PhoenixDriveConstants.maxSpeedMetPerSec;
+        double filteredVX = -leftJoystick.getX() * PhoenixDriveConstants.maxSpeedMetPerSec;
+        double filteredOmega = rightJoystick.getX() * PhoenixDriveConstants.MaxAngularRateRadPerSec;
 
-        chassisSpeeds = new ChassisSpeeds(filteredInputs[1], filteredInputs[0], filteredOmega);
+        chassisSpeeds = new ChassisSpeeds(filteredVY, filteredVX, filteredOmega);
         drivetrain.setGoalSpeeds(chassisSpeeds, true);
     }
 

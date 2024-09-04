@@ -134,14 +134,9 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                             .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
                             .withDeadband(0.0)
                             .withRotationalDeadband(0.0)
-                            .withDriveRequestType(DriveRequestType.Velocity);
+                            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
         }
         this.setControl(request);
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        updateSimState(PhoenixDriveConstants.kSimLoopPeriod, RobotController.getBatteryVoltage());
     }
 
     @Override
