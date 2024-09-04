@@ -9,7 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.PhoenixDrive;
+import frc.robot.subsystems.drive.PhoenixDrive;
 
 public final class PhoenixDriveConstants {
     // Both sets of gains need to be tuned to your individual robot.
@@ -42,13 +42,15 @@ public final class PhoenixDriveConstants {
     // This affects the PID/FF gains for the drive motors
     private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
-    // The stator current at which the wheels start to slip;
-    // This needs to be tuned to your individual robot
     private static final double kSlipCurrentA = 80;
 
-    // Theoretical free speed (m/s) at 12v applied output;
-    // This needs to be tuned to your individual robot
     public static final double kSpeedAt12VoltsMps = 5.02; // 5.21 OR 5.02
+    public static final double maxSpeedMetPerSec = 6;
+    public static final double MaxAngularRateRadPerSec = Math.PI * 2;
+
+    public static final double autoAlignmentkP = 5.0;
+    public static final double autoAlignmentkI = 5.5;
+    public static final double autoAlignmentkD = 0.0;
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
@@ -93,6 +95,9 @@ public final class PhoenixDriveConstants {
                     .withFeedbackSource(SteerFeedbackType.FusedCANcoder)
                     .withCouplingGearRatio(kCoupleRatio)
                     .withSteerMotorInverted(kSteerMotorReversed);
+
+    // sim constants
+    public static final double kSimLoopPeriod = 0.005;
 
     // Front Left
     private static final int kBackRightDriveMotorId = 2;
