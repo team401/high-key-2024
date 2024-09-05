@@ -12,6 +12,7 @@ import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.commands.DriveWithJoysticks;
 import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.VisionConstants;
+import frc.robot.subsystems.localization.CameraContainerReal;
 import frc.robot.subsystems.localization.CameraContainerSim;
 import frc.robot.subsystems.localization.VisionLocalizer;
 
@@ -38,6 +39,7 @@ public class RobotContainer {
         if (Robot.isReal()) {
             if (FeatureFlags.runVision) {
                 // TODO: Real robot vision
+                tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
             }
         } else {
             if (FeatureFlags.simulateVision) {
