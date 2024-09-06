@@ -196,10 +196,15 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         switch (routineType) {
             case Translation:
                 routineToApply = SysIdRoutineTranslation;
+                break;
             case Steer:
                 routineToApply = SysIdRoutineSteer;
+                break;
             case Rotation:
                 routineToApply = SysIdRoutineRotation;
+                break;
+            default:
+                return;
         }
     }
 
