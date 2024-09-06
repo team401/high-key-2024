@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -28,14 +29,16 @@ public class RobotContainer {
         drive.registerTelemetry(logger::telemeterize);
         drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
 
-        // SYS ID
-        /* Bindings for drivetrain characterization */
-        /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
-        /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
-        masher.back().and(masher.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
-        masher.back().and(masher.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
-        masher.start().and(masher.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
-        masher.start().and(masher.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+        if (DriverStation.isTest()) {
+            // SYS ID
+            /* Bindings for drivetrain characterization */
+            /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
+            /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
+            masher.back().and(masher.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
+            masher.back().and(masher.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
+            masher.start().and(masher.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
+            masher.start().and(masher.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+        }
     }
 
     public Command getAutonomousCommand() {
