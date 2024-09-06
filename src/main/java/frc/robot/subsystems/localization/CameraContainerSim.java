@@ -2,14 +2,19 @@ package frc.robot.subsystems.localization;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.constants.TunerConstants;
 // import frc.robot.constants.DriveConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.VisionConstants.CameraParams;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.simulation.VisionSystemSim;
 
 public class CameraContainerSim implements CameraContainer {
@@ -18,8 +23,7 @@ public class CameraContainerSim implements CameraContainer {
 
     private List<Camera> cameras = new ArrayList<>();
 
-    // TODO: Get module states from drivetrain once drivetrain is implemented!
-    // private Supplier<SwerveModuleState[]> getModuleStates;
+    private Supplier<SwerveModuleState[]> getModuleStates;
     private Pose2d latestOdometryPose;
     private SwerveModulePosition[] lastModulePositions =
             new SwerveModulePosition[] {
@@ -31,8 +35,8 @@ public class CameraContainerSim implements CameraContainer {
     private Timer dtTimer = new Timer();
 
     public CameraContainerSim(
-            List<CameraParams> params /* , Supplier<SwerveModuleState[]> getModuleStates */) {
-        // this.getModuleStates = getModuleStates;
+            List<CameraParams> params, Supplier<SwerveModuleState[]> getModuleStates) {
+        this.getModuleStates = getModuleStates;
 
         visionSim.addAprilTags(VisionConstants.fieldLayout);
 
@@ -66,27 +70,27 @@ public class CameraContainerSim implements CameraContainer {
 
     private void updateOdometry() {
         SwerveModulePosition[] deltas = new SwerveModulePosition[4];
-        // SwerveModuleState[] states = getModuleStates.get();
+        SwerveModuleState[] states = getModuleStates.get();
 
         double dt = dtTimer.get();
         dtTimer.reset();
         dtTimer.start();
 
-        // for (int i = 0; i < states.length; i++) {
-        //     deltas[i] =
-        //             new SwerveModulePosition(
-        //                     states[i].speedMetersPerSecond * dt
-        //                             - lastModulePositions[i].distanceMeters,
-        //                     Rotation2d.fromRadians(
-        //                             states[i]
-        //                                     .angle
-        //                                     .minus(lastModulePositions[i].angle)
-        //                                     .getRadians()));
-        // }
+        for (int i = 0; i < states.length; i++) {
+            deltas[i] =
+                    new SwerveModulePosition(
+                            states[i].speedMetersPerSecond * dt
+                                    - lastModulePositions[i].distanceMeters,
+                            Rotation2d.fromRadians(
+                                    states[i]
+                                            .angle
+                                            .minus(lastModulePositions[i].angle)
+                                            .getRadians()));
+        }
 
-        // Twist2d twist = TunerConstants.kinematics.toTwist2d(deltas);
-        // latestOdometryPose = latestOdometryPose.exp(twist);
+        Twist2d twist = TunerConstants.kinematics.toTwist2d(deltas);
+        latestOdometryPose = latestOdometryPose.exp(twist);
 
-        // Logger.recordOutput("Vision/GroundTruth", latestOdometryPose);
+        Logger.recordOutput("Vision/GroundTruth", latestOdometryPose);
     }
 }

@@ -4,7 +4,9 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -43,6 +45,9 @@ public class Telemetry {
     /* Keep a reference of the last pose to calculate the speeds */
     private Pose2d lastPose = new Pose2d();
     private double lastTime = Utils.getCurrentTimeSeconds();
+
+    /* Keep track of the latest module states for other subsystems to use */
+    private SwerveModuleState[] latestModuleStates = new SwerveModuleState[4];
 
     /* Mechanisms to represent the swerve module states */
     private final Mechanism2d[] moduleMechanisms =
@@ -93,6 +98,18 @@ public class Telemetry {
                                         "Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
             };
 
+    public SwerveModuleState[] getModuleStates() {
+        SwerveModuleState[] states = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++) {
+            var state = latestModuleStates[i];
+            states[i] =
+                    new SwerveModuleState(
+                            state.speedMetersPerSecond,
+                            Rotation2d.fromRadians(state.angle.getRadians()));
+        }
+        return states;
+    }
+
     public void telemeterize(SwerveDriveState state) {
         Pose2d pose = state.Pose;
         fieldTypePub.set("Field2d");
@@ -122,5 +139,7 @@ public class Telemetry {
                 "odometry",
                 new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
         SignalLogger.writeDouble("odom period", state.OdometryPeriod, "seconds");
+
+        latestModuleStates = state.ModuleStates;
     }
 }
