@@ -102,6 +102,11 @@ public class CameraIOPhoton implements CameraIO {
             return false;
         }
 
+        // TODO: Figure out if a max distance cap is good or necessary
+        if (calculateAverageTagDistance(photonPose) > VisionConstants.maxTagDistance) {
+            return false;
+        }
+
         return true;
     }
 

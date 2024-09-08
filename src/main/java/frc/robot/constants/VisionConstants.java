@@ -27,6 +27,9 @@ public final class VisionConstants {
     public static final double skewCutoffDistance = 5.8;
     public static final double skewCutoffRotation = Units.degreesToRadians(50);
 
+    // Maximum average tag distance before a measurement is fully ignored
+    public static final double maxTagDistance = 8.0;
+
     public static final Matrix<N3, N1> teleopCameraUncertainty = VecBuilder.fill(0.35, 0.35, 3.5);
 
     public static final Matrix<N3, N1> lowCameraUncertainty = VecBuilder.fill(0.6, 1.0, 4);
@@ -40,8 +43,8 @@ public final class VisionConstants {
                     new CameraParams(
                             "Front-Left",
                             1280,
-                            800,
-                            16,
+                            960,
+                            50,
                             Rotation2d.fromDegrees(70),
                             new Transform3d(
                                     new Translation3d(0.306, 0.259, 0.211),
@@ -50,8 +53,8 @@ public final class VisionConstants {
                     new CameraParams(
                             "Front-Right",
                             1280,
-                            800,
-                            16,
+                            960,
+                            50,
                             Rotation2d.fromDegrees(70),
                             new Transform3d(
                                     new Translation3d(0.312, -0.304, 0.217),
@@ -60,8 +63,8 @@ public final class VisionConstants {
                     new CameraParams(
                             "Front-Center",
                             1280,
-                            800,
-                            16,
+                            960,
+                            50,
                             Rotation2d.fromDegrees(70),
                             new Transform3d(
                                     new Translation3d(0.312, -0.237, 0.233),

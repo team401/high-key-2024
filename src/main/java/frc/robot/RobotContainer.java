@@ -50,6 +50,12 @@ public class RobotContainer {
                                         VisionConstants.cameras, logger::getModuleStates));
             }
         }
+
+        if (FeatureFlags.runVision && Robot.isReal()
+                || FeatureFlags.simulateVision && !Robot.isReal()) {
+            tagVision.setCameraConsumer(
+                    (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
+        }
     }
 
     public Command getAutonomousCommand() {
