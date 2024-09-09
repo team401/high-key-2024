@@ -1,11 +1,13 @@
 {
   "NTProvider": {
     "types": {
+      "/AdvantageKit/RealOutputs/scoring/mechanism2d": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
+<<<<<<< HEAD
       "/SmartDashboard/Module 3": "Mechanism2d",
 <<<<<<< HEAD
       "/SmartDashboard/PhotonSimField": "Field2d",
@@ -13,6 +15,9 @@
 =======
       "/AdvantageKit/RealOutputs/scoring/mechanism2d": "Mechanism2d"
 >>>>>>> f28f4d7 (kind of working i guess??? not fully tested since a bunch of stuff hasn't been included yet:)
+=======
+      "/SmartDashboard/Module 3": "Mechanism2d"
+>>>>>>> 5ca656a (saving for computer restart)
     }
   },
   "NetworkTables": {
@@ -32,7 +37,14 @@
     }
   },
   "NetworkTables Info": {
+<<<<<<< HEAD
     "Connections": {
+=======
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+>>>>>>> 5ca656a (saving for computer restart)
       "open": true
     },
     "visible": true
