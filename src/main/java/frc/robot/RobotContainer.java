@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
+import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
 import frc.robot.subsystems.drive.commands.DriveWithJoysticks;
 
 public class RobotContainer {
@@ -31,9 +32,28 @@ public class RobotContainer {
 
         if (DriverStation.isTest()) {
             // SYS ID
+
+            /* Bindings for switching routines */
+            /* DPad up = Translation; DPad down = Rotation; DPad right = Steer */
+
+            masher.povDown()
+                    .onTrue(
+                            Commands.runOnce(
+                                    () -> drive.setSysIdRoutine(SysIdRoutineType.Rotation), drive));
+            masher.povRight()
+                    .onTrue(
+                            Commands.runOnce(
+                                    () -> drive.setSysIdRoutine(SysIdRoutineType.Steer), drive));
+            masher.povUp()
+                    .onTrue(
+                            Commands.runOnce(
+                                    () -> drive.setSysIdRoutine(SysIdRoutineType.Translation),
+                                    drive));
+
             /* Bindings for drivetrain characterization */
             /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
             /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
+
             masher.back().and(masher.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
             masher.back().and(masher.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
             masher.start().and(masher.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));

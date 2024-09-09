@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.PhoenixDriveConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     public enum SysIdRoutineType {
@@ -196,12 +197,15 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         switch (routineType) {
             case Translation:
                 routineToApply = SysIdRoutineTranslation;
+                Logger.recordOutput("Sys Id Routine Type", "Translation");
                 break;
             case Steer:
                 routineToApply = SysIdRoutineSteer;
+                Logger.recordOutput("Sys Id Routine Type", "Steer");
                 break;
             case Rotation:
                 routineToApply = SysIdRoutineRotation;
+                Logger.recordOutput("Sys Id Routine Type", "Rotation");
                 break;
             default:
                 return;
