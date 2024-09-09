@@ -55,7 +55,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     private final SwerveRequest.SysIdSwerveSteerGains SteerCharacterization =
             new SwerveRequest.SysIdSwerveSteerGains();
 
-    /* Use one of these sysidroutines for your particular test */
     private SysIdRoutine SysIdRoutineTranslation =
             new SysIdRoutine(
                     new SysIdRoutine.Config(
@@ -212,10 +211,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         }
     }
 
-    /*
-     * Both the sysid commands are specific to one particular sysid routine, change
-     * which one you're trying to characterize
-     */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return routineToApply.quasistatic(direction);
     }
