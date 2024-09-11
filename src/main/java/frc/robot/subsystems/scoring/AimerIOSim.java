@@ -17,11 +17,11 @@ public class AimerIOSim implements AimerIO {
                     DCMotor.getKrakenX60(1),
                     80,
                     SingleJointedArmSim.estimateMOI(0.3872, 8.61),
-                    0.4,
+                    0.3872,
                     0.0,
-                    ScoringConstants.aimMaxAngleRadians+Math.PI/2,
+                    2*Math.PI,
                     true,
-                    0.0);
+                    3/2*Math.PI);
     private final PIDController controller =
             new PIDController(
                     ScoringConstants.aimerkP, ScoringConstants.aimerkI, ScoringConstants.aimerkD);

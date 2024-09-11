@@ -44,6 +44,7 @@ public class Constants {
 
         //TODO: Find real values
         public static final int indexerSensorPort = 0;
+        public static final int uptakeSensorPort = 0;
     }
     
 public static final class ScoringConstants {
@@ -110,8 +111,8 @@ public static final class ScoringConstants {
         public static final double hoodHomeAmps = 40.0; // TODO: Find this
         public static final double hoodHomeAngleRad = Math.PI - 0.23;
 
-        public static final double aimMaxAngleRadians = 1.65; // Math.PI / 2
-        public static final double aimMinAngleRadians = -0.03;
+        public static final double aimMaxAngleRadians = 2*Math.PI; // Math.PI / 2
+        public static final double aimMinAngleRadians = Math.PI;
 
         public static final double maxAimIntake = 0.0;
         public static final double minAimIntake = 0.0;
@@ -129,21 +130,21 @@ public static final class ScoringConstants {
         // Value - Aimer angle in radians
         public static HashMap<Double, Double> getAimerMap() {
             HashMap<Double, Double> map = new HashMap<Double, Double>();
-            map.put(0.0, 0.8);
-            map.put(1.45, 0.8);
-            map.put(1.98, 0.62);
-            map.put(2.41, 0.53);
-            map.put(3.02, 0.45);
-            map.put(3.22, 0.45);
-            map.put(3.9, 0.36);
-            map.put(4.55, 0.35);
-            map.put(4.95, 0.32);
-            map.put(5.15, 0.295);
-            map.put(5.35, 0.295);
-            map.put(5.5, 0.295);
-            map.put(5.64, 0.29);
+            map.put(0.0, 2*Math.PI-0.8);
+            map.put(1.45, 2*Math.PI-0.8);
+            map.put(1.98, 2*Math.PI-0.62);
+            map.put(2.41, 2*Math.PI-0.53);
+            map.put(3.02, 2*Math.PI-0.45);
+            map.put(3.22, 2*Math.PI-0.45);
+            map.put(3.9, 2*Math.PI-0.36);
+            map.put(4.55, 2*Math.PI-0.35);
+            map.put(4.95, 2*Math.PI-0.32);
+            map.put(5.15, 2*Math.PI-0.295);
+            map.put(5.35, 2*Math.PI-0.295);
+            map.put(5.5, 2*Math.PI-0.295);
+            map.put(5.64, 2*Math.PI-0.29);
             // map.put(5.82, 0.275);
-            map.put(6.0, 0.29);
+            map.put(6.0, 2*Math.PI-0.29);
 
             return map;
         }

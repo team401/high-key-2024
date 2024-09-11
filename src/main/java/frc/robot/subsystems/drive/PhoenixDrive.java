@@ -95,6 +95,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     /* Change this to the sysid routine you want to test */
     private SysIdRoutine routineToApply = SysIdRoutineTranslation;
 
+    private AlignTarget alignTarget = AlignTarget.NONE;
+
     public PhoenixDrive(
             SwerveDrivetrainConstants driveConstants,
             double odometryUpdateFrequency,
