@@ -1,0 +1,100 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.441414260288271,
+        "y": 5.463073824179848
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.4987833875488867,
+        "y": 6.1826722580099895
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.703009338040144,
+        "y": 6.212043622656119
+      },
+      "prevControl": {
+        "x": 3.320378639784465,
+        "y": 6.135517483004984
+      },
+      "nextControl": {
+        "x": 4.070151396116747,
+        "y": 6.285472034271439
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.4,
+        "y": 7.4
+      },
+      "prevControl": {
+        "x": 5.741891499525398,
+        "y": 6.709772930815987
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Override Shoot",
+      "waypointRelativePos": 0.25,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Override Shoot"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Un-Override Shoot",
+      "waypointRelativePos": 0.45,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Un-Override Shoot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 12.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -167.5675236059489,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": null,
+  "useDefaultConstraints": true
+}
