@@ -38,12 +38,10 @@ public class RobotContainer {
         // TODO: Potentially migrate to Constants.mode
         if (Robot.isReal()) {
             if (FeatureFlags.runVision) {
-                // TODO: Real robot vision
                 tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
             }
         } else {
             if (FeatureFlags.simulateVision) {
-                // TODO: Simulate robot vision
                 tagVision =
                         new VisionLocalizer(
                                 new CameraContainerSim(
