@@ -35,6 +35,7 @@ import frc.robot.Constants.ScoringConstants;
 import frc.robot.commands.ShootWithGamepad;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeRoboRio;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.IntakeAction;
 import frc.robot.subsystems.scoring.AimerIO;
@@ -51,7 +52,6 @@ public class RobotContainer {
     PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
     Telemetry logger = new Telemetry(6);
 
-    //ScoringSubsystem scoringSubsystem;
     ScoringSubsystem scoringSubsystem;
     IntakeSubsystem intakeSubsystem;
 
@@ -99,7 +99,98 @@ public class RobotContainer {
             masher.start().and(masher.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
             masher.start().and(masher.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
         }
-    }
+    
+        if (true) {
+            masher.b()
+                .onTrue(new InstantCommand(
+                        () -> intakeSubsystem.run(IntakeAction.INTAKE)))
+                .onFalse(new InstantCommand(
+                    () -> intakeSubsystem.run(IntakeAction.NONE)));
+
+            masher.a()
+                .onTrue(new InstantCommand(
+                    () -> intakeSubsystem.run(IntakeAction.REVERSE)))
+                .onFalse(new InstantCommand(
+                    () -> intakeSubsystem.run(IntakeAction.NONE)));
+
+            // HACK: This button was added during DCMP to un-jam the intake. Ideally, this functionality should be implemented through a state machine.
+            masher.x()
+                .onTrue(new SequentialCommandGroup(new InstantCommand(
+                        () -> intakeSubsystem.run(IntakeAction.REVERSE)),
+                    Commands.waitSeconds(0.1),
+                    new InstantCommand(
+                        () -> intakeSubsystem.run(IntakeAction.INTAKE)),
+                    Commands.waitSeconds(0.5),
+                    new InstantCommand(
+                        () -> intakeSubsystem.run(IntakeAction.NONE))))
+                .onFalse(new InstantCommand(
+                    () -> intakeSubsystem.run(IntakeAction.NONE)));
+            
+        }
+
+        if (true) {
+        
+            scoringSubsystem.setDefaultCommand(new ShootWithGamepad(
+                () -> rightJoystick.getHID().getRawButton(4),
+                masher.getHID()::getRightBumper,
+                masher.getHID()::getYButton,
+                () -> masher.getRightTriggerAxis() > 0.5,
+                masher.getHID()::getAButton,
+                masher.getHID()::getBButton, scoringSubsystem,
+                () -> drive.getAlignTarget()));
+                //FeatureFlags.runDrive ? drivetrain::getAlignTarget : () -> AlignTarget.NONE));
+
+            rightJoystick.button(11).onTrue(new InstantCommand(() -> scoringSubsystem.setArmDisabled(true)));
+            rightJoystick.button(16).onTrue(new InstantCommand(() -> scoringSubsystem.setArmDisabled(false)));
+
+            rightJoystick.button(12).onTrue(new InstantCommand(
+                () -> {
+                    scoringSubsystem.setAction(ScoringAction.OVERRIDE);
+                    scoringSubsystem.setVolts(3, 0);
+                }, scoringSubsystem));
+
+            rightJoystick.button(15).onTrue(new InstantCommand(
+                () -> {
+                    scoringSubsystem.setAction(ScoringAction.OVERRIDE);
+                    scoringSubsystem.setVolts(-3, 0);
+                }, scoringSubsystem));
+
+
+            masher.povUp()
+                .onTrue(new InstantCommand(
+                    () -> drive.setAlignTarget(AlignTarget.SPEAKER)));
+
+            masher.povRight()
+                .onTrue(new InstantCommand(
+                    () -> drive.setAlignTarget(AlignTarget.AMP)));
+
+            masher.povLeft()
+                .onTrue(new InstantCommand(
+                    () -> drive.setAlignTarget(AlignTarget.SOURCE)));
+
+            masher.povDown()
+                .onTrue(new InstantCommand(
+                    () -> drive.setAlignTarget(AlignTarget.ENDGAME)));
+            
+            rightJoystick.povUp()
+                .onTrue(new InstantCommand(
+                    () -> drive.setAlignTarget(AlignTarget.UP)));
+
+            rightJoystick.povDown()
+                .onTrue(new InstantCommand(
+                    () -> drive.setAlignTarget(AlignTarget.DOWN)));
+          
+            rightJoystick.povLeft()
+                .onTrue(new InstantCommand(
+                    () -> drive.setAlignTarget(AlignTarget.LEFT)));
+
+            rightJoystick.povRight()
+                .onTrue(new InstantCommand(
+                    () -> drive.setAlignTarget(AlignTarget.RIGHT)));
+        }
+
+    
+    } // spotless:on
 
     private void configureSubsystems() {
         // TODO: Potentially migrate to Constants.mode
@@ -121,6 +212,19 @@ public class RobotContainer {
             tagVision.setCameraConsumer(
                     (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
         }
+        if (Constants.currentMode == Mode.REAL) {
+            scoringSubsystem = new ScoringSubsystem(new ShooterIORoboRio(), new AimerIORoboRio());
+            intakeSubsystem = new IntakeSubsystem(new IntakeRoboRio());
+        } else if (Constants.currentMode == Mode.SIM) {
+            scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
+            intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+        }
+    }
+
+
+    public void enabledInit() {
+        intakeSubsystem.run(IntakeAction.NONE);
+        scoringSubsystem.setAction(ScoringAction.INTAKE);
     }
 
     public Command getAutonomousCommand() {

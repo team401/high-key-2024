@@ -107,8 +107,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         this.shooterIo = shooterIo;
         this.aimerIo = aimerIo;
 
-        //System.out.println("scoringsubsystem");
-
         shooterInterpolated = new InterpolateDouble(ScoringConstants.getShooterMap());
 
         aimerInterpolated =
@@ -453,7 +451,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     @Override
     public void periodic() {
-        //System.out.println("scoringsubsystemperiodic");
 
         if (!SmartDashboard.containsKey("Aimer Offset")) {
             SmartDashboard.putNumber("Aimer Offset", ScoringConstants.aimerStaticOffset);

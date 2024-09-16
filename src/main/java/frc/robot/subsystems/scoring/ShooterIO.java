@@ -2,6 +2,8 @@ package frc.robot.subsystems.scoring;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import frc.robot.subsystems.scoring.AimerIO.AimerIOInputs;
+
 public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {
@@ -24,6 +26,8 @@ public interface ShooterIO {
     }
 
     public default void updateInputs(ShooterIOInputs inputs) {}
+
+    public default void applyOutputs(ShooterIOInputs inputs) {}
 
     public default void setShooterVelocityRPM(double velocity) {}
 

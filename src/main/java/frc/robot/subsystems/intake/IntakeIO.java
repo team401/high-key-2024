@@ -1,6 +1,8 @@
 package frc.robot.subsystems.intake;
 import org.littletonrobotics.junction.AutoLog;
 
+import frc.robot.subsystems.scoring.AimerIO.AimerIOInputs;
+
 public interface IntakeIO {
 
     @AutoLog
@@ -21,6 +23,8 @@ public interface IntakeIO {
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {}
+
+    public default void applyOutputs(IntakeIOInputs inputs) {}
 
     public default void setIntakeVoltage(double volts) {}
 
