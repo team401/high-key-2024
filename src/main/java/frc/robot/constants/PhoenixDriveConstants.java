@@ -9,7 +9,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.drive.PhoenixDrive;
 
 public final class PhoenixDriveConstants {
     // Both sets of gains need to be tuned to your individual robot.
@@ -74,7 +73,7 @@ public final class PhoenixDriveConstants {
     private static final double kSteerFrictionVoltage = 0.25;
     private static final double kDriveFrictionVoltage = 0.25;
 
-    private static final SwerveDrivetrainConstants DrivetrainConstants =
+    public static final SwerveDrivetrainConstants DrivetrainConstants =
             new SwerveDrivetrainConstants().withPigeon2Id(kPigeonId).withCANbusName(kCANbusName);
 
     private static final SwerveModuleConstantsFactory ConstantCreator =
@@ -138,7 +137,7 @@ public final class PhoenixDriveConstants {
     public static final double kModuleRadiusMeters =
             Units.inchesToMeters(Math.hypot(kFrontLeftXPosInches, kFrontLeftYPosInches));
 
-    private static final SwerveModuleConstants FrontLeft =
+    public static final SwerveModuleConstants FrontLeft =
             ConstantCreator.createModuleConstants(
                     kFrontLeftSteerMotorId,
                     kFrontLeftDriveMotorId,
@@ -147,7 +146,7 @@ public final class PhoenixDriveConstants {
                     Units.inchesToMeters(kFrontLeftXPosInches),
                     Units.inchesToMeters(kFrontLeftYPosInches),
                     kInvertLeftSide);
-    private static final SwerveModuleConstants FrontRight =
+    public static final SwerveModuleConstants FrontRight =
             ConstantCreator.createModuleConstants(
                     kFrontRightSteerMotorId,
                     kFrontRightDriveMotorId,
@@ -156,7 +155,7 @@ public final class PhoenixDriveConstants {
                     Units.inchesToMeters(kFrontRightXPosInches),
                     Units.inchesToMeters(kFrontRightYPosInches),
                     kInvertRightSide);
-    private static final SwerveModuleConstants BackLeft =
+    public static final SwerveModuleConstants BackLeft =
             ConstantCreator.createModuleConstants(
                     kBackLeftSteerMotorId,
                     kBackLeftDriveMotorId,
@@ -165,7 +164,7 @@ public final class PhoenixDriveConstants {
                     Units.inchesToMeters(kBackLeftXPosInches),
                     Units.inchesToMeters(kBackLeftYPosInches),
                     kInvertLeftSide);
-    private static final SwerveModuleConstants BackRight =
+    public static final SwerveModuleConstants BackRight =
             ConstantCreator.createModuleConstants(
                     kBackRightSteerMotorId,
                     kBackRightDriveMotorId,
@@ -181,7 +180,4 @@ public final class PhoenixDriveConstants {
                     new Translation2d(FrontLeft.LocationX, FrontRight.LocationY),
                     new Translation2d(BackLeft.LocationX, BackLeft.LocationY),
                     new Translation2d(BackRight.LocationX, BackRight.LocationY));
-
-    public static final PhoenixDrive DriveTrain =
-            new PhoenixDrive(DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight);
 }

@@ -33,8 +33,9 @@ import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
 
 public class RobotContainer {
-    PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
-    Telemetry logger = new Telemetry(6);
+    PhoenixDrive drive;
+
+    Telemetry logger;
 
     ScoringSubsystem scoringSubsystem;
     IntakeSubsystem intakeSubsystem;
@@ -51,37 +52,52 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        drive.registerTelemetry(logger::telemeterize);
-        drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
-
+        if (drive != null) {
+            drive.registerTelemetry(logger::telemeterize);
+            drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
+        }
         if (DriverStation.isTest()) {
             // SYS ID
+            if (drive != null) {
+                // NOTE: These if-statements are nested because other subsystems will go here too
 
-            /* Bindings for switching routines */
-            /* DPad up = Translation; DPad down = Rotation; DPad right = Steer */
+                /* Bindings for switching routines */
+                /* DPad up = Translation; DPad down = Rotation; DPad right = Steer */
 
-            masher.povDown()
-                    .onTrue(
-                            Commands.runOnce(
-                                    () -> drive.setSysIdRoutine(SysIdRoutineType.Rotation), drive));
-            masher.povRight()
-                    .onTrue(
-                            Commands.runOnce(
-                                    () -> drive.setSysIdRoutine(SysIdRoutineType.Steer), drive));
-            masher.povUp()
-                    .onTrue(
-                            Commands.runOnce(
-                                    () -> drive.setSysIdRoutine(SysIdRoutineType.Translation),
-                                    drive));
+                masher.povDown()
+                        .onTrue(
+                                Commands.runOnce(
+                                        () -> drive.setSysIdRoutine(SysIdRoutineType.Rotation),
+                                        drive));
+                masher.povRight()
+                        .onTrue(
+                                Commands.runOnce(
+                                        () -> drive.setSysIdRoutine(SysIdRoutineType.Steer),
+                                        drive));
+                masher.povUp()
+                        .onTrue(
+                                Commands.runOnce(
+                                        () -> drive.setSysIdRoutine(SysIdRoutineType.Translation),
+                                        drive));
 
-            /* Bindings for drivetrain characterization */
-            /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
-            /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
+                /* Bindings for drivetrain characterization */
+                /*
+                 * These bindings require multiple buttons pushed to swap between quastatic and
+                 * dynamic
+                 */
+                /*
+                 * Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction
+                 */
 
-            masher.back().and(masher.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
-            masher.back().and(masher.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
-            masher.start().and(masher.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
-            masher.start().and(masher.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+                masher.back().and(masher.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
+                masher.back().and(masher.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
+                masher.start()
+                        .and(masher.y())
+                        .whileTrue(drive.sysIdQuasistatic(Direction.kForward));
+                masher.start()
+                        .and(masher.x())
+                        .whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+            }
         }
 
         if (Constants.FeatureFlags.runIntake) {
@@ -186,20 +202,48 @@ public class RobotContainer {
     private void configureSubsystems() {
         // TODO: Potentially migrate to Constants.mode
         if (Robot.isReal()) {
+            if (FeatureFlags.runDrive) {
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
+                logger = new Telemetry(6);
+            }
             if (FeatureFlags.runVision) {
                 tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
             }
+
         } else {
+            if (FeatureFlags.simulateDrive) {
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
+
+                logger = new Telemetry(6);
+            }
             if (FeatureFlags.simulateVision) {
-                tagVision =
-                        new VisionLocalizer(
-                                new CameraContainerSim(
-                                        VisionConstants.cameras, logger::getModuleStates));
+                if (logger != null) {
+                    tagVision =
+                            new VisionLocalizer(
+                                    new CameraContainerSim(
+                                            VisionConstants.cameras, logger::getModuleStates));
+                } else {
+                    // TODO: Maybe try to spoof vision sim without drive telemetry by giving it all
+                    // zeros
+                    throw new NullPointerException("Vision simulation depends on drive!");
+                }
             }
         }
 
-        if (FeatureFlags.runVision && Robot.isReal()
-                || FeatureFlags.simulateVision && !Robot.isReal()) {
+        if (FeatureFlags.runDrive && FeatureFlags.runVision && Robot.isReal()
+                || FeatureFlags.simulateDrive && FeatureFlags.simulateVision && !Robot.isReal()) {
             tagVision.setCameraConsumer(
                     (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
         }
