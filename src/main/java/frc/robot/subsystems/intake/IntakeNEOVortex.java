@@ -9,8 +9,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.SensorConstants;
+import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.Constants.SensorConstants;
 
 public class IntakeNEOVortex implements IntakeIO {
 

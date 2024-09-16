@@ -2,7 +2,8 @@ package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.constants.IntakeConstants;
+
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 

@@ -24,10 +24,15 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.AlignTarget;
 import frc.robot.constants.PhoenixDriveConstants;
 import org.littletonrobotics.junction.Logger;
+=======
+import frc.robot.constants.PhoenixDriveConstants;
+import frc.robot.constants.Constants.AlignTarget;
+>>>>>>> 1b613ee (adding constants, pausing to rebase)
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     public enum SysIdRoutineType {

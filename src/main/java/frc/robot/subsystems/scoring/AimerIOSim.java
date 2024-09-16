@@ -8,8 +8,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.Constants;
-import frc.robot.Constants.ScoringConstants;
+import frc.robot.constants.Constants;
+import frc.robot.constants.ScoringConstants;
 
 public class AimerIOSim implements AimerIO {
     private final SingleJointedArmSim sim =

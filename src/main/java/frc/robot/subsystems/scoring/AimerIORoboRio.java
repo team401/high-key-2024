@@ -16,7 +16,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants.ScoringConstants;
+import frc.robot.constants.ScoringConstants;
+
 import org.littletonrobotics.junction.Logger;
 
 public class AimerIORoboRio implements AimerIO {

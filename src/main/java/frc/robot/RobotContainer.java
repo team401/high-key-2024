@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.PhoenixDriveConstants;
@@ -31,6 +32,14 @@ import frc.robot.subsystems.localization.VisionLocalizer;
 import frc.robot.Constants.AlignTarget;
 import frc.robot.Constants.FeatureFlags;
 import frc.robot.Constants.Mode;
+=======
+import frc.robot.constants.Constants;
+import frc.robot.constants.PhoenixDriveConstants;
+import frc.robot.constants.Constants.AlignTarget;
+import frc.robot.constants.Constants.FeatureFlags;
+import frc.robot.constants.Constants.Mode;
+import frc.robot.subsystems.drive.PhoenixDrive;
+>>>>>>> 1b613ee (adding constants, pausing to rebase)
 import frc.robot.commands.ShootWithGamepad;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeNEOVortex;
