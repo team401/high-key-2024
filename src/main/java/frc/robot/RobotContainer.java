@@ -29,24 +29,19 @@ import frc.robot.subsystems.localization.CameraContainerReal;
 import frc.robot.subsystems.localization.CameraContainerSim;
 import frc.robot.subsystems.localization.VisionLocalizer;
 import frc.robot.Constants.AlignTarget;
-import frc.robot.Constants.ConversionConstants;
+import frc.robot.Constants.FeatureFlags;
 import frc.robot.Constants.Mode;
-import frc.robot.Constants.ScoringConstants;
 import frc.robot.commands.ShootWithGamepad;
-import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeRoboRio;
+import frc.robot.subsystems.intake.IntakeNEOVortex;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.IntakeAction;
-import frc.robot.subsystems.scoring.AimerIO;
 import frc.robot.subsystems.scoring.AimerIORoboRio;
 import frc.robot.subsystems.scoring.AimerIOSim;
 import frc.robot.subsystems.scoring.ScoringSubsystem;
-import frc.robot.subsystems.scoring.ShooterIO;
-import frc.robot.subsystems.scoring.ShooterIORoboRio;
+import frc.robot.subsystems.scoring.ShooterIOTalonFX;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RobotContainer {
     PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
@@ -128,7 +123,7 @@ public class RobotContainer {
             
         }
 
-        if (true) {
+        if (FeatureFlags.runScoring) {
         
             scoringSubsystem.setDefaultCommand(new ShootWithGamepad(
                 () -> rightJoystick.getHID().getRawButton(4),
@@ -156,7 +151,11 @@ public class RobotContainer {
                 }, scoringSubsystem));
 
 
-            masher.povUp()
+            masher.povUp();
+        
+            }
+        if (FeatureFlags.runDrive) {
+            controller.povUp()
                 .onTrue(new InstantCommand(
                     () -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 

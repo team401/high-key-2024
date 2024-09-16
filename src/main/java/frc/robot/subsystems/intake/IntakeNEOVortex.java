@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SensorConstants;
 
-public class IntakeRoboRio implements IntakeIO {
+public class IntakeNEOVortex implements IntakeIO {
 
     private TalonFX leftIntake =
             new TalonFX(IntakeConstants.leftIntakeMotorID);
@@ -23,7 +23,9 @@ public class IntakeRoboRio implements IntakeIO {
 
     DigitalInput bannerSensor = new DigitalInput(SensorConstants.uptakeSensorPort);
 
-    public IntakeRoboRio() {
+    private double goalVoltsLeftIntake, goalVoltsRightIntake, goalVoltsBelt;
+
+    public IntakeNEOVortex() {
         TalonFXConfigurator leftIntakeConfig = leftIntake.getConfigurator();
         leftIntakeConfig.apply(
                 new CurrentLimitsConfigs()
@@ -51,12 +53,15 @@ public class IntakeRoboRio implements IntakeIO {
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
+        inputs.leftIntakeGoalVoltage = goalVoltsLeftIntake;
         inputs.leftIntakeVoltage = leftIntake.getMotorVoltage().getValueAsDouble();
         inputs.leftIntakeStatorCurrent = leftIntake.getStatorCurrent().getValueAsDouble();
 
+        inputs.rightIntakeGoalVoltage = goalVoltsRightIntake;
         inputs.rightIntakeVoltage = rightIntake.getMotorVoltage().getValueAsDouble();
         inputs.rightIntakeStatorCurrent = rightIntake.getStatorCurrent().getValueAsDouble();
 
+        inputs.beltGoalVoltage = goalVoltsBelt;
         inputs.beltVoltage = belt.getMotorVoltage().getValueAsDouble();
         inputs.beltStatorCurrent = belt.getStatorCurrent().getValueAsDouble();
         inputs.beltSupplyCurrent = belt.getSupplyCurrent().getValueAsDouble();
@@ -65,13 +70,22 @@ public class IntakeRoboRio implements IntakeIO {
     }
 
     @Override
+    public void applyOutputs(IntakeIOInputs inputs) {
+        leftIntake.set(inputs.leftIntakeGoalVoltage);
+        rightIntake.set(inputs.rightIntakeGoalVoltage);
+        belt.setControl(new VoltageOut(inputs.beltGoalVoltage));
+    }
+    
+    @Override
     public void setIntakeVoltage(double volts) {
-        leftIntake.set(volts / 12);
-        rightIntake.set(volts / 12);
+        goalVoltsRightIntake = volts / 12;
+        goalVoltsLeftIntake = volts / 12;
     }
 
     @Override
     public void setBeltVoltage(double volts) {
-        belt.setControl(new VoltageOut(volts));
+        goalVoltsBelt = volts;
     }
+
+
 }

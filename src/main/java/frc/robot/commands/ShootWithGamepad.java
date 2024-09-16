@@ -52,29 +52,8 @@ public class ShootWithGamepad extends Command {
             return;
         }
 
-        if (warmup.getAsBoolean()) {
-            switch (getDriveMode.get()) {
-                case NONE:
-                    scoring.setAction(ScoringAction.WAIT);
-                    break;
-                case SPEAKER:
-                    scoring.setAction(ScoringAction.AIM);
-                    break;
-                case AMP:
-                    scoring.setAction(ScoringAction.AMP_AIM);
-                    break;
-                case SOURCE:
-                    scoring.setAction(ScoringAction.SOURCE_INTAKE);
-                    break;
-                case ENDGAME:
-                    scoring.setAction(ScoringAction.ENDGAME);
-                    break;
-            }
-
-            /*
-             * If the scorer is commanded to shoot from a non-shootable state, it will start trying to
-             * shoot at the speaker. We want the shoot button to do nothing in an un-shootable state.
-             */
+        if (driverShoot.getAsBoolean() || masherShoot.getAsBoolean()) {
+            warmupSwitch();
             if (getDriveMode.get() != AlignTarget.SOURCE
                     && getDriveMode.get() != AlignTarget.NONE) {
                 boolean force = masherForceShoot.getAsBoolean();
@@ -84,12 +63,36 @@ public class ShootWithGamepad extends Command {
                     scoring.setAction(ScoringAction.SHOOT);
                 }
             }
+        } else if (masherForceShoot.getAsBoolean()) {
+            scoring.setAction(ScoringAction.SHOOT);
+        } else if (warmup.getAsBoolean()) {
+            warmupSwitch();
         } else if (reverseIntake.getAsBoolean()) {
             scoring.setAction(ScoringAction.SPIT);
         } else if (intake.getAsBoolean()) {
             scoring.setAction(ScoringAction.INTAKE);
         } else {
             scoring.setAction(ScoringAction.WAIT);
+        }
+    }
+
+    public void warmupSwitch() {
+        switch (getDriveMode.get()) {
+            case NONE:
+                scoring.setAction(ScoringAction.WAIT);
+                break;
+            case SPEAKER:
+                scoring.setAction(ScoringAction.AIM);
+                break;
+            case AMP:
+                scoring.setAction(ScoringAction.AMP_AIM);
+                break;
+            case SOURCE:
+                scoring.setAction(ScoringAction.SOURCE_INTAKE);
+                break;
+            case ENDGAME:
+                scoring.setAction(ScoringAction.ENDGAME);
+                break;
         }
     }
 }

@@ -92,9 +92,6 @@ public class ShooterIOSim implements ShooterIO {
                                             * ConversionConstants.kRPMToRadiansPerSecond);
         }
 
-        shooterLeftSim.setInputVoltage(shooterLeftAppliedVolts);
-        shooterRightSim.setInputVoltage(shooterRightAppliedVolts);
-
         inputs.shooterLeftVelocityRPM =
                 shooterLeftSim.getAngularVelocityRadPerSec()
                         * ConversionConstants.kRadiansPerSecondToRPM;
@@ -113,6 +110,12 @@ public class ShooterIOSim implements ShooterIO {
         inputs.kickerStatorCurrentAmps = 0.0;
 
         inputs.bannerSensor = false;
+    }
+
+    @Override 
+    public void applyOutputs(ShooterIOInputs inputs) {
+        shooterLeftSim.setInputVoltage(inputs.shooterLeftAppliedVolts);
+        shooterRightSim.setInputVoltage(inputs.shooterRightAppliedVolts);
     }
 
     

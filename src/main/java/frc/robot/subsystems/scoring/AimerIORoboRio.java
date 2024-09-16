@@ -217,11 +217,6 @@ public class AimerIORoboRio implements AimerIO {
         }
 
         appliedVolts = MathUtil.clamp(appliedVolts, -12.0, 12.0);
-        if (!motorDisabled || override) {
-            aimerRight.setVoltage(appliedVolts);
-        } else {
-            aimerRight.setVoltage(0.0);
-        }
 
         Logger.recordOutput("Scoring/motorDisabled", motorDisabled);
 
@@ -245,4 +240,14 @@ public class AimerIORoboRio implements AimerIO {
         inputs.aimStatorCurrentAmps = aimerRight.getStatorCurrent().getValueAsDouble();
         inputs.aimSupplyCurrentAmps = aimerRight.getSupplyCurrent().getValueAsDouble();
     }
+
+    @Override
+    public void applyOutputs(AimerIOInputs inputs) {
+        if (!motorDisabled || override) {
+            aimerRight.setVoltage(inputs.aimAppliedVolts);
+        } else {
+            aimerRight.setVoltage(0.0);
+        }
+    }
+
 }

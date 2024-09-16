@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.Constants.ScoringConstants;
+import frc.robot.utils.FieldFinder;
+import frc.robot.utils.FieldFinder.FieldLocations;
 import coppercore.controls.Tunable;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -244,9 +246,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                 < ScoringConstants.aimAngleVelocityMargin;
         boolean driveReady = driveAllignedSupplier.get();
         boolean fieldLocationReady = true;
-
-        //TODO FIX
-        /*if (!DriverStation.getAlliance().isPresent()) {
+        
+        if (!DriverStation.getAlliance().isPresent()) {
             fieldLocationReady = true;
         } else {
             switch (DriverStation.getAlliance().get()) {
@@ -265,7 +266,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                             && DriverStation.isTeleop());
                     break;
             }
-        }*/
+        }
+
         boolean notePresent = overrideBeamBreak ? true : hasNote();
 
         boolean primeReady = shooterReady && aimReady && driveReady && fieldLocationReady;
@@ -420,26 +422,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         this.driveAllignedSupplier = driveAllignedSupplier;
     }
 
-    private boolean willHitStage() {
-        /*return (FieldFinder.willIHitThis(
-                        poseSupplier.get().getX(),
-                        poseSupplier.get().getY(),
-                        velocitySupplier.get().get(0, 0)
-                                * timeToPutAimDown.getValue(aimerInputs.aimAngleRad),
-                        velocitySupplier.get().get(1, 0)
-                                * timeToPutAimDown.getValue(aimerInputs.aimAngleRad),
-                        FieldLocations.BLUE_STAGE)
-                || FieldFinder.willIHitThis(
-                        poseSupplier.get().getX(),
-                        poseSupplier.get().getY(),
-                        velocitySupplier.get().get(0, 0)
-                                * timeToPutAimDown.getValue(aimerInputs.aimAngleRad),
-                        velocitySupplier.get().get(1, 0)
-                                * timeToPutAimDown.getValue(aimerInputs.aimAngleRad),
-                        FieldLocations.RED_STAGE));*/
-        //TODO CHANGE
-        return false;
-    }
 
     public void enabledInit() {
         aimerIo.resetPID();
@@ -469,8 +451,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                 && state != ScoringState.ENDGAME
                 && state != ScoringState.IDLE
                 // && Math.abs(elevatorPositionSupplier.getAsDouble()) < 0.2
-                && !overrideStageAvoidance
-                && willHitStage()) {
+                && !overrideStageAvoidance) {
             aimerIo.setAngleClampsRad(ScoringConstants.aimMinAngleRadians, 0);
         } else {
             double elevatorLimit =
@@ -497,8 +478,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         Logger.recordOutput("scoring/readyToShoot", readyToShoot);
         Logger.recordOutput("scoring/overrideShoot", overrideShoot);
         Logger.recordOutput("scoring/overrideStageAvoidance", overrideStageAvoidance);
-
-        Logger.recordOutput("aimer/willIHitStage", willHitStage());
 
         Logger.recordOutput("scoring/distance", findDistanceToGoal());
 
@@ -555,6 +534,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         shooterIo.updateInputs(shooterInputs);
         aimerIo.updateInputs(aimerInputs);
 
+        shooterIo.applyOutputs(shooterInputs);
+        aimerIo.applyOutputs(aimerInputs);
+        
         Logger.processInputs("scoring/shooter", shooterInputs);
         Logger.processInputs("scoring/aimer", aimerInputs);
     }

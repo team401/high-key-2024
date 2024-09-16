@@ -11,7 +11,7 @@ import frc.robot.Constants.ConversionConstants;
 import frc.robot.Constants.ScoringConstants;
 import frc.robot.Constants.SensorConstants;
 
-public class ShooterIORoboRio implements ShooterIO {
+public class ShooterIOTalonFX implements ShooterIO {
     private final TalonFX kicker = new TalonFX(ScoringConstants.kickerMotorId);
 
     private final TalonFX shooterLeft = new TalonFX(ScoringConstants.shooterLeftMotorId);
@@ -27,7 +27,7 @@ public class ShooterIORoboRio implements ShooterIO {
     double goalLeftVelocityRPM = 0.0;
     double goalRightVelocityRPM = 0.0;
 
-    public ShooterIORoboRio() {
+    public ShooterIOTalonFX() {
         kicker.setInverted(true);
 
         shooterLeft.setInverted(true);
@@ -71,17 +71,6 @@ public class ShooterIORoboRio implements ShooterIO {
         goalLeftVelocityRPM = velocity;
         goalRightVelocityRPM = velocity * ScoringConstants.shooterOffsetAdjustment;
 
-        if (velocity == 0.0) {
-            shooterLeft.setVoltage(0.0);
-            shooterRight.setVoltage(0.0);
-        } else {
-            shooterLeft.setControl(
-                    new VelocityDutyCycle(
-                            goalLeftVelocityRPM / ConversionConstants.kMinutesToSeconds));
-            shooterRight.setControl(
-                    new VelocityDutyCycle(
-                            goalRightVelocityRPM / ConversionConstants.kMinutesToSeconds));
-        }
     }
 
     @Override
@@ -146,5 +135,20 @@ public class ShooterIORoboRio implements ShooterIO {
         inputs.kickerStatorCurrentAmps = kicker.getStatorCurrent().getValueAsDouble();
 
         inputs.bannerSensor = !bannerSensor.get();
+    }
+
+    @Override
+    public void applyOutputs(ShooterIOInputs inputs) {
+        if (inputs.shooterLeftGoalVelocityRPM == 0.0) {
+            shooterLeft.setVoltage(0.0);
+            shooterRight.setVoltage(0.0);
+        } else {
+            shooterLeft.setControl(
+                    new VelocityDutyCycle(
+                            inputs.shooterLeftGoalVelocityRPM / ConversionConstants.kMinutesToSeconds));
+            shooterRight.setControl(
+                    new VelocityDutyCycle(
+                            inputs.shooterRightGoalVelocityRPM / ConversionConstants.kMinutesToSeconds));
+        }
     }
 }

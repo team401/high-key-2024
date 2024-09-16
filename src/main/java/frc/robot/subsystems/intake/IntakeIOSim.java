@@ -37,12 +37,16 @@ public class IntakeIOSim implements IntakeIO {
     @Override
     public void setIntakeVoltage(double volts) {
         intakeWheelsAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-        noteInIntakeWheels = true;
     }
 
     @Override
     public void setBeltVoltage(double volts) {
         beltAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-
     }
+
+    @Override
+    public void applyOutputs(IntakeIOInputs inputs) {
+        noteInIntakeWheels = true;
+    }
+    
 }

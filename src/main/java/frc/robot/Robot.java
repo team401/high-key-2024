@@ -38,6 +38,7 @@ public class Robot extends LoggedRobot {
         Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
         new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
     } else if (Constants.currentMode == Constants.Mode.SIM) {
+        setUseTiming(false);
         Logger.addDataReceiver(new WPILOGWriter("logs/")); // This folder is gitignored
         Logger.addDataReceiver(new NT4Publisher());
     } else {
@@ -53,7 +54,7 @@ public class Robot extends LoggedRobot {
         // new
         // log
     }
-    
+    Logger.start();
 }
 
     @Override
