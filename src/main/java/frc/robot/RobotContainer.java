@@ -1,45 +1,25 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import org.littletonrobotics.junction.Logger;
-
-import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
-import frc.robot.subsystems.drive.commands.DriveWithJoysticks;
+import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.subsystems.localization.CameraContainerReal;
 import frc.robot.subsystems.localization.CameraContainerSim;
 import frc.robot.subsystems.localization.VisionLocalizer;
-import frc.robot.Constants.AlignTarget;
-import frc.robot.Constants.FeatureFlags;
-import frc.robot.Constants.Mode;
-=======
-import frc.robot.constants.Constants;
-import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.constants.Constants.AlignTarget;
-import frc.robot.constants.Constants.FeatureFlags;
 import frc.robot.constants.Constants.Mode;
-import frc.robot.subsystems.drive.PhoenixDrive;
->>>>>>> 1b613ee (adding constants, pausing to rebase)
+import frc.robot.constants.Constants;
 import frc.robot.commands.ShootWithGamepad;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeNEOVortex;
@@ -132,7 +112,7 @@ public class RobotContainer {
             
         }
 
-        if (FeatureFlags.runScoring) {
+        if (Constants.FeatureFlags.runScoring) {
         
             scoringSubsystem.setDefaultCommand(new ShootWithGamepad(
                 () -> rightJoystick.getHID().getRawButton(4),
@@ -163,8 +143,8 @@ public class RobotContainer {
             masher.povUp();
         
             }
-        if (FeatureFlags.runDrive) {
-            controller.povUp()
+        if (Constants.FeatureFlags.runDrive) {
+            masher.povUp()
                 .onTrue(new InstantCommand(
                     () -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 
@@ -221,8 +201,8 @@ public class RobotContainer {
                     (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
         }
         if (Constants.currentMode == Mode.REAL) {
-            scoringSubsystem = new ScoringSubsystem(new ShooterIORoboRio(), new AimerIORoboRio());
-            intakeSubsystem = new IntakeSubsystem(new IntakeRoboRio());
+            scoringSubsystem = new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
+            intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
         } else if (Constants.currentMode == Mode.SIM) {
             scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
             intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
