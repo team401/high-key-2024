@@ -61,6 +61,7 @@ public class AimerIORoboRio implements AimerIO {
     double lastError = 0.0;
     double lastPosition = 0.0;
     double lastTime = Utils.getCurrentTimeSeconds();
+    double controlSetpoint = 0.0;
 
     boolean motorDisabled = false;
 
@@ -182,31 +183,10 @@ public class AimerIORoboRio implements AimerIO {
 
     @Override
     public void updateInputs(AimerIOInputs inputs) {
-        appliedVolts = 0.0;
-
-        State trapezoidSetpoint =
-                profile.calculate(
-                        timer.get(),
-                        new State(initialAngle, initialVelocity),
-                        new State(goalAngleRad, 0));
-
-        double controlSetpoint =
-                MathUtil.clamp(trapezoidSetpoint.position, minAngleClamp, maxAngleClamp);
-        double velocitySetpoint = trapezoidSetpoint.velocity;
 
         if (getEncoderPosition() == -1.75) {
             motorDisabled = true;
         }
-
-        if (override) {
-            appliedVolts = overrideVolts;
-        } else {
-            double controllerVolts = controller.calculate(getEncoderPosition(), controlSetpoint);
-            appliedVolts =
-                    feedforward.calculate(controlSetpoint, velocitySetpoint) + controllerVolts;
-        }
-
-        appliedVolts = MathUtil.clamp(appliedVolts, -12.0, 12.0);
 
         Logger.recordOutput("Scoring/motorDisabled", motorDisabled);
 
@@ -226,15 +206,36 @@ public class AimerIORoboRio implements AimerIO {
                 ((getEncoderPosition() - controlSetpoint) - lastError) / diffTime;
         lastError = getEncoderPosition() - controlSetpoint;
 
-        inputs.aimAppliedVolts = appliedVolts;
         inputs.aimStatorCurrentAmps = aimerRight.getStatorCurrent().getValueAsDouble();
         inputs.aimSupplyCurrentAmps = aimerRight.getSupplyCurrent().getValueAsDouble();
     }
 
     @Override
     public void applyOutputs(AimerIOInputs inputs) {
+
+        double appliedVolts = 0.0;
+
+        State trapezoidSetpoint =
+                profile.calculate(
+                        timer.get(),
+                        new State(initialAngle, initialVelocity),
+                        new State(goalAngleRad, 0));
+
+        controlSetpoint = MathUtil.clamp(trapezoidSetpoint.position, minAngleClamp, maxAngleClamp);
+        double velocitySetpoint = trapezoidSetpoint.velocity;
+
+        if (override) {
+            appliedVolts = overrideVolts;
+        } else {
+            double controllerVolts = controller.calculate(getEncoderPosition(), controlSetpoint);
+            appliedVolts =
+                    feedforward.calculate(controlSetpoint, velocitySetpoint) + controllerVolts;
+        }
+
+        appliedVolts = MathUtil.clamp(appliedVolts, -12.0, 12.0);
+
         if (!motorDisabled || override) {
-            aimerRight.setVoltage(inputs.aimAppliedVolts);
+            aimerRight.setVoltage(appliedVolts);
         } else {
             aimerRight.setVoltage(0.0);
         }

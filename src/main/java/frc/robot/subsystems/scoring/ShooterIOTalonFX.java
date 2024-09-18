@@ -109,10 +109,6 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        if (override) {
-            shooterLeft.setVoltage(overrideVolts);
-            shooterRight.setVoltage(overrideVolts);
-        }
 
         inputs.shooterLeftVelocityRPM =
                 shooterLeft.getVelocity().getValueAsDouble()
@@ -138,6 +134,12 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     @Override
     public void applyOutputs(ShooterIOInputs inputs) {
+        if (override) {
+            shooterLeft.setVoltage(overrideVolts);
+            shooterRight.setVoltage(overrideVolts);
+            return;
+        }
+
         if (inputs.shooterLeftGoalVelocityRPM == 0.0) {
             shooterLeft.setVoltage(0.0);
             shooterRight.setVoltage(0.0);
