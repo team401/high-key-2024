@@ -78,9 +78,6 @@ public class ShootWithGamepad extends Command {
 
     public void warmupSwitch() {
         switch (getDriveMode.get()) {
-            case NONE:
-                scoring.setAction(ScoringAction.WAIT);
-                break;
             case SPEAKER:
                 scoring.setAction(ScoringAction.AIM);
                 break;
@@ -92,6 +89,9 @@ public class ShootWithGamepad extends Command {
                 break;
             case ENDGAME:
                 scoring.setAction(ScoringAction.ENDGAME);
+                break;
+            default:
+                scoring.setAction(ScoringAction.WAIT);
                 break;
         }
     }

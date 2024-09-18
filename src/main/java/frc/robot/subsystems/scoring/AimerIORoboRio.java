@@ -72,21 +72,11 @@ public class AimerIORoboRio implements AimerIO {
 
         aimerRight.setInverted(false);
 
-        TalonFXConfigurator aimerLeftConfig = aimerLeft.getConfigurator();
-        aimerLeftConfig.apply(
-                new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(60)
-                        .withStatorCurrentLimitEnable(true));
-
-        TalonFXConfigurator aimerRightConfig = aimerRight.getConfigurator();
-        aimerRightConfig.apply(
-                new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(60)
-                        .withStatorCurrentLimitEnable(true));
+        setStatorCurrentLimit(ScoringConstants.aimerCurrentLimit);
 
         aimerRight.setPosition(0.0);
 
-        controller.setTolerance(0.015);
+        controller.setTolerance(ScoringConstants.aimAngleTolerance);
     }
 
     public void resetPID() {

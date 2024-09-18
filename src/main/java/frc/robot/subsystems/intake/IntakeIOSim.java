@@ -34,15 +34,12 @@ public class IntakeIOSim implements IntakeIO {
     @Override
     public void setIntakeVoltage(double volts) {
         intakeWheelsAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+        noteInIntakeWheels = true;
     }
 
+    // I believe there should be a belt, although I haven't seen the design team's current CAD
     @Override
     public void setBeltVoltage(double volts) {
         beltAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-    }
-
-    @Override
-    public void applyOutputs(IntakeIOInputs inputs) {
-        noteInIntakeWheels = true;
     }
 }

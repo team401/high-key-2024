@@ -21,18 +21,6 @@ public class ScoringConstants {
     public static final double shooterkV = 0.0095;
     public static final double shooterkA = 0.0;
 
-    public static final double hoodkP = 0.05;
-    public static final double hoodkI = 0.0;
-    public static final double hoodkD = 0.0;
-
-    public static final double hoodkS = 0.14; // 0.14
-    public static final double hoodkG = 0.41; // 0.41
-    public static final double hoodkV = 0.0;
-
-    public static final double hoodPositionTolerance = 0.01;
-
-    public static final double hoodEncoderToRad = 1.3 * (15.0 / 38.0) * (2.0 * Math.PI);
-
     public static final int aimLeftMotorId = 16;
     public static final int aimRightMotorId = 15;
 
@@ -41,7 +29,9 @@ public class ScoringConstants {
 
     public static final int kickerMotorId = 13;
 
-    public static final int hoodId = 17;
+    public static final double shooterCurrentLimit = 120;
+    public static final double kickerCurrentLimit = 120;
+    public static final double aimerCurrentLimit = 60;
 
     public static final int aimEncoderPort = 0;
     public static final double aimerEncoderOffset = 1.75 - 0.01; // 0.027
@@ -57,18 +47,15 @@ public class ScoringConstants {
     public static final double shooterUpperVelocityMarginRPM = 150;
     public static final double aimAngleMarginRadians = Units.degreesToRadians(1);
     public static final double aimAngleVelocityMargin = 2.0; // Units.degreesToRadians(5);
-    public static final double hoodAngleMarginRadians = Units.degreesToRadians(5);
 
     public static final double intakeAngleToleranceRadians = 0.2;
     // Math.PI / 2 - Units.degreesToRadians(40);
 
     public static final double shooterAmpVelocityRPM = 2000;
 
-    public static final double hoodHomeAmps = 40.0; // TODO: Find this
-    public static final double hoodHomeAngleRad = Math.PI - 0.23;
-
     public static final double aimMaxAngleRadians = 2 * Math.PI; // Math.PI / 2
     public static final double aimMinAngleRadians = Math.PI;
+    public static final double aimAngleTolerance = 0.015;
 
     public static final double maxAimIntake = 0.0;
     public static final double minAimIntake = 0.0;
@@ -77,9 +64,6 @@ public class ScoringConstants {
 
     public static final double maxElevatorPosition = 0.45;
     public static final double maxAimAngleElevatorLimit = Math.PI / 2;
-
-    public static final double hoodMaxVelocity = 0.5;
-    public static final double hoodMaxAcceleration = 0.5;
 
     // NOTE - This should be monotonically increasing
     // Key - Distance in meters

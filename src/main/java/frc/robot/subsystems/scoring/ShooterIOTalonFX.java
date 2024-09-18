@@ -39,19 +39,19 @@ public class ShooterIOTalonFX implements ShooterIO {
         TalonFXConfigurator shooterLeftConfig = shooterLeft.getConfigurator();
         shooterLeftConfig.apply(
                 new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(120)
+                        .withStatorCurrentLimit(ScoringConstants.shooterCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
         TalonFXConfigurator shooterRightConfig = shooterRight.getConfigurator();
         shooterRightConfig.apply(
                 new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(120)
+                        .withStatorCurrentLimit(ScoringConstants.shooterCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
         TalonFXConfigurator kickerConfig = kicker.getConfigurator();
         kickerConfig.apply(
                 new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(120)
+                        .withStatorCurrentLimit(ScoringConstants.kickerCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
         slot0.withKP(ScoringConstants.shooterkP);

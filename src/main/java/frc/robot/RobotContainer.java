@@ -84,7 +84,7 @@ public class RobotContainer {
             masher.start().and(masher.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
         }
 
-        if (true) {
+        if (Constants.FeatureFlags.runIntake) {
             masher.b()
                     .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.INTAKE)))
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
@@ -214,7 +214,7 @@ public class RobotContainer {
 
     public void enabledInit() {
         intakeSubsystem.run(IntakeAction.NONE);
-        scoringSubsystem.setAction(ScoringAction.INTAKE);
+        scoringSubsystem.setAction(ScoringAction.WAIT);
     }
 
     public Command getAutonomousCommand() {

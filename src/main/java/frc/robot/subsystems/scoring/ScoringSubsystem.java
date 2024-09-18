@@ -46,8 +46,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     private final InterpolateDouble shooterInterpolated;
     private final InterpolateDouble aimerInterpolated;
-    private final InterpolateDouble timeToPutAimDown;
-    private final InterpolateDouble aimerAvoidElevator;
     private final InterpolateDouble aimerAngleTolerance;
 
     private double shooterGoalVelocityRPMTuning = 0.0;
@@ -112,12 +110,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         aimerInterpolated =
                 new InterpolateDouble(
                         ScoringConstants.getAimerMap(), 0.0, ScoringConstants.aimMaxAngleRadians);
-
-        timeToPutAimDown = new InterpolateDouble(ScoringConstants.timeToPutAimDownMap(), 0.0, 2.0);
-
-        aimerAvoidElevator =
-                new InterpolateDouble(
-                        ScoringConstants.aimerAvoidElevatorTable(), 0.0, Math.PI / 2.0);
 
         aimerAngleTolerance = new InterpolateDouble(ScoringConstants.aimerToleranceTable());
 
@@ -371,8 +363,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         aimerIo.setOverrideMode(false);
         shooterIo.setOverrideMode(false);
 
-        // if (MathUtil.isNear(temporarySetpointPosition, getPosition(temporarySetpointSlot), 0.1)
-        //         && MathUtil.isNear(0.0, getVelocity(temporarySetpointSlot), 0.01)) {
         if (action != ScoringAction.TEMPORARY_SETPOINT) {
             state = ScoringState.OVERRIDE;
 
@@ -449,14 +439,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                 // && Math.abs(elevatorPositionSupplier.getAsDouble()) < 0.2
                 && !overrideStageAvoidance) {
             aimerIo.setAngleClampsRad(ScoringConstants.aimMinAngleRadians, 0);
-        } else {
-            double elevatorLimit =
-                    aimerAvoidElevator.getValue(elevatorPositionSupplier.getAsDouble());
-            Logger.recordOutput("scoring/elevatorPosition", elevatorPositionSupplier.getAsDouble());
-            Logger.recordOutput("scoring/elevatorLimit", elevatorLimit);
-            aimerIo.setAngleClampsRad(
-                    Math.max(ScoringConstants.aimMinAngleRadians, elevatorLimit),
-                    ScoringConstants.aimMaxAngleRadians);
         }
 
         aimerIo.controlAimAngleRad();
