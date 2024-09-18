@@ -1,14 +1,17 @@
 {
   "NTProvider": {
     "types": {
+      "/AdvantageKit/RealOutputs/scoring/mechanism2d": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
       "/Pose": "Field2d",
       "/SmartDashboard/Module 0": "Mechanism2d",
       "/SmartDashboard/Module 1": "Mechanism2d",
       "/SmartDashboard/Module 2": "Mechanism2d",
+
       "/SmartDashboard/Module 3": "Mechanism2d",
       "/SmartDashboard/PhotonSimField": "Field2d",
-      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d",
+      "/AdvantageKit/RealOutputs/scoring/mechanism2d": "Mechanism2d"
     }
   },
   "NetworkTables": {
@@ -29,8 +32,30 @@
   },
   "NetworkTables Info": {
     "Connections": {
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
       "open": true
     },
     "visible": true
+  },
+  "Plot": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 338
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    }
   }
-}
+}}

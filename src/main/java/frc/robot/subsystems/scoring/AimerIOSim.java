@@ -1,0 +1,143 @@
+package frc.robot.subsystems.scoring;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.constants.Constants;
+import frc.robot.constants.ScoringConstants;
+
+public class AimerIOSim implements AimerIO {
+    private final SingleJointedArmSim sim =
+            new SingleJointedArmSim(
+                    DCMotor.getKrakenX60(1),
+                    80,
+                    SingleJointedArmSim.estimateMOI(0.3872, 8.61),
+                    0.3872,
+                    0.0,
+                    2 * Math.PI,
+                    true,
+                    3 / 2 * Math.PI);
+    private final PIDController controller =
+            new PIDController(
+                    ScoringConstants.aimerkP, ScoringConstants.aimerkI, ScoringConstants.aimerkD);
+    private final ArmFeedforward feedforward =
+            new ArmFeedforward(
+                    ScoringConstants.aimerkS,
+                    ScoringConstants.aimerkG,
+                    ScoringConstants.aimerkV,
+                    ScoringConstants.aimerkA);
+    private final TrapezoidProfile profile =
+            new TrapezoidProfile(
+                    new TrapezoidProfile.Constraints(
+                            ScoringConstants.aimCruiseVelocity, ScoringConstants.aimAcceleration));
+
+    private final Timer timer = new Timer();
+
+    private boolean override = false;
+    private double overrideVolts = 0.0;
+
+    boolean newProfile = false;
+    double previousGoalAngle = 0.0;
+
+    double minAngleClamp = 0.0;
+    double maxAngleClamp = 0.0;
+
+    double goalAngleRad = 0.0;
+    double controlSetpoint = 0.0;
+    double appliedVolts = 0.0;
+
+    double initialAngle = 0.0;
+    double initialVelocity = 0.0;
+
+    @Override
+    public void setAimAngleRad(double goalAngleRad, boolean newProfile) {
+        this.goalAngleRad = goalAngleRad;
+        this.newProfile = newProfile;
+    }
+
+    @Override
+    public void controlAimAngleRad() {
+        if (goalAngleRad != previousGoalAngle && newProfile) {
+            timer.reset();
+            timer.start();
+
+            initialAngle = sim.getAngleRads();
+            initialVelocity = sim.getVelocityRadPerSec();
+
+            previousGoalAngle = goalAngleRad;
+        }
+        goalAngleRad = MathUtil.clamp(goalAngleRad, minAngleClamp, maxAngleClamp);
+    }
+
+    @Override
+    public void setAngleClampsRad(double minAngleClamp, double maxAngleClamp) {
+        if (minAngleClamp > maxAngleClamp) {
+            return;
+        }
+        this.minAngleClamp =
+                MathUtil.clamp(minAngleClamp, 0.0, ScoringConstants.aimMaxAngleRadians);
+        this.maxAngleClamp =
+                MathUtil.clamp(maxAngleClamp, 0.0, ScoringConstants.aimMaxAngleRadians);
+    }
+
+    @Override
+    public void setOverrideMode(boolean override) {
+        this.override = override;
+    }
+
+    @Override
+    public void setOverrideVolts(double volts) {
+        appliedVolts = volts;
+    }
+
+    @Override
+    public void setPID(double p, double i, double d) {
+        controller.setP(p);
+        controller.setI(i);
+        controller.setD(d);
+    }
+
+    @Override
+    public void updateInputs(AimerIOInputs inputs) {
+        sim.update(Constants.loopTime);
+
+        inputs.aimGoalAngleRad = goalAngleRad;
+        inputs.aimProfileGoalAngleRad = controlSetpoint;
+        inputs.aimAngleRad = sim.getAngleRads();
+
+        inputs.aimVelocityRadPerSec = sim.getVelocityRadPerSec();
+
+        inputs.aimStatorCurrentAmps = sim.getCurrentDrawAmps();
+    }
+
+    @Override
+    public void applyOutputs(AimerIOOutputs outputs) {
+        State trapezoidSetpoint =
+                profile.calculate(
+                        timer.get(),
+                        new State(initialAngle, initialVelocity),
+                        new State(goalAngleRad, 0));
+        double controlSetpoint =
+                MathUtil.clamp(
+                        trapezoidSetpoint.position, 0.0, ScoringConstants.aimMaxAngleRadians);
+        double velocitySetpoint = trapezoidSetpoint.velocity;
+
+        if (override) {
+            appliedVolts = overrideVolts;
+        } else {
+            appliedVolts =
+                    feedforward.calculate(controlSetpoint, velocitySetpoint)
+                            + controller.calculate(sim.getAngleRads(), controlSetpoint);
+            appliedVolts = MathUtil.clamp(appliedVolts, -12.0, 12.0);
+        }
+
+        outputs.aimAppliedVoltage = appliedVolts;
+
+        sim.setInputVoltage(outputs.aimAppliedVoltage);
+    }
+}
