@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class IntakeIOSim implements IntakeIO {
     /*
@@ -15,12 +14,11 @@ public class IntakeIOSim implements IntakeIO {
     private double intakeWheelsAppliedVolts = 0.0;
     private double beltAppliedVolts = 0.0;
 
-    public IntakeIOSim() {
-    }
+    public IntakeIOSim() {}
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
- 
+
         inputs.leftIntakeVoltage = intakeWheelsAppliedVolts;
         inputs.leftIntakeStatorCurrent = noteInIntakeWheels ? 100000 : 0;
 
@@ -47,5 +45,4 @@ public class IntakeIOSim implements IntakeIO {
     public void applyOutputs(IntakeIOInputs inputs) {
         noteInIntakeWheels = true;
     }
-    
 }

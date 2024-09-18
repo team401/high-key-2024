@@ -7,5 +7,4 @@ public class IntakeConstants {
 
     public static final double intakePower = 12.0;
     public static final double beltPower = 12.0;
-    
 }

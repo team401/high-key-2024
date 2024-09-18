@@ -1,8 +1,7 @@
 package frc.robot.constants;
 
-import java.util.HashMap;
-
 import edu.wpi.first.math.util.Units;
+import java.util.HashMap;
 
 public class ScoringConstants {
     public static final double aimerkP = 17.0;
@@ -68,7 +67,7 @@ public class ScoringConstants {
     public static final double hoodHomeAmps = 40.0; // TODO: Find this
     public static final double hoodHomeAngleRad = Math.PI - 0.23;
 
-    public static final double aimMaxAngleRadians = 2*Math.PI; // Math.PI / 2
+    public static final double aimMaxAngleRadians = 2 * Math.PI; // Math.PI / 2
     public static final double aimMinAngleRadians = Math.PI;
 
     public static final double maxAimIntake = 0.0;
@@ -87,21 +86,21 @@ public class ScoringConstants {
     // Value - Aimer angle in radians
     public static HashMap<Double, Double> getAimerMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, 2*Math.PI-0.8);
-        map.put(1.45, 2*Math.PI-0.8);
-        map.put(1.98, 2*Math.PI-0.62);
-        map.put(2.41, 2*Math.PI-0.53);
-        map.put(3.02, 2*Math.PI-0.45);
-        map.put(3.22, 2*Math.PI-0.45);
-        map.put(3.9, 2*Math.PI-0.36);
-        map.put(4.55, 2*Math.PI-0.35);
-        map.put(4.95, 2*Math.PI-0.32);
-        map.put(5.15, 2*Math.PI-0.295);
-        map.put(5.35, 2*Math.PI-0.295);
-        map.put(5.5, 2*Math.PI-0.295);
-        map.put(5.64, 2*Math.PI-0.29);
+        map.put(0.0, 2 * Math.PI - 0.8);
+        map.put(1.45, 2 * Math.PI - 0.8);
+        map.put(1.98, 2 * Math.PI - 0.62);
+        map.put(2.41, 2 * Math.PI - 0.53);
+        map.put(3.02, 2 * Math.PI - 0.45);
+        map.put(3.22, 2 * Math.PI - 0.45);
+        map.put(3.9, 2 * Math.PI - 0.36);
+        map.put(4.55, 2 * Math.PI - 0.35);
+        map.put(4.95, 2 * Math.PI - 0.32);
+        map.put(5.15, 2 * Math.PI - 0.295);
+        map.put(5.35, 2 * Math.PI - 0.295);
+        map.put(5.5, 2 * Math.PI - 0.295);
+        map.put(5.64, 2 * Math.PI - 0.29);
         // map.put(5.82, 0.275);
-        map.put(6.0, 2*Math.PI-0.29);
+        map.put(6.0, 2 * Math.PI - 0.29);
 
         return map;
     }
@@ -183,5 +182,4 @@ public class ScoringConstants {
 
         return map;
     }
-    
 }

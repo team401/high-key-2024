@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
-
 import java.util.function.BooleanSupplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -51,8 +50,6 @@ public class IntakeSubsystem extends SubsystemBase {
                 override();
                 break;
         }
-
-        
     }
 
     public void setScoringSupplier(BooleanSupplier scorerWantsNote) {

@@ -1,5 +1,5 @@
-//TODO ADJUST CONSTANTS
-//pendulum for scoring works very similar to other design but upside down
+// TODO ADJUST CONSTANTS
+// pendulum for scoring works very similar to other design but upside down
 
 package frc.robot.subsystems.scoring;
 
@@ -17,7 +17,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.ScoringConstants;
-
 import org.littletonrobotics.junction.Logger;
 
 public class AimerIORoboRio implements AimerIO {
@@ -250,5 +249,4 @@ public class AimerIORoboRio implements AimerIO {
             aimerRight.setVoltage(0.0);
         }
     }
-
 }

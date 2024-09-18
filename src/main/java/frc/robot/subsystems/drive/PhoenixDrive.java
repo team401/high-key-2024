@@ -28,8 +28,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.Constants.AlignTarget;
 import frc.robot.constants.PhoenixDriveConstants;
 import org.littletonrobotics.junction.Logger;
-import frc.robot.constants.PhoenixDriveConstants;
-import frc.robot.constants.Constants.AlignTarget;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     public enum SysIdRoutineType {

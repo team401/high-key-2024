@@ -19,9 +19,9 @@ public class AimerIOSim implements AimerIO {
                     SingleJointedArmSim.estimateMOI(0.3872, 8.61),
                     0.3872,
                     0.0,
-                    2*Math.PI,
+                    2 * Math.PI,
                     true,
-                    3/2*Math.PI);
+                    3 / 2 * Math.PI);
     private final PIDController controller =
             new PIDController(
                     ScoringConstants.aimerkP, ScoringConstants.aimerkI, ScoringConstants.aimerkD);

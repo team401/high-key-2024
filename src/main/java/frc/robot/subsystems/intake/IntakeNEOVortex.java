@@ -6,18 +6,14 @@ import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.Constants.SensorConstants;
+import frc.robot.constants.IntakeConstants;
 
 public class IntakeNEOVortex implements IntakeIO {
 
-    private TalonFX leftIntake =
-            new TalonFX(IntakeConstants.leftIntakeMotorID);
-    private TalonFX rightIntake =
-            new TalonFX(IntakeConstants.rightIntakeMotorID);
+    private TalonFX leftIntake = new TalonFX(IntakeConstants.leftIntakeMotorID);
+    private TalonFX rightIntake = new TalonFX(IntakeConstants.rightIntakeMotorID);
 
     private TalonFX belt = new TalonFX(IntakeConstants.indexTwoMotorID);
 
@@ -75,7 +71,7 @@ public class IntakeNEOVortex implements IntakeIO {
         rightIntake.set(inputs.rightIntakeGoalVoltage);
         belt.setControl(new VoltageOut(inputs.beltGoalVoltage));
     }
-    
+
     @Override
     public void setIntakeVoltage(double volts) {
         goalVoltsRightIntake = volts / 12;
@@ -86,6 +82,4 @@ public class IntakeNEOVortex implements IntakeIO {
     public void setBeltVoltage(double volts) {
         goalVoltsBelt = volts;
     }
-
-
 }

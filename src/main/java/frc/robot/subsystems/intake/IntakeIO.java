@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
-import org.littletonrobotics.junction.AutoLog;
 
-import frc.robot.subsystems.scoring.AimerIO.AimerIOInputs;
+import org.littletonrobotics.junction.AutoLog;
 
 public interface IntakeIO {
 

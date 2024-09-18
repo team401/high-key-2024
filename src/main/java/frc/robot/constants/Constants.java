@@ -1,9 +1,5 @@
 package frc.robot.constants;
 
-import java.util.HashMap;
-
-import edu.wpi.first.math.util.Units;
-
 public class Constants {
 
     public static final double loopTime = 0.02;
@@ -52,13 +48,10 @@ public class Constants {
         public static final double kRadiansToDegrees = 180.0 / Math.PI;
     }
 
-
     public static final class SensorConstants {
 
-        //TODO: Find real values
+        // TODO: Find real values
         public static final int indexerSensorPort = 0;
         public static final int uptakeSensorPort = 0;
     }
-
-    
 }

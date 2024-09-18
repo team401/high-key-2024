@@ -1,5 +1,8 @@
 package frc.robot.subsystems.scoring;
 
+import coppercore.controls.Tunable;
+import coppercore.math.InterpolateDouble;
+import coppercore.wpilib_interface.*;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,20 +17,15 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Mode;
 import frc.robot.constants.ScoringConstants;
 import frc.robot.utils.FieldFinder;
 import frc.robot.utils.FieldFinder.FieldLocations;
-import coppercore.controls.Tunable;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import coppercore.math.InterpolateDouble;
-import coppercore.wpilib_interface.*;
 
 public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private final ShooterIO shooterIo;
@@ -246,7 +244,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                 < ScoringConstants.aimAngleVelocityMargin;
         boolean driveReady = driveAllignedSupplier.get();
         boolean fieldLocationReady = true;
-        
+
         if (!DriverStation.getAlliance().isPresent()) {
             fieldLocationReady = true;
         } else {
@@ -280,7 +278,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         Logger.recordOutput("scoring/notePresent", notePresent);
         Logger.recordOutput("scoring/primeReady", primeReady);
         Logger.recordOutput("scoring/readyToShoot", readyToShoot);
-        
 
         if (action != ScoringAction.SHOOT && action != ScoringAction.AIM) {
             state = ScoringState.IDLE;
@@ -384,7 +381,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private double findDistanceToGoal() {
-        Translation2d speakerPose = new Translation2d(); //AllianceUtil.getFieldToSpeaker();
+        Translation2d speakerPose = new Translation2d(); // AllianceUtil.getFieldToSpeaker();
         Pose2d robotPose = poseSupplier.get();
         double distancetoGoal =
                 Math.sqrt(
@@ -421,7 +418,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     public void setDriveAllignedSupplier(Supplier<Boolean> driveAllignedSupplier) {
         this.driveAllignedSupplier = driveAllignedSupplier;
     }
-
 
     public void enabledInit() {
         aimerIo.resetPID();
@@ -536,7 +532,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         shooterIo.applyOutputs(shooterInputs);
         aimerIo.applyOutputs(aimerInputs);
-        
+
         Logger.processInputs("scoring/shooter", shooterInputs);
         Logger.processInputs("scoring/aimer", aimerInputs);
     }
@@ -684,7 +680,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
             case 0:
                 aimerIo.setAimAngleRad(temporarySetpointPosition, true);
                 break;
-                //Shooter
+                // Shooter
             case 1:
                 shooterIo.setShooterVelocityRPM(temporarySetpointPosition);
                 break;

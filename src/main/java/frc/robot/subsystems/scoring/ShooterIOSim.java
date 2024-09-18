@@ -3,12 +3,10 @@ package frc.robot.subsystems.scoring;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.ConversionConstants;
 import frc.robot.constants.ScoringConstants;
-import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class ShooterIOSim implements ShooterIO {
     // TODO: Tune this later
@@ -112,11 +110,9 @@ public class ShooterIOSim implements ShooterIO {
         inputs.bannerSensor = false;
     }
 
-    @Override 
+    @Override
     public void applyOutputs(ShooterIOInputs inputs) {
         shooterLeftSim.setInputVoltage(inputs.shooterLeftAppliedVolts);
         shooterRightSim.setInputVoltage(inputs.shooterRightAppliedVolts);
     }
-
-    
 }

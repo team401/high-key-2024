@@ -8,8 +8,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.Constants.ConversionConstants;
-import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.Constants.SensorConstants;
+import frc.robot.constants.ScoringConstants;
 
 public class ShooterIOTalonFX implements ShooterIO {
     private final TalonFX kicker = new TalonFX(ScoringConstants.kickerMotorId);
@@ -70,7 +70,6 @@ public class ShooterIOTalonFX implements ShooterIO {
     public void setShooterVelocityRPM(double velocity) {
         goalLeftVelocityRPM = velocity;
         goalRightVelocityRPM = velocity * ScoringConstants.shooterOffsetAdjustment;
-
     }
 
     @Override
@@ -145,10 +144,12 @@ public class ShooterIOTalonFX implements ShooterIO {
         } else {
             shooterLeft.setControl(
                     new VelocityDutyCycle(
-                            inputs.shooterLeftGoalVelocityRPM / ConversionConstants.kMinutesToSeconds));
+                            inputs.shooterLeftGoalVelocityRPM
+                                    / ConversionConstants.kMinutesToSeconds));
             shooterRight.setControl(
                     new VelocityDutyCycle(
-                            inputs.shooterRightGoalVelocityRPM / ConversionConstants.kMinutesToSeconds));
+                            inputs.shooterRightGoalVelocityRPM
+                                    / ConversionConstants.kMinutesToSeconds));
         }
     }
 }
