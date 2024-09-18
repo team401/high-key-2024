@@ -27,6 +27,8 @@ public class ShooterIOTalonFX implements ShooterIO {
     double goalLeftVelocityRPM = 0.0;
     double goalRightVelocityRPM = 0.0;
 
+    double kickerVolts = 0.0;
+
     public ShooterIOTalonFX() {
         kicker.setInverted(true);
 
@@ -74,7 +76,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
     @Override
     public void setKickerVolts(double volts) {
-        kicker.setVoltage(volts);
+        kickerVolts = volts;
     }
 
     @Override
@@ -113,7 +115,6 @@ public class ShooterIOTalonFX implements ShooterIO {
         inputs.shooterLeftVelocityRPM =
                 shooterLeft.getVelocity().getValueAsDouble()
                         / ConversionConstants.kSecondsToMinutes;
-        inputs.shooterLeftGoalVelocityRPM = goalLeftVelocityRPM;
         inputs.shooterLeftAppliedVolts = shooterLeft.getMotorVoltage().getValueAsDouble();
         inputs.shooterLeftStatorCurrentAmps = shooterLeft.getStatorCurrent().getValueAsDouble();
         inputs.shooterLeftSupplyCurrentAmps = shooterLeft.getSupplyCurrent().getValueAsDouble();
@@ -121,7 +122,6 @@ public class ShooterIOTalonFX implements ShooterIO {
         inputs.shooterRightVelocityRPM =
                 shooterRight.getVelocity().getValueAsDouble()
                         / ConversionConstants.kSecondsToMinutes;
-        inputs.shooterRightGoalVelocityRPM = goalRightVelocityRPM;
         inputs.shooterRightAppliedVolts = shooterRight.getMotorVoltage().getValueAsDouble();
         inputs.shooterRightStatorCurrentAmps = shooterRight.getStatorCurrent().getValueAsDouble();
         inputs.shooterRightSupplyCurrentAmps = shooterRight.getSupplyCurrent().getValueAsDouble();
@@ -133,25 +133,31 @@ public class ShooterIOTalonFX implements ShooterIO {
     }
 
     @Override
-    public void applyOutputs(ShooterIOInputs inputs) {
+    public void applyOutputs(ShooterIOOutputs outputs) {
+        outputs.shooterLeftGoalVelocityRPM = goalLeftVelocityRPM;
+        outputs.shooterRightGoalVelocityRPM = goalRightVelocityRPM;
+        outputs.kickerGoalVolts = kickerVolts;
+
         if (override) {
             shooterLeft.setVoltage(overrideVolts);
             shooterRight.setVoltage(overrideVolts);
             return;
         }
 
-        if (inputs.shooterLeftGoalVelocityRPM == 0.0) {
+        if (outputs.shooterLeftGoalVelocityRPM == 0.0) {
             shooterLeft.setVoltage(0.0);
             shooterRight.setVoltage(0.0);
         } else {
             shooterLeft.setControl(
                     new VelocityDutyCycle(
-                            inputs.shooterLeftGoalVelocityRPM
+                            outputs.shooterLeftGoalVelocityRPM
                                     / ConversionConstants.kMinutesToSeconds));
             shooterRight.setControl(
                     new VelocityDutyCycle(
-                            inputs.shooterRightGoalVelocityRPM
+                            outputs.shooterRightGoalVelocityRPM
                                     / ConversionConstants.kMinutesToSeconds));
         }
+
+        kicker.setVoltage(outputs.kickerGoalVolts);
     }
 }

@@ -49,15 +49,12 @@ public class IntakeNEOVortex implements IntakeIO {
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.leftIntakeGoalVoltage = goalVoltsLeftIntake;
         inputs.leftIntakeVoltage = leftIntake.getMotorVoltage().getValueAsDouble();
         inputs.leftIntakeStatorCurrent = leftIntake.getStatorCurrent().getValueAsDouble();
 
-        inputs.rightIntakeGoalVoltage = goalVoltsRightIntake;
         inputs.rightIntakeVoltage = rightIntake.getMotorVoltage().getValueAsDouble();
         inputs.rightIntakeStatorCurrent = rightIntake.getStatorCurrent().getValueAsDouble();
 
-        inputs.beltGoalVoltage = goalVoltsBelt;
         inputs.beltVoltage = belt.getMotorVoltage().getValueAsDouble();
         inputs.beltStatorCurrent = belt.getStatorCurrent().getValueAsDouble();
         inputs.beltSupplyCurrent = belt.getSupplyCurrent().getValueAsDouble();
@@ -66,10 +63,16 @@ public class IntakeNEOVortex implements IntakeIO {
     }
 
     @Override
-    public void applyOutputs(IntakeIOInputs inputs) {
-        leftIntake.set(inputs.leftIntakeGoalVoltage);
-        rightIntake.set(inputs.rightIntakeGoalVoltage);
-        belt.setControl(new VoltageOut(inputs.beltGoalVoltage));
+    public void applyOutputs(IntakeIOOutputs outputs) {
+        outputs.leftIntakeGoalVoltage = goalVoltsLeftIntake;
+
+        outputs.rightIntakeGoalVoltage = goalVoltsRightIntake;
+
+        outputs.beltGoalVoltage = goalVoltsBelt;
+
+        leftIntake.set(outputs.leftIntakeGoalVoltage);
+        rightIntake.set(outputs.rightIntakeGoalVoltage);
+        belt.setControl(new VoltageOut(outputs.beltGoalVoltage));
     }
 
     @Override

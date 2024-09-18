@@ -211,9 +211,7 @@ public class AimerIORoboRio implements AimerIO {
     }
 
     @Override
-    public void applyOutputs(AimerIOInputs inputs) {
-
-        double appliedVolts = 0.0;
+    public void applyOutputs(AimerIOOutputs outputs) {
 
         State trapezoidSetpoint =
                 profile.calculate(
@@ -232,10 +230,10 @@ public class AimerIORoboRio implements AimerIO {
                     feedforward.calculate(controlSetpoint, velocitySetpoint) + controllerVolts;
         }
 
-        appliedVolts = MathUtil.clamp(appliedVolts, -12.0, 12.0);
+        outputs.aimAppliedVoltage = MathUtil.clamp(appliedVolts, -12.0, 12.0);
 
         if (!motorDisabled || override) {
-            aimerRight.setVoltage(appliedVolts);
+            aimerRight.setVoltage(outputs.aimAppliedVoltage);
         } else {
             aimerRight.setVoltage(0.0);
         }

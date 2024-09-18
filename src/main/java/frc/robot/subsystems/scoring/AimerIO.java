@@ -8,6 +8,7 @@ public interface AimerIO {
         public double aimAngleRad = 0.0;
         public double aimGoalAngleRad = 0.0;
         public double aimProfileGoalAngleRad = 0.0;
+
         public double aimStatorCurrentAmps = 0.0;
         public double aimSupplyCurrentAmps = 0.0;
 
@@ -15,9 +16,14 @@ public interface AimerIO {
         public double aimVelocityErrorRadPerSec = 0.0;
     }
 
+    @AutoLog
+    public static class AimerIOOutputs {
+        public double aimAppliedVoltage = 0.0;
+    }
+
     public default void updateInputs(AimerIOInputs inputs) {}
 
-    public default void applyOutputs(AimerIOInputs inputs) {}
+    public default void applyOutputs(AimerIOOutputs outputs) {}
 
     public default void setAimAngleRad(double angle, boolean newProfile) {}
 

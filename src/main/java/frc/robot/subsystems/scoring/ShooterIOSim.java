@@ -78,16 +78,15 @@ public class ShooterIOSim implements ShooterIO {
         inputs.shooterLeftVelocityRPM =
                 shooterLeftSim.getAngularVelocityRadPerSec()
                         * ConversionConstants.kRadiansPerSecondToRPM;
-        inputs.shooterLeftGoalVelocityRPM = shooterLeftGoalVelRPM;
-        inputs.shooterLeftAppliedVolts = shooterLeftAppliedVolts;
         inputs.shooterLeftStatorCurrentAmps = shooterLeftSim.getCurrentDrawAmps();
 
         inputs.shooterRightVelocityRPM =
                 shooterRightSim.getAngularVelocityRadPerSec()
                         * ConversionConstants.kRadiansPerSecondToRPM;
-        inputs.shooterRightGoalVelocityRPM = shooterRightGoalVelRPM;
-        inputs.shooterRightAppliedVolts = shooterRightAppliedVolts;
         inputs.shooterRightStatorCurrentAmps = shooterRightSim.getCurrentDrawAmps();
+
+        inputs.shooterLeftAppliedVolts = shooterLeftAppliedVolts;
+        inputs.shooterRightAppliedVolts = shooterRightAppliedVolts;
 
         inputs.kickerAppliedVolts = kickerVolts;
         inputs.kickerStatorCurrentAmps = 0.0;
@@ -96,23 +95,27 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public void applyOutputs(ShooterIOInputs inputs) {
+    public void applyOutputs(ShooterIOOutputs outputs) {
+
+        outputs.shooterLeftGoalVelocityRPM = shooterLeftGoalVelRPM;
+        outputs.shooterRightGoalVelocityRPM = shooterRightGoalVelRPM;
+
         if (!override) {
             shooterLeftAppliedVolts =
                     shooterFeedforward.calculate(shooterLeftSim.getAngularVelocityRadPerSec())
                             + shooterLeftController.calculate(
                                     shooterLeftSim.getAngularVelocityRadPerSec(),
-                                    shooterLeftGoalVelRPM
+                                    outputs.shooterLeftGoalVelocityRPM
                                             * ConversionConstants.kRPMToRadiansPerSecond);
             shooterRightAppliedVolts =
                     shooterFeedforward.calculate(shooterRightSim.getAngularVelocityRadPerSec())
                             + shooterRightController.calculate(
                                     shooterRightSim.getAngularVelocityRadPerSec(),
-                                    shooterRightGoalVelRPM
+                                    outputs.shooterRightGoalVelocityRPM
                                             * ConversionConstants.kRPMToRadiansPerSecond);
         }
 
-        shooterLeftSim.setInputVoltage(inputs.shooterLeftAppliedVolts);
-        shooterRightSim.setInputVoltage(inputs.shooterRightAppliedVolts);
+        shooterLeftSim.setInputVoltage(shooterLeftAppliedVolts);
+        shooterRightSim.setInputVoltage(shooterRightAppliedVolts);
     }
 }

@@ -116,7 +116,7 @@ public class AimerIOSim implements AimerIO {
     }
 
     @Override
-    public void applyOutputs(AimerIOInputs inputs) {
+    public void applyOutputs(AimerIOOutputs outputs) {
         State trapezoidSetpoint =
                 profile.calculate(
                         timer.get(),
@@ -136,6 +136,8 @@ public class AimerIOSim implements AimerIO {
             appliedVolts = MathUtil.clamp(appliedVolts, -12.0, 12.0);
         }
 
-        sim.setInputVoltage(appliedVolts);
+        outputs.aimAppliedVoltage = appliedVolts;
+
+        sim.setInputVoltage(outputs.aimAppliedVoltage);
     }
 }

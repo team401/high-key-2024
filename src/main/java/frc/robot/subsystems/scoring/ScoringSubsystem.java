@@ -30,9 +30,11 @@ import org.littletonrobotics.junction.Logger;
 public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private final ShooterIO shooterIo;
     private final ShooterIOInputsAutoLogged shooterInputs = new ShooterIOInputsAutoLogged();
+    private final ShooterIOOutputsAutoLogged shooterOutputs = new ShooterIOOutputsAutoLogged();
 
     private final AimerIO aimerIo;
     private final AimerIOInputsAutoLogged aimerInputs = new AimerIOInputsAutoLogged();
+    private final AimerIOOutputsAutoLogged aimerOutputs = new AimerIOOutputsAutoLogged();
 
     private final Timer shootTimer = new Timer();
 
@@ -224,10 +226,10 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         boolean shooterReady =
                 shooterInputs.shooterLeftVelocityRPM
-                                < (shooterInputs.shooterLeftGoalVelocityRPM
+                                < (shooterOutputs.shooterLeftGoalVelocityRPM
                                         + ScoringConstants.shooterUpperVelocityMarginRPM)
                         && shooterInputs.shooterLeftVelocityRPM
-                                > (shooterInputs.shooterLeftGoalVelocityRPM
+                                > (shooterOutputs.shooterLeftGoalVelocityRPM
                                         - ScoringConstants.shooterLowerVelocityMarginRPM);
         boolean aimReady =
                 Math.abs(aimerInputs.aimAngleRad - aimerInputs.aimGoalAngleRad)
@@ -512,8 +514,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         shooterIo.updateInputs(shooterInputs);
         aimerIo.updateInputs(aimerInputs);
 
-        shooterIo.applyOutputs(shooterInputs);
-        aimerIo.applyOutputs(aimerInputs);
+        shooterIo.applyOutputs(shooterOutputs);
+        aimerIo.applyOutputs(aimerOutputs);
 
         Logger.processInputs("scoring/shooter", shooterInputs);
         Logger.processInputs("scoring/aimer", aimerInputs);

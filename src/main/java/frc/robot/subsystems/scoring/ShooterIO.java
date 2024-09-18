@@ -6,13 +6,11 @@ public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {
         public double shooterLeftVelocityRPM = 0.0;
-        public double shooterLeftGoalVelocityRPM = 0.0;
         public double shooterLeftAppliedVolts = 0.0;
         public double shooterLeftStatorCurrentAmps = 0.0;
         public double shooterLeftSupplyCurrentAmps = 0.0;
 
         public double shooterRightVelocityRPM = 0.0;
-        public double shooterRightGoalVelocityRPM = 0.0;
         public double shooterRightAppliedVolts = 0.0;
         public double shooterRightStatorCurrentAmps = 0.0;
         public double shooterRightSupplyCurrentAmps = 0.0;
@@ -23,9 +21,18 @@ public interface ShooterIO {
         public boolean bannerSensor = false;
     }
 
+    @AutoLog
+    public static class ShooterIOOutputs {
+        public double shooterLeftGoalVelocityRPM = 0.0;
+
+        public double shooterRightGoalVelocityRPM = 0.0;
+
+        public double kickerGoalVolts = 0.0;
+    }
+
     public default void updateInputs(ShooterIOInputs inputs) {}
 
-    public default void applyOutputs(ShooterIOInputs inputs) {}
+    public default void applyOutputs(ShooterIOOutputs outputs) {}
 
     public default void setShooterVelocityRPM(double velocity) {}
 
