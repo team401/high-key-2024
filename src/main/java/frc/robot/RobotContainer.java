@@ -11,9 +11,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveWithJoysticks;
+import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.PhoenixDriveConstants;
+import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
+import frc.robot.subsystems.localization.CameraContainerReal;
+import frc.robot.subsystems.localization.CameraContainerSim;
+import frc.robot.subsystems.localization.VisionLocalizer;
 
 public class RobotContainer {
     PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
@@ -22,7 +27,10 @@ public class RobotContainer {
     CommandJoystick rightJoystick = new CommandJoystick(1);
     CommandXboxController masher = new CommandXboxController(2);
 
+    VisionLocalizer tagVision;
+
     public RobotContainer() {
+        configureSubsystems();
         configureBindings();
     }
 
@@ -58,6 +66,28 @@ public class RobotContainer {
             masher.back().and(masher.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
             masher.start().and(masher.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
             masher.start().and(masher.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+        }
+    }
+
+    private void configureSubsystems() {
+        // TODO: Potentially migrate to Constants.mode
+        if (Robot.isReal()) {
+            if (FeatureFlags.runVision) {
+                tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
+            }
+        } else {
+            if (FeatureFlags.simulateVision) {
+                tagVision =
+                        new VisionLocalizer(
+                                new CameraContainerSim(
+                                        VisionConstants.cameras, logger::getModuleStates));
+            }
+        }
+
+        if (FeatureFlags.runVision && Robot.isReal()
+                || FeatureFlags.simulateVision && !Robot.isReal()) {
+            tagVision.setCameraConsumer(
+                    (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
         }
     }
 
