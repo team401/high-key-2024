@@ -81,6 +81,7 @@ public class CameraIOPhoton implements CameraIO {
                     inputs.nTags = pose.targetsUsed.size();
 
                     inputs.latestTimestampSeconds = this.latestTimestampSeconds;
+                    inputs.latencySeconds = result.getLatencyMillis() / 1000.0;
                     inputs.averageTagDistanceM = calculateAverageTagDistance(pose);
                     inputs.averageTagYaw = calculateAverageTagYaw(pose);
 

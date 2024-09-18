@@ -41,16 +41,25 @@ public final class VisionConstants {
     public static final List<CameraParams> cameras =
             List.of(
                     new CameraParams(
-                            "Front-Left",
+                            "HITL",
                             1280,
                             960,
                             50,
                             Rotation2d.fromDegrees(70),
                             new Transform3d(
-                                    new Translation3d(0.306, 0.259, 0.211),
-                                    new Rotation3d(0, -0.349, 0.785)),
+                                    new Translation3d(0, 0, 0), new Rotation3d(0, -0.349, 0.0)),
                             CameraTrustZone.LEFT));
 
+    //     new CameraParams(
+    //             "Front-Left",
+    //             1280,
+    //             960,
+    //             50,
+    //             Rotation2d.fromDegrees(70),
+    //             new Transform3d(
+    //                     new Translation3d(0.306, 0.259, 0.211),
+    //                     new Rotation3d(0, -0.349, 0.785)),
+    //             CameraTrustZone.LEFT)
     //     new CameraParams(
     //             "Front-Right",
     //             1280,
