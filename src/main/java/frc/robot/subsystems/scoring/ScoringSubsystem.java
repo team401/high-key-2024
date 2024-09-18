@@ -517,8 +517,10 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         shooterIo.applyOutputs(shooterOutputs);
         aimerIo.applyOutputs(aimerOutputs);
 
-        Logger.processInputs("scoring/shooter", shooterInputs);
-        Logger.processInputs("scoring/aimer", aimerInputs);
+        Logger.processInputs("scoring/shooterInputs", shooterInputs);
+        Logger.processInputs("scoring/shooterOutputs", shooterOutputs);
+        Logger.processInputs("scoring/aimerInputs", aimerInputs);
+        Logger.processInputs("scoring/aimerOutputs", shooterOutputs);
     }
 
     public void setTuningKickerVolts(double kickerVoltsTuning) {

@@ -134,35 +134,6 @@ public class ScoringConstants {
     }
 
     // NOTE - This should be monotonically increasing
-    // Key - Angle in radians
-    // Value - Time in seconds
-    public static HashMap<Double, Double> timeToPutAimDownMap() { // TODO: Find this
-        HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, 0.6);
-        map.put(Math.PI / 6, 0.6);
-        map.put(Math.PI / 4, 0.7);
-        map.put(Math.PI / 3, 0.8);
-        map.put(Math.PI / 2, 1.0);
-
-        return map;
-    }
-
-    // NOTE - This should be monotonically increasing
-    // Key - Elevator position in meters
-    // Value - Aimer angle in radians
-    public static HashMap<Double, Double> aimerAvoidElevatorTable() {
-        HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, 0.0);
-        map.put(0.01, Math.PI / 8);
-        map.put(0.05, Math.PI / 6);
-        map.put(0.1, Math.PI / 4);
-        map.put(0.2, Math.PI / 3);
-        map.put(0.4, 1.37);
-
-        return map;
-    }
-
-    // NOTE - This should be monotonically increasing
     // Key - Distance to goal in meters
     // Value - Aimer angle tolerance in radians
     public static HashMap<Double, Double> aimerToleranceTable() {
