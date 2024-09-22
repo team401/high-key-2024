@@ -11,6 +11,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public final class PhoenixDriveConstants {
+    public enum AlignTarget {
+        NONE,
+        AMP,
+        SPEAKER,
+        SOURCE,
+        ENDGAME,
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
+
     // Both sets of gains need to be tuned to your individual robot.
 
     // The steer motor uses any SwerveModule.SteerRequestType control request with the

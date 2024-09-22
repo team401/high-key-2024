@@ -7,9 +7,9 @@ import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.constants.Constants.ConversionConstants;
-import frc.robot.constants.Constants.SensorConstants;
+import frc.robot.constants.ConversionConstants;
 import frc.robot.constants.ScoringConstants;
+import frc.robot.constants.SensorConstants;
 
 public class ShooterIOTalonFX implements ShooterIO {
     private final TalonFX kicker = new TalonFX(ScoringConstants.kickerMotorId);

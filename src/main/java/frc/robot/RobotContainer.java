@@ -10,11 +10,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.ShootWithGamepad;
-import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.AlignTarget;
-import frc.robot.constants.Constants.Mode;
 import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.PhoenixDriveConstants;
+import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
@@ -100,7 +98,7 @@ public class RobotContainer {
             }
         }
 
-        if (Constants.FeatureFlags.runIntake) {
+        if (FeatureFlags.runIntake) {
             masher.b()
                     .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.INTAKE)))
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
@@ -125,8 +123,7 @@ public class RobotContainer {
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
         }
 
-        if (Constants.FeatureFlags.runScoring) {
-
+        if (FeatureFlags.runScoring) {
             scoringSubsystem.setDefaultCommand(
                     new ShootWithGamepad(
                             () -> rightJoystick.getHID().getRawButton(4),
@@ -168,7 +165,7 @@ public class RobotContainer {
 
             masher.povUp();
         }
-        if (Constants.FeatureFlags.runDrive) {
+        if (FeatureFlags.runDrive) {
             masher.povUp()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 
@@ -215,7 +212,13 @@ public class RobotContainer {
             if (FeatureFlags.runVision) {
                 tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
             }
-
+            if (FeatureFlags.runIntake) {
+                intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
+            }
+            if (FeatureFlags.runScoring) {
+                scoringSubsystem =
+                        new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
+            }
         } else {
             if (FeatureFlags.simulateDrive) {
                 drive =
@@ -240,19 +243,18 @@ public class RobotContainer {
                     throw new NullPointerException("Vision simulation depends on drive!");
                 }
             }
+            if (FeatureFlags.simulateIntake) {
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+            }
+            if (FeatureFlags.simulateScoring) {
+                scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
+            }
         }
 
         if (FeatureFlags.runDrive && FeatureFlags.runVision && Robot.isReal()
                 || FeatureFlags.simulateDrive && FeatureFlags.simulateVision && !Robot.isReal()) {
             tagVision.setCameraConsumer(
                     (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
-        }
-        if (Constants.currentMode == Mode.REAL) {
-            scoringSubsystem = new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
-            intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
-        } else if (Constants.currentMode == Mode.SIM) {
-            scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
-            intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
         }
     }
 

@@ -4,9 +4,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.ConversionConstants;
+import frc.robot.constants.ConversionConstants;
 import frc.robot.constants.ScoringConstants;
+import frc.robot.constants.SimConstants;
 
 public class ShooterIOSim implements ShooterIO {
     // TODO: Tune this later
@@ -72,8 +72,8 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        shooterLeftSim.update(Constants.loopTime);
-        shooterRightSim.update(Constants.loopTime);
+        shooterLeftSim.update(SimConstants.loopTime);
+        shooterRightSim.update(SimConstants.loopTime);
 
         inputs.shooterLeftVelocityRPM =
                 shooterLeftSim.getAngularVelocityRadPerSec()

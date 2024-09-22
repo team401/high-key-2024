@@ -8,8 +8,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.constants.Constants;
 import frc.robot.constants.ScoringConstants;
+import frc.robot.constants.SimConstants;
 
 public class AimerIOSim implements AimerIO {
     private final SingleJointedArmSim sim =
@@ -104,7 +104,7 @@ public class AimerIOSim implements AimerIO {
 
     @Override
     public void updateInputs(AimerIOInputs inputs) {
-        sim.update(Constants.loopTime);
+        sim.update(SimConstants.loopTime);
 
         inputs.aimGoalAngleRad = goalAngleRad;
         inputs.aimProfileGoalAngleRad = controlSetpoint;
