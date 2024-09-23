@@ -82,8 +82,11 @@ public class IntakeSubsystem extends SubsystemBase {
             state = State.IDLE;
         }
 
-        io.setIntakeVoltage(scorerWantsNote.getAsBoolean() ? IntakeConstants.intakePower : 0.0);
-        io.setBeltVoltage(IntakeConstants.beltPower);
+        io.setIntakeVoltage(
+                scorerWantsNote.getAsBoolean()
+                        ? IntakeConstants.synced.getObject().intakePower
+                        : 0.0);
+        io.setBeltVoltage(IntakeConstants.synced.getObject().beltPower);
     }
 
     private void reversing() {
@@ -91,8 +94,8 @@ public class IntakeSubsystem extends SubsystemBase {
             state = State.IDLE;
         }
 
-        io.setIntakeVoltage(-IntakeConstants.intakePower);
-        io.setBeltVoltage(-IntakeConstants.beltPower);
+        io.setIntakeVoltage(-IntakeConstants.synced.getObject().intakePower);
+        io.setBeltVoltage(-IntakeConstants.synced.getObject().beltPower);
     }
 
     private void override() {

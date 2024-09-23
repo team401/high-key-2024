@@ -38,7 +38,7 @@ public class CameraContainerSim implements CameraContainer {
             List<CameraParams> params, Supplier<SwerveModuleState[]> getModuleStates) {
         this.getModuleStates = getModuleStates;
 
-        visionSim.addAprilTags(VisionConstants.fieldLayout);
+        visionSim.addAprilTags(VisionConstants.synced.getObject().fieldLayout);
 
         // TODO: Get actual constant from DriveConstants after constants get fixed
         var pose = new Pose2d();
@@ -88,7 +88,7 @@ public class CameraContainerSim implements CameraContainer {
                                             .getRadians()));
         }
 
-        Twist2d twist = TunerConstants.kinematics.toTwist2d(deltas);
+        Twist2d twist = TunerConstants.synced.getObject().kinematics.toTwist2d(deltas);
         latestOdometryPose = latestOdometryPose.exp(twist);
 
         Logger.recordOutput("Vision/GroundTruth", latestOdometryPose);

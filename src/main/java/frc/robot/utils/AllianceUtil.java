@@ -13,93 +13,97 @@ public class AllianceUtil {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    Logger.recordOutput("Field/speaker", FieldConstants.fieldToBlueSpeaker);
-                    return FieldConstants.fieldToBlueSpeaker;
+                    Logger.recordOutput(
+                            "Field/speaker", FieldConstants.synced.getObject().fieldToBlueSpeaker);
+                    return FieldConstants.synced.getObject().fieldToBlueSpeaker;
                 case Red:
-                    Logger.recordOutput("Field/speaker", FieldConstants.fieldToRedSpeaker);
-                    return FieldConstants.fieldToRedSpeaker;
+                    Logger.recordOutput(
+                            "Field/speaker", FieldConstants.synced.getObject().fieldToRedSpeaker);
+                    return FieldConstants.synced.getObject().fieldToRedSpeaker;
             }
         }
-        return FieldConstants.fieldToRedSpeaker;
+        return FieldConstants.synced.getObject().fieldToRedSpeaker;
     }
 
     public static Rotation2d getAmpHeading() {
-        Logger.recordOutput("Field/amp", FieldConstants.ampHeading);
-        return FieldConstants.ampHeading;
+        Logger.recordOutput("Field/amp", FieldConstants.synced.getObject().ampHeading);
+        return FieldConstants.synced.getObject().ampHeading;
     }
 
     public static Pose2d getPoseAgainstSpeaker() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstBlueSpeaker;
+                    return FieldConstants.synced.getObject().robotAgainstBlueSpeaker;
                 case Red:
-                    return FieldConstants.robotAgainstRedSpeaker;
+                    return FieldConstants.synced.getObject().robotAgainstRedSpeaker;
             }
         }
-        return FieldConstants.robotAgainstRedSpeaker;
+        return FieldConstants.synced.getObject().robotAgainstRedSpeaker;
     }
 
     public static Pose2d getPoseAgainstSpeakerLeft() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstBlueSpeakerLeft;
+                    return FieldConstants.synced.getObject().robotAgainstBlueSpeakerLeft;
                 case Red:
-                    return FieldConstants.robotAgainstRedSpeakerLeft;
+                    return FieldConstants.synced.getObject().robotAgainstRedSpeakerLeft;
             }
         }
-        return FieldConstants.robotAgainstRedSpeakerLeft;
+        return FieldConstants.synced.getObject().robotAgainstRedSpeakerLeft;
     }
 
     public static Pose2d getPoseAgainstSpeakerRight() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstBlueSpeakerRight;
+                    return FieldConstants.synced.getObject().robotAgainstBlueSpeakerRight;
                 case Red:
-                    return FieldConstants.robotAgainstRedSpeakerRight;
+                    return FieldConstants.synced.getObject().robotAgainstRedSpeakerRight;
             }
         }
-        return FieldConstants.robotAgainstRedSpeakerRight;
+        return FieldConstants.synced.getObject().robotAgainstRedSpeakerRight;
     }
 
     public static Pose2d getPoseAgainstPodium() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstBluePodium;
+                    return FieldConstants.synced.getObject().robotAgainstBluePodium;
                 case Red:
-                    return FieldConstants.robotAgainstRedPodium;
+                    return FieldConstants.synced.getObject().robotAgainstRedPodium;
             }
         }
-        return FieldConstants.robotAgainstRedPodium;
+        return FieldConstants.synced.getObject().robotAgainstRedPodium;
     }
 
     public static Pose2d getPoseAgainstAmpZone() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstRedAmpZone;
+                    return FieldConstants.synced.getObject().robotAgainstRedAmpZone;
                 case Red:
-                    return FieldConstants.robotAgainstBlueAmpZone;
+                    return FieldConstants.synced.getObject().robotAgainstBlueAmpZone;
             }
         }
-        return FieldConstants.robotAgainstRedAmpZone;
+        return FieldConstants.synced.getObject().robotAgainstRedAmpZone;
     }
 
     public static Rotation2d getSourceHeading() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    Logger.recordOutput("Field/source", FieldConstants.blueSourceHeading);
-                    return FieldConstants.blueSourceHeading;
+                    Logger.recordOutput(
+                            "Field/source", FieldConstants.synced.getObject().blueSourceHeading);
+                    return FieldConstants.synced.getObject().blueSourceHeading;
                 case Red:
-                    Logger.recordOutput("Field/source", FieldConstants.redSourceHeading);
-                    return FieldConstants.redSourceHeading;
+                    Logger.recordOutput(
+                            "Field/source", FieldConstants.synced.getObject().redSourceHeading);
+                    return FieldConstants.synced.getObject().redSourceHeading;
             }
         }
-        return FieldConstants.redSourceHeading;
+        return FieldConstants.synced.getObject().redSourceHeading;
     }
 
     /** Returns whether the speaker is significantly to the robot's left */
@@ -107,12 +111,16 @@ public class AllianceUtil {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return robotY > FieldConstants.fieldToBlueSpeaker.getY() + tolerance;
+                    return robotY
+                            > FieldConstants.synced.getObject().fieldToBlueSpeaker.getY()
+                                    + tolerance;
                 case Red:
-                    return robotY < FieldConstants.fieldToRedSpeaker.getY() - tolerance;
+                    return robotY
+                            < FieldConstants.synced.getObject().fieldToRedSpeaker.getY()
+                                    - tolerance;
             }
         }
-        return robotY < FieldConstants.fieldToRedSpeaker.getY() - tolerance;
+        return robotY < FieldConstants.synced.getObject().fieldToRedSpeaker.getY() - tolerance;
     }
 
     /** Returns whether the speaker is significantly to the robot's right */
@@ -120,11 +128,15 @@ public class AllianceUtil {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return robotY < FieldConstants.fieldToBlueSpeaker.getY() - tolerance;
+                    return robotY
+                            < FieldConstants.synced.getObject().fieldToBlueSpeaker.getY()
+                                    - tolerance;
                 case Red:
-                    return robotY > FieldConstants.fieldToRedSpeaker.getY() + tolerance;
+                    return robotY
+                            > FieldConstants.synced.getObject().fieldToRedSpeaker.getY()
+                                    + tolerance;
             }
         }
-        return robotY > FieldConstants.fieldToRedSpeaker.getY() + tolerance;
+        return robotY > FieldConstants.synced.getObject().fieldToRedSpeaker.getY() + tolerance;
     }
 }

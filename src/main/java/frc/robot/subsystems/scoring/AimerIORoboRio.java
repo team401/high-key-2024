@@ -20,24 +20,30 @@ import frc.robot.constants.ScoringConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class AimerIORoboRio implements AimerIO {
-    private final TalonFX aimerLeft = new TalonFX(ScoringConstants.aimLeftMotorId);
-    private final TalonFX aimerRight = new TalonFX(ScoringConstants.aimRightMotorId);
+    private final TalonFX aimerLeft =
+            new TalonFX(ScoringConstants.synced.getObject().aimLeftMotorId);
+    private final TalonFX aimerRight =
+            new TalonFX(ScoringConstants.synced.getObject().aimRightMotorId);
 
     private final PIDController controller =
             new PIDController(
-                    ScoringConstants.aimerkP, ScoringConstants.aimerkI, ScoringConstants.aimerkD);
+                    ScoringConstants.synced.getObject().aimerkP,
+                    ScoringConstants.synced.getObject().aimerkI,
+                    ScoringConstants.synced.getObject().aimerkD);
     private ArmFeedforward feedforward =
             new ArmFeedforward(
-                    ScoringConstants.aimerkS,
-                    ScoringConstants.aimerkG,
-                    ScoringConstants.aimerkV,
-                    ScoringConstants.aimerkA);
+                    ScoringConstants.synced.getObject().aimerkS,
+                    ScoringConstants.synced.getObject().aimerkG,
+                    ScoringConstants.synced.getObject().aimerkV,
+                    ScoringConstants.synced.getObject().aimerkA);
     private TrapezoidProfile profile =
             new TrapezoidProfile(
                     new TrapezoidProfile.Constraints(
-                            ScoringConstants.aimCruiseVelocity, ScoringConstants.aimAcceleration));
+                            ScoringConstants.synced.getObject().aimCruiseVelocity,
+                            ScoringConstants.synced.getObject().aimAcceleration));
 
-    private final DutyCycleEncoder encoder = new DutyCycleEncoder(ScoringConstants.aimEncoderPort);
+    private final DutyCycleEncoder encoder =
+            new DutyCycleEncoder(ScoringConstants.synced.getObject().aimEncoderPort);
 
     private final Timer timer = new Timer();
 
@@ -66,18 +72,19 @@ public class AimerIORoboRio implements AimerIO {
     boolean motorDisabled = false;
 
     public AimerIORoboRio() {
-        aimerLeft.setControl(new Follower(ScoringConstants.aimRightMotorId, true));
+        aimerLeft.setControl(
+                new Follower(ScoringConstants.synced.getObject().aimRightMotorId, true));
 
         aimerLeft.setNeutralMode(NeutralModeValue.Brake);
         aimerRight.setNeutralMode(NeutralModeValue.Brake);
 
         aimerRight.setInverted(false);
 
-        setStatorCurrentLimit(ScoringConstants.aimerCurrentLimit);
+        setStatorCurrentLimit(ScoringConstants.synced.getObject().aimerCurrentLimit);
 
         aimerRight.setPosition(0.0);
 
-        controller.setTolerance(ScoringConstants.aimAngleTolerance);
+        controller.setTolerance(ScoringConstants.synced.getObject().aimAngleTolerance);
     }
 
     public void resetPID() {
@@ -97,7 +104,10 @@ public class AimerIORoboRio implements AimerIO {
             timer.start();
 
             initialAngle =
-                    MathUtil.clamp(getEncoderPosition(), 0.0, ScoringConstants.aimMaxAngleRadians);
+                    MathUtil.clamp(
+                            getEncoderPosition(),
+                            0.0,
+                            ScoringConstants.synced.getObject().aimMaxAngleRadians);
             initialVelocity = velocity;
 
             previousGoalAngle = goalAngleRad;
@@ -113,13 +123,13 @@ public class AimerIORoboRio implements AimerIO {
         this.minAngleClamp =
                 MathUtil.clamp(
                         minAngleClamp,
-                        ScoringConstants.aimMinAngleRadians,
-                        ScoringConstants.aimMaxAngleRadians);
+                        ScoringConstants.synced.getObject().aimMinAngleRadians,
+                        ScoringConstants.synced.getObject().aimMaxAngleRadians);
         this.maxAngleClamp =
                 MathUtil.clamp(
                         maxAngleClamp,
-                        ScoringConstants.aimMinAngleRadians,
-                        ScoringConstants.aimMaxAngleRadians);
+                        ScoringConstants.synced.getObject().aimMinAngleRadians,
+                        ScoringConstants.synced.getObject().aimMaxAngleRadians);
     }
 
     @Override
@@ -159,7 +169,8 @@ public class AimerIORoboRio implements AimerIO {
 
     private double getEncoderPosition() {
         // return aimerRight.getPosition().getValueAsDouble() * 2.0 * Math.PI * (1.0 / 80.0);
-        return encoder.getAbsolutePosition() * 2.0 * Math.PI - ScoringConstants.aimerEncoderOffset;
+        return encoder.getAbsolutePosition() * 2.0 * Math.PI
+                - ScoringConstants.synced.getObject().aimerEncoderOffset;
     }
 
     public void setStatorCurrentLimit(double limit) {

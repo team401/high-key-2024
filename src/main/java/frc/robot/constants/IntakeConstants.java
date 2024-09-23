@@ -1,10 +1,21 @@
 package frc.robot.constants;
 
-public class IntakeConstants {
-    public static final int leftIntakeMotorID = 9;
-    public static final int rightIntakeMotorID = 10;
-    public static final int indexTwoMotorID = 14;
+import coppercore.parameter_tools.JSONExclude;
+import coppercore.parameter_tools.JSONSync;
 
-    public static final double intakePower = 12.0;
-    public static final double beltPower = 12.0;
+public class IntakeConstants {
+
+    @JSONExclude
+    public static final JSONSync<IntakeConstants> synced =
+            new JSONSync<IntakeConstants>(
+                    new IntakeConstants(),
+                    "filePath",
+                    new JSONSync.JSONSyncConfigBuilder().build());
+
+    public final int leftIntakeMotorID = 9;
+    public final int rightIntakeMotorID = 10;
+    public final int indexTwoMotorID = 14;
+
+    public final double intakePower = 12.0;
+    public final double beltPower = 12.0;
 }

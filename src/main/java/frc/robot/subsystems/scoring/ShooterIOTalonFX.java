@@ -12,14 +12,17 @@ import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.SensorConstants;
 
 public class ShooterIOTalonFX implements ShooterIO {
-    private final TalonFX kicker = new TalonFX(ScoringConstants.kickerMotorId);
+    private final TalonFX kicker = new TalonFX(ScoringConstants.synced.getObject().kickerMotorId);
 
-    private final TalonFX shooterLeft = new TalonFX(ScoringConstants.shooterLeftMotorId);
-    private final TalonFX shooterRight = new TalonFX(ScoringConstants.shooterRightMotorId);
+    private final TalonFX shooterLeft =
+            new TalonFX(ScoringConstants.synced.getObject().shooterLeftMotorId);
+    private final TalonFX shooterRight =
+            new TalonFX(ScoringConstants.synced.getObject().shooterRightMotorId);
 
     private final Slot0Configs slot0 = new Slot0Configs();
 
-    DigitalInput bannerSensor = new DigitalInput(SensorConstants.indexerSensorPort);
+    DigitalInput bannerSensor =
+            new DigitalInput(SensorConstants.synced.getObject().indexerSensorPort);
 
     private boolean override = false;
     private double overrideVolts = 0.0;
@@ -41,28 +44,31 @@ public class ShooterIOTalonFX implements ShooterIO {
         TalonFXConfigurator shooterLeftConfig = shooterLeft.getConfigurator();
         shooterLeftConfig.apply(
                 new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(ScoringConstants.shooterCurrentLimit)
+                        .withStatorCurrentLimit(
+                                ScoringConstants.synced.getObject().shooterCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
         TalonFXConfigurator shooterRightConfig = shooterRight.getConfigurator();
         shooterRightConfig.apply(
                 new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(ScoringConstants.shooterCurrentLimit)
+                        .withStatorCurrentLimit(
+                                ScoringConstants.synced.getObject().shooterCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
         TalonFXConfigurator kickerConfig = kicker.getConfigurator();
         kickerConfig.apply(
                 new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(ScoringConstants.kickerCurrentLimit)
+                        .withStatorCurrentLimit(
+                                ScoringConstants.synced.getObject().kickerCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
-        slot0.withKP(ScoringConstants.shooterkP);
-        slot0.withKI(ScoringConstants.shooterkI);
-        slot0.withKD(ScoringConstants.shooterkD);
+        slot0.withKP(ScoringConstants.synced.getObject().shooterkP);
+        slot0.withKI(ScoringConstants.synced.getObject().shooterkI);
+        slot0.withKD(ScoringConstants.synced.getObject().shooterkD);
 
-        slot0.withKS(ScoringConstants.shooterkS);
-        slot0.withKV(ScoringConstants.shooterkV);
-        slot0.withKA(ScoringConstants.shooterkA);
+        slot0.withKS(ScoringConstants.synced.getObject().shooterkS);
+        slot0.withKV(ScoringConstants.synced.getObject().shooterkV);
+        slot0.withKA(ScoringConstants.synced.getObject().shooterkA);
 
         shooterLeft.getConfigurator().apply(slot0);
         shooterRight.getConfigurator().apply(slot0);
@@ -71,7 +77,8 @@ public class ShooterIOTalonFX implements ShooterIO {
     @Override
     public void setShooterVelocityRPM(double velocity) {
         goalLeftVelocityRPM = velocity;
-        goalRightVelocityRPM = velocity * ScoringConstants.shooterOffsetAdjustment;
+        goalRightVelocityRPM =
+                velocity * ScoringConstants.synced.getObject().shooterOffsetAdjustment;
     }
 
     @Override
@@ -114,14 +121,14 @@ public class ShooterIOTalonFX implements ShooterIO {
 
         inputs.shooterLeftVelocityRPM =
                 shooterLeft.getVelocity().getValueAsDouble()
-                        / ConversionConstants.kSecondsToMinutes;
+                        / ConversionConstants.synced.getObject().kSecondsToMinutes;
         inputs.shooterLeftAppliedVolts = shooterLeft.getMotorVoltage().getValueAsDouble();
         inputs.shooterLeftStatorCurrentAmps = shooterLeft.getStatorCurrent().getValueAsDouble();
         inputs.shooterLeftSupplyCurrentAmps = shooterLeft.getSupplyCurrent().getValueAsDouble();
 
         inputs.shooterRightVelocityRPM =
                 shooterRight.getVelocity().getValueAsDouble()
-                        / ConversionConstants.kSecondsToMinutes;
+                        / ConversionConstants.synced.getObject().kSecondsToMinutes;
         inputs.shooterRightAppliedVolts = shooterRight.getMotorVoltage().getValueAsDouble();
         inputs.shooterRightStatorCurrentAmps = shooterRight.getStatorCurrent().getValueAsDouble();
         inputs.shooterRightSupplyCurrentAmps = shooterRight.getSupplyCurrent().getValueAsDouble();
@@ -151,11 +158,11 @@ public class ShooterIOTalonFX implements ShooterIO {
             shooterLeft.setControl(
                     new VelocityDutyCycle(
                             outputs.shooterLeftGoalVelocityRPM
-                                    / ConversionConstants.kMinutesToSeconds));
+                                    / ConversionConstants.synced.getObject().kMinutesToSeconds));
             shooterRight.setControl(
                     new VelocityDutyCycle(
                             outputs.shooterRightGoalVelocityRPM
-                                    / ConversionConstants.kMinutesToSeconds));
+                                    / ConversionConstants.synced.getObject().kMinutesToSeconds));
         }
 
         kicker.setVoltage(outputs.kickerGoalVolts);

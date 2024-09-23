@@ -140,10 +140,10 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(2),
                         new PIDConstants(
-                                PhoenixDriveConstants.autoAlignmentkP,
-                                PhoenixDriveConstants.autoAlignmentkI,
-                                PhoenixDriveConstants.autoAlignmentkD),
-                        PhoenixDriveConstants.kSpeedAt12VoltsMps,
+                                PhoenixDriveConstants.synced.getObject().autoAlignmentkP,
+                                PhoenixDriveConstants.synced.getObject().autoAlignmentkI,
+                                PhoenixDriveConstants.synced.getObject().autoAlignmentkD),
+                        PhoenixDriveConstants.synced.getObject().kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig(false, false)),
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
@@ -162,7 +162,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                             updateSimState(deltaTime, RobotController.getBatteryVoltage());
                         });
 
-        simNotifier.startPeriodic(PhoenixDriveConstants.kSimLoopPeriod);
+        simNotifier.startPeriodic(PhoenixDriveConstants.synced.getObject().kSimLoopPeriod);
     }
 
     public ChassisSpeeds getCurrentSpeeds() {

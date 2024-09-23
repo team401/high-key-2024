@@ -56,12 +56,12 @@ public class Camera {
             switch (zone) {
                 case LEFT:
                     if (AllianceUtil.isRightOfSpeaker(inputs.latestFieldToRobot.getY(), 2)) {
-                        return VisionConstants.lowCameraUncertainty;
+                        return VisionConstants.synced.getObject().lowCameraUncertainty;
                     }
                     break;
                 case RIGHT:
                     if (AllianceUtil.isLeftOfSpeaker(inputs.latestFieldToRobot.getY(), 2)) {
-                        return VisionConstants.lowCameraUncertainty;
+                        return VisionConstants.synced.getObject().lowCameraUncertainty;
                     }
                     break;
                 case MIDDLE:
@@ -70,19 +70,21 @@ public class Camera {
         }
 
         // If the robot is very close, trust highly
-        if (inputs.averageTagDistanceM < VisionConstants.skewCutoffDistance) {
+        if (inputs.averageTagDistanceM < VisionConstants.synced.getObject().skewCutoffDistance) {
             return DriverStation.isTeleop()
-                    ? VisionConstants.teleopCameraUncertainty
-                    : VisionConstants.lowCameraUncertainty;
+                    ? VisionConstants.synced.getObject().teleopCameraUncertainty
+                    : VisionConstants.synced.getObject().lowCameraUncertainty;
             // If the robot is somewhat close, check if the cameras are at extreme angles, and trust
             // accordingly
-        } else if (inputs.averageTagDistanceM < VisionConstants.lowUncertaintyCutoffDistance) {
-            return Math.abs(inputs.averageTagYaw.getDegrees()) < VisionConstants.skewCutoffRotation
-                    ? VisionConstants.lowCameraUncertainty
-                    : VisionConstants.highCameraUncertainty;
+        } else if (inputs.averageTagDistanceM
+                < VisionConstants.synced.getObject().lowUncertaintyCutoffDistance) {
+            return Math.abs(inputs.averageTagYaw.getDegrees())
+                            < VisionConstants.synced.getObject().skewCutoffRotation
+                    ? VisionConstants.synced.getObject().lowCameraUncertainty
+                    : VisionConstants.synced.getObject().highCameraUncertainty;
             // If the robot is past the final distance cutoff, distrust
         } else {
-            return VisionConstants.highCameraUncertainty;
+            return VisionConstants.synced.getObject().highCameraUncertainty;
         }
     }
 }

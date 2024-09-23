@@ -24,17 +24,20 @@ public class AimerIOSim implements AimerIO {
                     3 / 2 * Math.PI);
     private final PIDController controller =
             new PIDController(
-                    ScoringConstants.aimerkP, ScoringConstants.aimerkI, ScoringConstants.aimerkD);
+                    ScoringConstants.synced.getObject().aimerkP,
+                    ScoringConstants.synced.getObject().aimerkI,
+                    ScoringConstants.synced.getObject().aimerkD);
     private final ArmFeedforward feedforward =
             new ArmFeedforward(
-                    ScoringConstants.aimerkS,
-                    ScoringConstants.aimerkG,
-                    ScoringConstants.aimerkV,
-                    ScoringConstants.aimerkA);
+                    ScoringConstants.synced.getObject().aimerkS,
+                    ScoringConstants.synced.getObject().aimerkG,
+                    ScoringConstants.synced.getObject().aimerkV,
+                    ScoringConstants.synced.getObject().aimerkA);
     private final TrapezoidProfile profile =
             new TrapezoidProfile(
                     new TrapezoidProfile.Constraints(
-                            ScoringConstants.aimCruiseVelocity, ScoringConstants.aimAcceleration));
+                            ScoringConstants.synced.getObject().aimCruiseVelocity,
+                            ScoringConstants.synced.getObject().aimAcceleration));
 
     private final Timer timer = new Timer();
 
@@ -80,9 +83,11 @@ public class AimerIOSim implements AimerIO {
             return;
         }
         this.minAngleClamp =
-                MathUtil.clamp(minAngleClamp, 0.0, ScoringConstants.aimMaxAngleRadians);
+                MathUtil.clamp(
+                        minAngleClamp, 0.0, ScoringConstants.synced.getObject().aimMaxAngleRadians);
         this.maxAngleClamp =
-                MathUtil.clamp(maxAngleClamp, 0.0, ScoringConstants.aimMaxAngleRadians);
+                MathUtil.clamp(
+                        maxAngleClamp, 0.0, ScoringConstants.synced.getObject().aimMaxAngleRadians);
     }
 
     @Override
@@ -104,7 +109,7 @@ public class AimerIOSim implements AimerIO {
 
     @Override
     public void updateInputs(AimerIOInputs inputs) {
-        sim.update(SimConstants.loopTime);
+        sim.update(SimConstants.synced.getObject().loopTime);
 
         inputs.aimGoalAngleRad = goalAngleRad;
         inputs.aimProfileGoalAngleRad = controlSetpoint;
@@ -124,7 +129,9 @@ public class AimerIOSim implements AimerIO {
                         new State(goalAngleRad, 0));
         double controlSetpoint =
                 MathUtil.clamp(
-                        trapezoidSetpoint.position, 0.0, ScoringConstants.aimMaxAngleRadians);
+                        trapezoidSetpoint.position,
+                        0.0,
+                        ScoringConstants.synced.getObject().aimMaxAngleRadians);
         double velocitySetpoint = trapezoidSetpoint.velocity;
 
         if (override) {

@@ -98,7 +98,7 @@ public class RobotContainer {
             }
         }
 
-        if (FeatureFlags.runIntake) {
+        if (FeatureFlags.synced.getObject().runIntake) {
             masher.b()
                     .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.INTAKE)))
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
@@ -123,7 +123,7 @@ public class RobotContainer {
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
         }
 
-        if (FeatureFlags.runScoring) {
+        if (FeatureFlags.synced.getObject().runScoring) {
             scoringSubsystem.setDefaultCommand(
                     new ShootWithGamepad(
                             () -> rightJoystick.getHID().getRawButton(4),
@@ -165,7 +165,7 @@ public class RobotContainer {
 
             masher.povUp();
         }
-        if (FeatureFlags.runDrive) {
+        if (FeatureFlags.synced.getObject().runDrive) {
             masher.povUp()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 
@@ -199,60 +199,68 @@ public class RobotContainer {
     private void configureSubsystems() {
         // TODO: Potentially migrate to Constants.mode
         if (Robot.isReal()) {
-            if (FeatureFlags.runDrive) {
+            if (FeatureFlags.synced.getObject().runDrive) {
                 drive =
                         new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
+                                PhoenixDriveConstants.synced.getObject().DrivetrainConstants,
+                                PhoenixDriveConstants.synced.getObject().FrontLeft,
+                                PhoenixDriveConstants.synced.getObject().FrontRight,
+                                PhoenixDriveConstants.synced.getObject().BackLeft,
+                                PhoenixDriveConstants.synced.getObject().BackRight);
                 logger = new Telemetry(6);
             }
-            if (FeatureFlags.runVision) {
-                tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
+            if (FeatureFlags.synced.getObject().runVision) {
+                tagVision =
+                        new VisionLocalizer(
+                                new CameraContainerReal(
+                                        VisionConstants.synced.getObject().cameras));
             }
-            if (FeatureFlags.runIntake) {
+            if (FeatureFlags.synced.getObject().runIntake) {
                 intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
             }
-            if (FeatureFlags.runScoring) {
+            if (FeatureFlags.synced.getObject().runScoring) {
                 scoringSubsystem =
                         new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
             }
         } else {
-            if (FeatureFlags.simulateDrive) {
+            if (FeatureFlags.synced.getObject().simulateDrive) {
                 drive =
                         new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
+                                PhoenixDriveConstants.synced.getObject().DrivetrainConstants,
+                                PhoenixDriveConstants.synced.getObject().FrontLeft,
+                                PhoenixDriveConstants.synced.getObject().FrontRight,
+                                PhoenixDriveConstants.synced.getObject().BackLeft,
+                                PhoenixDriveConstants.synced.getObject().BackRight);
 
                 logger = new Telemetry(6);
             }
-            if (FeatureFlags.simulateVision) {
+            if (FeatureFlags.synced.getObject().simulateVision) {
                 if (logger != null) {
                     tagVision =
                             new VisionLocalizer(
                                     new CameraContainerSim(
-                                            VisionConstants.cameras, logger::getModuleStates));
+                                            VisionConstants.synced.getObject().cameras,
+                                            logger::getModuleStates));
                 } else {
                     // TODO: Maybe try to spoof vision sim without drive telemetry by giving it all
                     // zeros
                     throw new NullPointerException("Vision simulation depends on drive!");
                 }
             }
-            if (FeatureFlags.simulateIntake) {
+            if (FeatureFlags.synced.getObject().simulateIntake) {
                 intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
             }
-            if (FeatureFlags.simulateScoring) {
+            if (FeatureFlags.synced.getObject().simulateScoring) {
                 scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
             }
         }
 
-        if (FeatureFlags.runDrive && FeatureFlags.runVision && Robot.isReal()
-                || FeatureFlags.simulateDrive && FeatureFlags.simulateVision && !Robot.isReal()) {
+        if (FeatureFlags.synced.getObject().runDrive
+                        && FeatureFlags.synced.getObject().runVision
+                        && Robot.isReal()
+                || FeatureFlags.synced.getObject().simulateDrive
+                        && FeatureFlags.synced.getObject().simulateVision
+                        && !Robot.isReal()) {
             tagVision.setCameraConsumer(
                     (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
         }

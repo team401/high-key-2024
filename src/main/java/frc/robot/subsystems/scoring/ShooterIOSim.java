@@ -17,20 +17,20 @@ public class ShooterIOSim implements ShooterIO {
 
     private final PIDController shooterLeftController =
             new PIDController(
-                    ScoringConstants.shooterkP,
-                    ScoringConstants.shooterkI,
-                    ScoringConstants.shooterkD);
+                    ScoringConstants.synced.getObject().shooterkP,
+                    ScoringConstants.synced.getObject().shooterkI,
+                    ScoringConstants.synced.getObject().shooterkD);
     private final PIDController shooterRightController =
             new PIDController(
-                    ScoringConstants.shooterkP,
-                    ScoringConstants.shooterkI,
-                    ScoringConstants.shooterkD);
+                    ScoringConstants.synced.getObject().shooterkP,
+                    ScoringConstants.synced.getObject().shooterkI,
+                    ScoringConstants.synced.getObject().shooterkD);
 
     private final SimpleMotorFeedforward shooterFeedforward =
             new SimpleMotorFeedforward(
-                    ScoringConstants.shooterkS,
-                    ScoringConstants.shooterkV,
-                    ScoringConstants.shooterkA);
+                    ScoringConstants.synced.getObject().shooterkS,
+                    ScoringConstants.synced.getObject().shooterkV,
+                    ScoringConstants.synced.getObject().shooterkA);
 
     private boolean override = false;
 
@@ -45,7 +45,8 @@ public class ShooterIOSim implements ShooterIO {
     @Override
     public void setShooterVelocityRPM(double velocity) {
         shooterLeftGoalVelRPM = velocity;
-        shooterRightGoalVelRPM = velocity * ScoringConstants.shooterOffsetAdjustment;
+        shooterRightGoalVelRPM =
+                velocity * ScoringConstants.synced.getObject().shooterOffsetAdjustment;
     }
 
     @Override
@@ -72,17 +73,17 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        shooterLeftSim.update(SimConstants.loopTime);
-        shooterRightSim.update(SimConstants.loopTime);
+        shooterLeftSim.update(SimConstants.synced.getObject().loopTime);
+        shooterRightSim.update(SimConstants.synced.getObject().loopTime);
 
         inputs.shooterLeftVelocityRPM =
                 shooterLeftSim.getAngularVelocityRadPerSec()
-                        * ConversionConstants.kRadiansPerSecondToRPM;
+                        * ConversionConstants.synced.getObject().kRadiansPerSecondToRPM;
         inputs.shooterLeftStatorCurrentAmps = shooterLeftSim.getCurrentDrawAmps();
 
         inputs.shooterRightVelocityRPM =
                 shooterRightSim.getAngularVelocityRadPerSec()
-                        * ConversionConstants.kRadiansPerSecondToRPM;
+                        * ConversionConstants.synced.getObject().kRadiansPerSecondToRPM;
         inputs.shooterRightStatorCurrentAmps = shooterRightSim.getCurrentDrawAmps();
 
         inputs.shooterLeftAppliedVolts = shooterLeftAppliedVolts;
@@ -106,13 +107,15 @@ public class ShooterIOSim implements ShooterIO {
                             + shooterLeftController.calculate(
                                     shooterLeftSim.getAngularVelocityRadPerSec(),
                                     outputs.shooterLeftGoalVelocityRPM
-                                            * ConversionConstants.kRPMToRadiansPerSecond);
+                                            * ConversionConstants.synced.getObject()
+                                                    .kRPMToRadiansPerSecond);
             shooterRightAppliedVolts =
                     shooterFeedforward.calculate(shooterRightSim.getAngularVelocityRadPerSec())
                             + shooterRightController.calculate(
                                     shooterRightSim.getAngularVelocityRadPerSec(),
                                     outputs.shooterRightGoalVelocityRPM
-                                            * ConversionConstants.kRPMToRadiansPerSecond);
+                                            * ConversionConstants.synced.getObject()
+                                                    .kRPMToRadiansPerSecond);
         }
 
         shooterLeftSim.setInputVoltage(shooterLeftAppliedVolts);

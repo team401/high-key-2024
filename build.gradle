@@ -79,7 +79,7 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	implementation 'com.github.team401:coppercore:main-SNAPSHOT'
+	implementation 'com.github.team401:coppercore:b2de1ed914'
 }
 
 test {

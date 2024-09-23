@@ -12,12 +12,14 @@ import frc.robot.constants.SensorConstants;
 
 public class IntakeNEOVortex implements IntakeIO {
 
-    private TalonFX leftIntake = new TalonFX(IntakeConstants.leftIntakeMotorID);
-    private TalonFX rightIntake = new TalonFX(IntakeConstants.rightIntakeMotorID);
+    private TalonFX leftIntake = new TalonFX(IntakeConstants.synced.getObject().leftIntakeMotorID);
+    private TalonFX rightIntake =
+            new TalonFX(IntakeConstants.synced.getObject().rightIntakeMotorID);
 
-    private TalonFX belt = new TalonFX(IntakeConstants.indexTwoMotorID);
+    private TalonFX belt = new TalonFX(IntakeConstants.synced.getObject().indexTwoMotorID);
 
-    DigitalInput bannerSensor = new DigitalInput(SensorConstants.uptakeSensorPort);
+    DigitalInput bannerSensor =
+            new DigitalInput(SensorConstants.synced.getObject().uptakeSensorPort);
 
     private double goalVoltsLeftIntake, goalVoltsRightIntake, goalVoltsBelt;
 

@@ -32,7 +32,7 @@ public class CameraIOPhoton implements CameraIO {
 
         poseEstimator =
                 new PhotonPoseEstimator(
-                        VisionConstants.fieldLayout,
+                        VisionConstants.synced.getObject().fieldLayout,
                         PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                         robotToCamera);
     }
@@ -103,7 +103,8 @@ public class CameraIOPhoton implements CameraIO {
         }
 
         // TODO: Figure out if a max distance cap is good or necessary
-        if (calculateAverageTagDistance(photonPose) > VisionConstants.maxTagDistance) {
+        if (calculateAverageTagDistance(photonPose)
+                > VisionConstants.synced.getObject().maxTagDistance) {
             return false;
         }
 

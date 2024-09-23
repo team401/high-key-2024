@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import coppercore.parameter_tools.JSONExclude;
+import coppercore.parameter_tools.JSONSync;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -19,26 +21,34 @@ import java.util.Collections;
 import java.util.List;
 
 public final class VisionConstants {
-    public static final String tagLayoutName = "Pairs-Only";
-    public static final AprilTagFieldLayout fieldLayout = initLayout(tagLayoutName);
 
-    public static final double lowUncertaintyCutoffDistance = 6.5;
+    @JSONExclude
+    public static final JSONSync<VisionConstants> synced =
+            new JSONSync<VisionConstants>(
+                    new VisionConstants(),
+                    "filePath",
+                    new JSONSync.JSONSyncConfigBuilder().build());
 
-    public static final double skewCutoffDistance = 5.8;
-    public static final double skewCutoffRotation = Units.degreesToRadians(50);
+    public final String tagLayoutName = "Pairs-Only";
+    public final AprilTagFieldLayout fieldLayout = initLayout(tagLayoutName);
+
+    public final double lowUncertaintyCutoffDistance = 6.5;
+
+    public final double skewCutoffDistance = 5.8;
+    public final double skewCutoffRotation = Units.degreesToRadians(50);
 
     // Maximum average tag distance before a measurement is fully ignored
-    public static final double maxTagDistance = 8.0;
+    public final double maxTagDistance = 8.0;
 
-    public static final Matrix<N3, N1> teleopCameraUncertainty = VecBuilder.fill(0.35, 0.35, 3.5);
+    public final Matrix<N3, N1> teleopCameraUncertainty = VecBuilder.fill(0.35, 0.35, 3.5);
 
-    public static final Matrix<N3, N1> lowCameraUncertainty = VecBuilder.fill(0.6, 1.0, 4);
+    public final Matrix<N3, N1> lowCameraUncertainty = VecBuilder.fill(0.6, 1.0, 4);
 
-    public static final Matrix<N3, N1> highCameraUncertainty = VecBuilder.fill(12.0, 16.0, 40);
+    public final Matrix<N3, N1> highCameraUncertainty = VecBuilder.fill(12.0, 16.0, 40);
 
-    public static final Matrix<N3, N1> driveUncertainty = VecBuilder.fill(0.1, 0.1, 0.1);
+    public final Matrix<N3, N1> driveUncertainty = VecBuilder.fill(0.1, 0.1, 0.1);
 
-    public static final List<CameraParams> cameras =
+    public final List<CameraParams> cameras =
             List.of(
                     new CameraParams(
                             "Front-Left",
@@ -72,7 +82,7 @@ public final class VisionConstants {
     //                     new Rotation3d(0.0, -0.349, 0.524)),
     //             CameraTrustZone.MIDDLE));
 
-    public static record CameraParams(
+    public record CameraParams(
             String name,
             int xResolution,
             int yResolution,
@@ -81,7 +91,7 @@ public final class VisionConstants {
             Transform3d robotToCamera,
             CameraTrustZone zone) {}
 
-    private static AprilTagFieldLayout initLayout(String name) {
+    private AprilTagFieldLayout initLayout(String name) {
         AprilTagFieldLayout layout;
         // AprilTagFieldLayout's constructor throws an IOException, so we must catch it
         // in order to initialize our layout as a static constant
