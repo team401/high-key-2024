@@ -47,8 +47,8 @@ public class Robot extends LoggedRobot {
               // new
               // log
           }
-          Logger.start();
           */
+        Logger.start();
     }
 
     @Override

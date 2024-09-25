@@ -49,6 +49,68 @@ public class RobotContainer {
         configureBindings();
     }
 
+    private void configureSubsystems() {
+        // TODO: Potentially migrate to Constants.mode
+        if (Robot.isReal()) {
+            if (FeatureFlags.runDrive) {
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
+                logger = new Telemetry(6);
+            }
+            if (FeatureFlags.runVision) {
+                tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
+            }
+            if (FeatureFlags.runIntake) {
+                intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
+            }
+            if (FeatureFlags.runScoring) {
+                scoringSubsystem =
+                        new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
+            }
+        } else {
+            if (FeatureFlags.simulateDrive) {
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
+
+                logger = new Telemetry(6);
+            }
+            if (FeatureFlags.simulateVision) {
+                if (logger != null) {
+                    tagVision =
+                            new VisionLocalizer(
+                                    new CameraContainerSim(
+                                            VisionConstants.cameras, logger::getModuleStates));
+                } else {
+                    // TODO: Maybe try to spoof vision sim without drive telemetry by giving it all
+                    // zeros
+                    throw new NullPointerException("Vision simulation depends on drive!");
+                }
+            }
+            if (FeatureFlags.simulateIntake) {
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+            }
+            if (FeatureFlags.simulateScoring) {
+                scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
+            }
+        }
+
+        if (FeatureFlags.runDrive && FeatureFlags.runVision && Robot.isReal()
+                || FeatureFlags.simulateDrive && FeatureFlags.simulateVision && !Robot.isReal()) {
+            tagVision.setCameraConsumer(
+                    (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
+        }
+    }
+
     private void configureBindings() {
         if (drive != null) {
             drive.registerTelemetry(logger::telemeterize);
@@ -198,68 +260,6 @@ public class RobotContainer {
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.RIGHT)));
         }
     } // spotless:on
-
-    private void configureSubsystems() {
-        // TODO: Potentially migrate to Constants.mode
-        if (Robot.isReal()) {
-            if (FeatureFlags.runDrive) {
-                drive =
-                        new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
-                logger = new Telemetry(6);
-            }
-            if (FeatureFlags.runVision) {
-                tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
-            }
-            if (FeatureFlags.runIntake) {
-                intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
-            }
-            if (FeatureFlags.runScoring) {
-                scoringSubsystem =
-                        new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
-            }
-        } else {
-            if (FeatureFlags.simulateDrive) {
-                drive =
-                        new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
-
-                logger = new Telemetry(6);
-            }
-            if (FeatureFlags.simulateVision) {
-                if (logger != null) {
-                    tagVision =
-                            new VisionLocalizer(
-                                    new CameraContainerSim(
-                                            VisionConstants.cameras, logger::getModuleStates));
-                } else {
-                    // TODO: Maybe try to spoof vision sim without drive telemetry by giving it all
-                    // zeros
-                    throw new NullPointerException("Vision simulation depends on drive!");
-                }
-            }
-            if (FeatureFlags.simulateIntake) {
-                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
-            }
-            if (FeatureFlags.simulateScoring) {
-                scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
-            }
-        }
-
-        if (FeatureFlags.runDrive && FeatureFlags.runVision && Robot.isReal()
-                || FeatureFlags.simulateDrive && FeatureFlags.simulateVision && !Robot.isReal()) {
-            tagVision.setCameraConsumer(
-                    (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
-        }
-    }
 
     public void enabledInit() {
         intakeSubsystem.run(IntakeAction.NONE);
