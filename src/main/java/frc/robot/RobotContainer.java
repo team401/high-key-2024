@@ -92,6 +92,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return drive.getAutoPath("Example Path");
+        return drive.getAutoPath("Example");
     }
 }
