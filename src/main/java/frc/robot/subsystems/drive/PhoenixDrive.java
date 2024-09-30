@@ -195,6 +195,10 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         this.setControl(request);
     }
 
+    public void setTargetHeading (double targetHeading) {
+        
+    }
+
     // SYS ID
 
     public void setSysIdRoutine(SysIdRoutineType routineType) {
