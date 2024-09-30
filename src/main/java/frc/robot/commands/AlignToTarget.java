@@ -3,8 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
@@ -19,27 +17,28 @@ public class AlignToTarget extends Command {
         this.drivetrain = drivetrain;
         this.desiredTargetPose = desiredTargetPose;
         rotationController =
-        new PIDController(PhoenixDriveConstants.alignmentkP, PhoenixDriveConstants.alignmentkI, PhoenixDriveConstants.alignmentkD);
-rotationController.enableContinuousInput(-Math.PI, Math.PI);
-        
+                new PIDController(
+                        PhoenixDriveConstants.alignmentkP,
+                        PhoenixDriveConstants.alignmentkI,
+                        PhoenixDriveConstants.alignmentkD);
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
+
         this.addRequirements(drivetrain);
     }
 
     private double getTargetHeading() {
-        double targetVectorX =
-                desiredTargetPose.getX() - currentPose.getX();
-        double targetVectorY =
-                desiredTargetPose.getY() - currentPose.getY();
+        double targetVectorX = desiredTargetPose.getX() - currentPose.getX();
+        double targetVectorY = desiredTargetPose.getY() - currentPose.getY();
         return Math.atan2(targetVectorY, targetVectorX);
     }
 
-    @Override 
-    public void initialize () {
+    @Override
+    public void initialize() {
         // get current pose of robot
     }
 
     @Override
-    public void execute () {
+    public void execute() {
         double desiredHeading = this.getTargetHeading();
         double currentHeading = currentPose.getRotation().getRadians();
 
@@ -51,18 +50,19 @@ rotationController.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     @Override
-    public boolean isFinished () {
+    public boolean isFinished() {
         double desiredHeading = this.getTargetHeading();
         double currentHeading = currentPose.getRotation().getRadians();
 
-        if (Math.abs(desiredHeading - currentHeading) < PhoenixDriveConstants.alignToleranceRadians) {
+        if (Math.abs(desiredHeading - currentHeading)
+                < PhoenixDriveConstants.alignToleranceRadians) {
             return true;
         } else {
             return false;
         }
     }
 
-    @Override 
+    @Override
     public void end(boolean interrupted) {
         // set drive back to driving mode
     }

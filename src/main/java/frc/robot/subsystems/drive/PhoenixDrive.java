@@ -2,8 +2,6 @@ package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Volts;
 
-import java.util.Optional;
-
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
@@ -19,8 +17,6 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -33,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.PhoenixDriveConstants;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
@@ -155,7 +152,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                         new ReplanningConfig(false, false)),
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
-        
+
         // override rotation for aiming at target
         PPHolonomicDriveController.setRotationTargetOverride(this::getAutoOverrideRotation);
     }
@@ -221,9 +218,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         this.setControl(request);
     }
 
-    public void setTargetHeading (double targetHeading) {
-
-    }
+    public void setTargetHeading(double targetHeading) {}
 
     // SYS ID
 
