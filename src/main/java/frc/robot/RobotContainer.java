@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.AlignToTarget;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.FieldConstants;
@@ -46,33 +47,25 @@ public class RobotContainer {
                 case Blue:
                     NamedCommands.registerCommand(
                             "alignToSpeaker",
-                            Commands.runOnce(
-                                    () ->
-                                            drive.setAutoAlignTarget(
-                                                    new Pose2d(
-                                                            FieldConstants.fieldToBlueSpeaker,
-                                                            new Rotation2d()))));
+                            new AlignToTarget(
+                                    drive,
+                                    new Pose2d(
+                                            FieldConstants.fieldToBlueSpeaker, new Rotation2d())));
                     return;
                 case Red:
                     NamedCommands.registerCommand(
                             "alignToSpeaker",
-                            Commands.runOnce(
-                                    () ->
-                                            drive.setAutoAlignTarget(
-                                                    new Pose2d(
-                                                            FieldConstants.fieldToRedSpeaker,
-                                                            new Rotation2d()))));
+                            new AlignToTarget(
+                                    drive,
+                                    new Pose2d(
+                                            FieldConstants.fieldToRedSpeaker, new Rotation2d())));
                     return;
             }
         } else {
             NamedCommands.registerCommand(
                     "alignToSpeaker",
-                    Commands.runOnce(
-                            () ->
-                                    drive.setAutoAlignTarget(
-                                            new Pose2d(
-                                                    FieldConstants.fieldToRedSpeaker,
-                                                    new Rotation2d()))));
+                    new AlignToTarget(
+                            drive, new Pose2d(FieldConstants.fieldToRedSpeaker, new Rotation2d())));
         }
     }
 

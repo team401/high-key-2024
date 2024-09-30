@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
@@ -12,6 +13,7 @@ public class AlignToTarget extends Command {
     private Pose2d desiredTargetPose;
     private Pose2d currentPose;
     private PIDController rotationController;
+    private final NetworkTableInstance inst;
 
     public AlignToTarget(PhoenixDrive drivetrain, Pose2d desiredTargetPose) {
         this.drivetrain = drivetrain;
@@ -22,6 +24,7 @@ public class AlignToTarget extends Command {
                         PhoenixDriveConstants.alignmentkI,
                         PhoenixDriveConstants.alignmentkD);
         rotationController.enableContinuousInput(-Math.PI, Math.PI);
+        inst = NetworkTableInstance.getDefault();
 
         this.addRequirements(drivetrain);
     }
@@ -35,10 +38,13 @@ public class AlignToTarget extends Command {
     @Override
     public void initialize() {
         // get current pose of robot
+        this.currentPose = drivetrain.getState().Pose;
     }
 
     @Override
     public void execute() {
+        this.currentPose = drivetrain.getState().Pose;
+
         double desiredHeading = this.getTargetHeading();
         double currentHeading = currentPose.getRotation().getRadians();
 

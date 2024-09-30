@@ -16,6 +16,18 @@
           "data": {
             "pathName": "Example Path"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Go To Speaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
+          }
         }
       ]
     }
