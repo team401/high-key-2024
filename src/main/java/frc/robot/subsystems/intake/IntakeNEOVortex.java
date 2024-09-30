@@ -48,7 +48,7 @@ public class IntakeNEOVortex implements IntakeIO {
     }
 
     @Override
-    public void updateInputs(IntakeIOInputs inputs) {
+    public void updateInputs(IntakeInputs inputs) {
         inputs.leftIntakeVoltage = leftIntake.getMotorVoltage().getValueAsDouble();
         inputs.leftIntakeStatorCurrent = leftIntake.getStatorCurrent().getValueAsDouble();
 
@@ -63,7 +63,7 @@ public class IntakeNEOVortex implements IntakeIO {
     }
 
     @Override
-    public void applyOutputs(IntakeIOOutputs outputs) {
+    public void applyOutputs(IntakeOutputs outputs) {
         outputs.leftIntakeGoalVoltage = goalVoltsLeftIntake;
 
         outputs.rightIntakeGoalVoltage = goalVoltsRightIntake;

@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IntakeIO {
 
     @AutoLog
-    public static class IntakeIOInputs {
+    public static class IntakeInputs {
         public double leftIntakeVoltage = 0.0;
         public double leftIntakeStatorCurrent = 0.0;
         public double leftIntakeSupplyCurrent = 0.0;
@@ -22,7 +22,7 @@ public interface IntakeIO {
     }
 
     @AutoLog
-    public static class IntakeIOOutputs {
+    public static class IntakeOutputs {
         public double leftIntakeGoalVoltage = 0.0;
 
         public double rightIntakeGoalVoltage = 0.0;
@@ -30,9 +30,9 @@ public interface IntakeIO {
         public double beltGoalVoltage = 0.0;
     }
 
-    public default void updateInputs(IntakeIOInputs inputs) {}
+    public default void updateInputs(IntakeInputs inputs) {}
 
-    public default void applyOutputs(IntakeIOOutputs outputs) {}
+    public default void applyOutputs(IntakeOutputs outputs) {}
 
     public default void setIntakeVoltage(double volts) {}
 

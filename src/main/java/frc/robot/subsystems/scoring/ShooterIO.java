@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterIO {
     @AutoLog
-    public static class ShooterIOInputs {
+    public static class ShooterInputs {
         public double shooterLeftVelocityRPM = 0.0;
         public double shooterLeftAppliedVolts = 0.0;
         public double shooterLeftStatorCurrentAmps = 0.0;
@@ -22,7 +22,7 @@ public interface ShooterIO {
     }
 
     @AutoLog
-    public static class ShooterIOOutputs {
+    public static class ShooterOutputs {
         public double shooterLeftGoalVelocityRPM = 0.0;
 
         public double shooterRightGoalVelocityRPM = 0.0;
@@ -30,9 +30,9 @@ public interface ShooterIO {
         public double kickerGoalVolts = 0.0;
     }
 
-    public default void updateInputs(ShooterIOInputs inputs) {}
+    public default void updateInputs(ShooterInputs inputs) {}
 
-    public default void applyOutputs(ShooterIOOutputs outputs) {}
+    public default void applyOutputs(ShooterOutputs outputs) {}
 
     public default void setShooterVelocityRPM(double velocity) {}
 

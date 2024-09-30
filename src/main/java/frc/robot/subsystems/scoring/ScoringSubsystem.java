@@ -29,12 +29,12 @@ import org.littletonrobotics.junction.Logger;
 
 public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private final ShooterIO shooterIo;
-    private final ShooterIOInputsAutoLogged shooterInputs = new ShooterIOInputsAutoLogged();
-    private final ShooterIOOutputsAutoLogged shooterOutputs = new ShooterIOOutputsAutoLogged();
+    private final ShooterInputsAutoLogged shooterInputs = new ShooterInputsAutoLogged();
+    private final ShooterOutputsAutoLogged shooterOutputs = new ShooterOutputsAutoLogged();
 
     private final AimerIO aimerIo;
-    private final AimerIOInputsAutoLogged aimerInputs = new AimerIOInputsAutoLogged();
-    private final AimerIOOutputsAutoLogged aimerOutputs = new AimerIOOutputsAutoLogged();
+    private final AimerInputsAutoLogged aimerInputs = new AimerInputsAutoLogged();
+    private final AimerOutputsAutoLogged aimerOutputs = new AimerOutputsAutoLogged();
 
     private final Timer shootTimer = new Timer();
 
