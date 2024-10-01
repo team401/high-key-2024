@@ -11,13 +11,11 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -30,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.Constants.AlignTarget;
 import frc.robot.constants.PhoenixDriveConstants;
-import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
@@ -152,27 +149,10 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                         new ReplanningConfig(false, false)),
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
-
-        // override rotation for aiming at target
-        PPHolonomicDriveController.setRotationTargetOverride(this::getAutoOverrideRotation);
     }
 
     public Command getAutoPath(String pathName) {
         return new PathPlannerAuto(pathName);
-    }
-
-    public void setAutoAlignTarget(Pose2d target) {
-        this.desiredTargetPose = target;
-    }
-
-    // for use in auto pathplanner override
-    private Optional<Rotation2d> getAutoOverrideRotation() {
-        // TODO: add condition for if shooter has acquired note
-        if (desiredTargetPose != null) {
-            return Optional.of(desiredTargetPose.getRotation());
-        } else {
-            return Optional.empty();
-        }
     }
 
     private void startSimThread() {
