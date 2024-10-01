@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.constants.Constants.AlignTarget;
 import frc.robot.constants.PhoenixDriveConstants;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -98,8 +99,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     /* Change this to the sysid routine you want to test */
     private SysIdRoutine routineToApply = SysIdRoutineTranslation;
 
-    // auto
-    private Pose2d desiredTargetPose;
+    private AlignTarget alignTarget = AlignTarget.NONE;
 
     public PhoenixDrive(
             SwerveDrivetrainConstants driveConstants,
@@ -262,5 +262,13 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                             });
             hasAppliedOperatorPerspective = true;
         }
+    }
+
+    public void setAlignTarget(AlignTarget alignTarget) {
+        this.alignTarget = alignTarget;
+    }
+
+    public AlignTarget getAlignTarget() {
+        return alignTarget;
     }
 }
