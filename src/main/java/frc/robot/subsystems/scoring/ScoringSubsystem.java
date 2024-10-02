@@ -304,7 +304,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         double aimAngleRad = aimerInterpolated.getValue(distancetoGoal);
         aimerIo.setAimAngleRad(aimAngleRad);
 
-        shooterIo.setKickerVolts(10);
+        shooterIo.setKickerVolts(12);
 
         if (shootTimer.get() > 0.5) { // TODO: Tune time
             state = ScoringState.PRIME;

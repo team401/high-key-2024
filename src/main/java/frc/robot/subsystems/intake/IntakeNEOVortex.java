@@ -14,13 +14,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import com.revrobotics.CANSparkFlex;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkLimitSwitch;
-import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkLimitSwitch.Type;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.SensorConstants;
 import frc.robot.constants.IntakeConstants;

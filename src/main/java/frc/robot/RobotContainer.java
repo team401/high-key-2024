@@ -297,8 +297,8 @@ public class RobotContainer {
 
             masher.povUp();
         }
-        if (FeatureFlags.runDrive && Robot.isReal()
-                || FeatureFlags.simulateDrive && !Robot.isReal()) {
+        if ((FeatureFlags.runDrive && Robot.isReal())
+                || (FeatureFlags.simulateDrive && !Robot.isReal())) {
             masher.povUp()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 

@@ -47,11 +47,4 @@ public class Constants {
         public static final double kDegreesToRadians = Math.PI / 180.0;
         public static final double kRadiansToDegrees = 180.0 / Math.PI;
     }
-
-    public static final class SensorConstants {
-
-        // TODO: Find real values
-        public static final int indexerSensorPort = 0;
-        public static final int uptakeSensorPort = 0;
-    }
 }

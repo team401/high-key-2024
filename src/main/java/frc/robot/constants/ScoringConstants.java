@@ -23,7 +23,7 @@ public class ScoringConstants {
 
     public static final int aimerMotorId = 9;
 
-    public static final int kickerMotorId = 13;
+    public static final int kickerMotorId = 1;
 
     // TODO: REPLACE THIS WHEN THE ACTUAL SHOOTER IO IS MERGED
     public static final int shooterLeftMotorId = 10;
