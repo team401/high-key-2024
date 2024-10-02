@@ -4,6 +4,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -57,6 +58,15 @@ public class RobotContainer {
         NamedCommands.registerCommand(
                 "alignToSpeaker",
                 new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
+
+        NamedCommands.registerCommand(
+                "intakeNote",
+                new FunctionalCommand(
+                        () -> intakeSubsystem.run(IntakeAction.INTAKE),
+                        () -> {},
+                        interrupted -> intakeSubsystem.run(IntakeAction.NONE),
+                        () -> intakeSubsystem.hasNote(),
+                        intakeSubsystem));
     }
 
     private void configureBindings() {
