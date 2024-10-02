@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.AlignToTarget;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.ShootWithGamepad;
 import frc.robot.constants.Constants;
@@ -53,35 +54,6 @@ public class RobotContainer {
     }
 
     private void configureNamedCommands() {
-        // example command to set align target for auto override rotation
-        // if (!DriverStation.getAlliance().isEmpty()) {
-        //     switch (DriverStation.getAlliance().get()) {
-        //         case Blue:
-        //             NamedCommands.registerCommand(
-        //                     "alignToSpeaker",
-        //                     new AlignToTarget(
-        //                             drive,
-        //                             new Pose2d(
-        //                                     FieldConstants.fieldToBlueSpeaker, new
-        // Rotation2d())));
-        //             return;
-        //         case Red:
-        //             NamedCommands.registerCommand(
-        //                     "alignToSpeaker",
-        //                     new AlignToTarget(
-        //                             drive,
-        //                             new Pose2d(
-        //                                     FieldConstants.fieldToRedSpeaker, new
-        // Rotation2d())));
-        //             return;
-        //     }
-        // } else {
-        //     NamedCommands.registerCommand(
-        //             "alignToSpeaker",
-        //             new AlignToTarget(
-        //                     drive, new Pose2d(FieldConstants.fieldToRedSpeaker, new
-        // Rotation2d())));
-        // }
         NamedCommands.registerCommand(
                 "alignToSpeaker",
                 new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
@@ -190,33 +162,27 @@ public class RobotContainer {
             masher.povUp();
         }
         if (Constants.FeatureFlags.runDrive) {
-            masher.povUp()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
+            masher.povUp().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.UP));
 
-            masher.povRight()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.AMP)));
+            masher.povRight().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.RIGHT));
 
-            masher.povLeft()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SOURCE)));
+            masher.povLeft().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.LEFT));
 
-            masher.povDown()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
+            masher.povDown().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.DOWN));
 
-            rightJoystick
-                    .povUp()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.UP)));
+            rightJoystick.povUp().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.UP));
 
             rightJoystick
                     .povDown()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.DOWN)));
+                    .onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.DOWN));
 
             rightJoystick
                     .povLeft()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.LEFT)));
+                    .onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.LEFT));
 
             rightJoystick
                     .povRight()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.RIGHT)));
+                    .onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.RIGHT));
         }
     } // spotless:on
 
