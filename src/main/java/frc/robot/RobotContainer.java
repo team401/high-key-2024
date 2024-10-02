@@ -61,6 +61,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand(
                 "intakeNote",
+                // intakes to start, ends by setting action to NONE when intake subsystem has note
                 new FunctionalCommand(
                         () -> intakeSubsystem.run(IntakeAction.INTAKE),
                         () -> {},
