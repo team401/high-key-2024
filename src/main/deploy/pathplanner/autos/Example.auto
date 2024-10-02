@@ -18,15 +18,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Go To Speaker"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "alignToSpeaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Go To Speaker"
           }
         }
       ]

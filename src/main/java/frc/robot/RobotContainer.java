@@ -1,8 +1,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -11,14 +9,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.AlignToTarget;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.ShootWithGamepad;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.AlignTarget;
 import frc.robot.constants.Constants.Mode;
 import frc.robot.constants.FeatureFlags;
-import frc.robot.constants.FieldConstants;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
@@ -58,31 +54,37 @@ public class RobotContainer {
 
     private void configureNamedCommands() {
         // example command to set align target for auto override rotation
-        if (!DriverStation.getAlliance().isEmpty()) {
-            switch (DriverStation.getAlliance().get()) {
-                case Blue:
-                    NamedCommands.registerCommand(
-                            "alignToSpeaker",
-                            new AlignToTarget(
-                                    drive,
-                                    new Pose2d(
-                                            FieldConstants.fieldToBlueSpeaker, new Rotation2d())));
-                    return;
-                case Red:
-                    NamedCommands.registerCommand(
-                            "alignToSpeaker",
-                            new AlignToTarget(
-                                    drive,
-                                    new Pose2d(
-                                            FieldConstants.fieldToRedSpeaker, new Rotation2d())));
-                    return;
-            }
-        } else {
-            NamedCommands.registerCommand(
-                    "alignToSpeaker",
-                    new AlignToTarget(
-                            drive, new Pose2d(FieldConstants.fieldToRedSpeaker, new Rotation2d())));
-        }
+        // if (!DriverStation.getAlliance().isEmpty()) {
+        //     switch (DriverStation.getAlliance().get()) {
+        //         case Blue:
+        //             NamedCommands.registerCommand(
+        //                     "alignToSpeaker",
+        //                     new AlignToTarget(
+        //                             drive,
+        //                             new Pose2d(
+        //                                     FieldConstants.fieldToBlueSpeaker, new
+        // Rotation2d())));
+        //             return;
+        //         case Red:
+        //             NamedCommands.registerCommand(
+        //                     "alignToSpeaker",
+        //                     new AlignToTarget(
+        //                             drive,
+        //                             new Pose2d(
+        //                                     FieldConstants.fieldToRedSpeaker, new
+        // Rotation2d())));
+        //             return;
+        //     }
+        // } else {
+        //     NamedCommands.registerCommand(
+        //             "alignToSpeaker",
+        //             new AlignToTarget(
+        //                     drive, new Pose2d(FieldConstants.fieldToRedSpeaker, new
+        // Rotation2d())));
+        // }
+        NamedCommands.registerCommand(
+                "alignToSpeaker",
+                new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
     }
 
     private void configureBindings() {

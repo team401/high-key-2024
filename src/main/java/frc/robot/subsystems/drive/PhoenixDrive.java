@@ -11,11 +11,13 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -27,7 +29,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.Constants.AlignTarget;
+import frc.robot.constants.FieldConstants;
 import frc.robot.constants.PhoenixDriveConstants;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
@@ -149,6 +153,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                         new ReplanningConfig(false, false)),
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
+
+        PPHolonomicDriveController.setRotationTargetOverride(this::getAutoRotation);
     }
 
     public Command getAutoPath(String pathName) {
@@ -197,8 +203,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         }
         this.setControl(request);
     }
-
-    public void setTargetHeading(double targetHeading) {}
 
     // SYS ID
 
@@ -250,5 +254,37 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     public AlignTarget getAlignTarget() {
         return alignTarget;
+    }
+
+    private Rotation2d getTargetHeading(Pose2d desiredTargetPose) {
+        Pose2d currentPose = this.getState().Pose;
+
+        double targetVectorX = desiredTargetPose.getX() - currentPose.getX();
+        double targetVectorY = desiredTargetPose.getY() - currentPose.getY();
+
+        Rotation2d desiredRotation = new Rotation2d(targetVectorX, targetVectorY);
+        return desiredRotation;
+    }
+
+    public Optional<Rotation2d> getAutoRotation() {
+        System.out.println(alignTarget.toString());
+        switch (alignTarget) {
+            case SPEAKER:
+                if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                    return Optional.of(
+                            getTargetHeading(
+                                    new Pose2d(
+                                            FieldConstants.fieldToBlueSpeaker, new Rotation2d())));
+                } else {
+                    return Optional.of(
+                            getTargetHeading(
+                                    new Pose2d(
+                                            FieldConstants.fieldToRedSpeaker, new Rotation2d())));
+                }
+            case AMP:
+                return Optional.empty();
+            default:
+                return Optional.empty();
+        }
     }
 }
