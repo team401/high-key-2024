@@ -151,7 +151,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                         PhoenixDriveConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig(false, false)),
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue,
                 this);
 
         PPHolonomicDriveController.setRotationTargetOverride(this::getAutoRotation);
