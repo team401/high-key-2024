@@ -55,92 +55,111 @@ public class RobotContainer {
     }
 
     private void configureSubsystems() {
+        if (FeatureFlags.runDrive) {
+            initDrive();
+        }
+        if (FeatureFlags.runVision) {
+            initVision();
+        }
+        if (FeatureFlags.runIntake) {
+            initIntake();
+        }
+        if (FeatureFlags.runScoring) {
+            initScoring();
+        }
+    }
+
+    private void initDrive() {
         switch (ModeConstants.currentMode) {
             case REAL:
-                if (FeatureFlags.runDrive) {
-                    drive =
-                            new PhoenixDrive(
-                                    PhoenixDriveConstants.DrivetrainConstants,
-                                    PhoenixDriveConstants.FrontLeft,
-                                    PhoenixDriveConstants.FrontRight,
-                                    PhoenixDriveConstants.BackLeft,
-                                    PhoenixDriveConstants.BackRight);
-                    logger = new Telemetry(6);
-                }
-                if (FeatureFlags.runVision) {
-                    tagVision =
-                            new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
-                }
-                if (FeatureFlags.runIntake) {
-                    intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
-                }
-                if (FeatureFlags.runScoring) {
-                    scoringSubsystem =
-                            new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
-                }
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
+                logger = new Telemetry(6);
+                break;
+            case SIM:
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
+
+                logger = new Telemetry(6);
+                break;
+            case REPLAY:
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
+
+                logger = new Telemetry(6);
+                break;
+        }
+    }
+
+    private void initVision() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
                 break;
             case SIM:
                 if (FeatureFlags.runDrive) {
-                    drive =
-                            new PhoenixDrive(
-                                    PhoenixDriveConstants.DrivetrainConstants,
-                                    PhoenixDriveConstants.FrontLeft,
-                                    PhoenixDriveConstants.FrontRight,
-                                    PhoenixDriveConstants.BackLeft,
-                                    PhoenixDriveConstants.BackRight);
-
-                    logger = new Telemetry(6);
-                }
-                if (FeatureFlags.runVision) {
-                    if (logger != null) {
-                        tagVision =
-                                new VisionLocalizer(
-                                        new CameraContainerSim(
-                                                VisionConstants.cameras, logger::getModuleStates));
-                    } else {
-                        /* TODO: Maybe try to spoof vision sim without drive telemetry by giving it
-                        all zeros */
-                        throw new NullPointerException("Vision simulation depends on drive!");
-                    }
-                }
-                if (FeatureFlags.runIntake) {
-                    intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
-                }
-                if (FeatureFlags.runScoring) {
-                    scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
+                    tagVision =
+                            new VisionLocalizer(
+                                    new CameraContainerSim(
+                                            VisionConstants.cameras, logger::getModuleStates));
+                } else {
+                    /* TODO: Maybe try to spoof vision sim without drive telemetry by giving it
+                    all zeros */
+                    throw new NullPointerException("Vision simulation depends on drive!");
                 }
                 break;
             case REPLAY:
-                if (FeatureFlags.runDrive) {
-                    drive =
-                            new PhoenixDrive(
-                                    PhoenixDriveConstants.DrivetrainConstants,
-                                    PhoenixDriveConstants.FrontLeft,
-                                    PhoenixDriveConstants.FrontRight,
-                                    PhoenixDriveConstants.BackLeft,
-                                    PhoenixDriveConstants.BackRight);
-
-                    logger = new Telemetry(6);
-                }
-
-                if (FeatureFlags.runVision) {
-                    tagVision =
-                            new VisionLocalizer(new CameraContainerReplay(VisionConstants.cameras));
-                }
-
-                if (FeatureFlags.runIntake) {
-                    intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
-                }
-
-                if (FeatureFlags.runScoring) {
-                    scoringSubsystem = new ScoringSubsystem(new ShooterIO() {}, new AimerIO() {});
-                }
+                tagVision = new VisionLocalizer(new CameraContainerReplay(VisionConstants.cameras));
                 break;
         }
 
-        if (FeatureFlags.runDrive && FeatureFlags.runVision) {
+        if (FeatureFlags.runVision) {
             tagVision.setCameraConsumer(
                     (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
+        }
+    }
+
+    private void initIntake() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
+                break;
+            case SIM:
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+                break;
+            case REPLAY:
+                intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
+                break;
+        }
+    }
+
+    private void initScoring() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                scoringSubsystem =
+                        new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
+                break;
+            case SIM:
+                scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
+                break;
+            case REPLAY:
+                scoringSubsystem = new ScoringSubsystem(new ShooterIO() {}, new AimerIO() {});
+                break;
         }
     }
 
