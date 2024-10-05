@@ -17,7 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
+import frc.robot.constants.ModeConstants;
+import frc.robot.constants.ModeConstants.Mode;
 import frc.robot.constants.ScoringConstants;
 import frc.robot.utils.FieldFinder;
 import frc.robot.utils.FieldFinder.FieldLocations;
@@ -113,7 +114,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         aimerAngleTolerance = new InterpolateDouble(ScoringConstants.aimerToleranceTable());
 
-        if (!Robot.isReal()) {
+        if (ModeConstants.currentMode == Mode.SIM) {
             mechanism = new Mechanism2d(2.2, 2.0);
             rootMechanism = mechanism.getRoot("scoring", 0.6, 0.3);
             aimMechanism = rootMechanism.append(new MechanismLigament2d("aimer", 0.5, 0.0));
@@ -459,7 +460,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         Logger.recordOutput("scoring/distance", findDistanceToGoal());
 
-        if (!Robot.isReal()) {
+        if (ModeConstants.currentMode == Mode.SIM) {
             aimMechanism.setAngle(Units.radiansToDegrees(aimerInputs.aimAngleRad));
             Logger.recordOutput("scoring/mechanism2d", mechanism);
         }
