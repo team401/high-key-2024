@@ -256,6 +256,23 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         return alignTarget;
     }
 
+    // for scoring subsystem in auto
+    public boolean isDriveAligned() {
+        if (alignTarget != null) {
+            double desiredHeading = this.getAutoRotation().get().getRadians();
+            double currentHeading = this.getState().Pose.getRotation().getRadians();
+
+            if (Math.abs(desiredHeading - currentHeading)
+                    < PhoenixDriveConstants.alignToleranceRadians) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     private Rotation2d getTargetHeading(Pose2d desiredTargetPose) {
         Pose2d currentPose = this.getState().Pose;
 

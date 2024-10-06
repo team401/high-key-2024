@@ -72,6 +72,10 @@ public class RobotContainer {
                         interrupted -> intakeSubsystem.run(IntakeAction.NONE),
                         () -> intakeSubsystem.hasNote(),
                         intakeSubsystem));
+
+        NamedCommands.registerCommand(
+                "shootNoteAtSpeaker",
+                new InstantCommand(() -> scoringSubsystem.setAction(ScoringAction.SHOOT)));
     }
 
     private void configureSubsystems() {
@@ -187,6 +191,9 @@ public class RobotContainer {
         if (drive != null) {
             drive.registerTelemetry(logger::telemeterize);
             drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
+            if (scoringSubsystem != null) {
+                scoringSubsystem.setDriveAllignedSupplier(() -> drive.isDriveAligned());
+            }
         }
         if (DriverStation.isTest()) {
             // SYS ID
