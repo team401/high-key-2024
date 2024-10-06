@@ -29,9 +29,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.FieldConstants;
-import java.util.Optional;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {

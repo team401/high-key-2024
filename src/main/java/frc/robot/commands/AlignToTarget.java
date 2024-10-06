@@ -8,9 +8,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.constants.Constants.AlignTarget;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.PhoenixDriveConstants;
+import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.subsystems.drive.PhoenixDrive;
 
 public class AlignToTarget extends Command {
