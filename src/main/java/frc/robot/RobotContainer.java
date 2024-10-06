@@ -10,31 +10,35 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.ShootWithGamepad;
-import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.AlignTarget;
-import frc.robot.constants.Constants.Mode;
 import frc.robot.constants.FeatureFlags;
+import frc.robot.constants.ModeConstants;
 import frc.robot.constants.PhoenixDriveConstants;
+import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
+import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeNEOVortex;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.IntakeAction;
 import frc.robot.subsystems.localization.CameraContainerReal;
+import frc.robot.subsystems.localization.CameraContainerReplay;
 import frc.robot.subsystems.localization.CameraContainerSim;
 import frc.robot.subsystems.localization.VisionLocalizer;
+import frc.robot.subsystems.scoring.AimerIO;
 import frc.robot.subsystems.scoring.AimerIORoboRio;
 import frc.robot.subsystems.scoring.AimerIOSim;
 import frc.robot.subsystems.scoring.ScoringSubsystem;
 import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
+import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
 
 public class RobotContainer {
-    PhoenixDrive drive = PhoenixDriveConstants.DriveTrain;
-    Telemetry logger = new Telemetry(6);
+    PhoenixDrive drive;
+
+    Telemetry logger;
 
     ScoringSubsystem scoringSubsystem;
     IntakeSubsystem intakeSubsystem;
@@ -50,41 +54,165 @@ public class RobotContainer {
         configureBindings();
     }
 
-    private void configureBindings() {
-        drive.registerTelemetry(logger::telemeterize);
-        drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
+    private void configureSubsystems() {
+        if (FeatureFlags.runDrive) {
+            initDrive();
+        }
+        if (FeatureFlags.runVision) {
+            initVision();
+        }
+        if (FeatureFlags.runIntake) {
+            initIntake();
+        }
+        if (FeatureFlags.runScoring) {
+            initScoring();
+        }
+    }
 
-        if (DriverStation.isTest()) {
-            // SYS ID
+    private void initDrive() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
+                logger = new Telemetry(6);
+                break;
+            case SIM:
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
 
-            /* Bindings for switching routines */
-            /* DPad up = Translation; DPad down = Rotation; DPad right = Steer */
+                logger = new Telemetry(6);
+                break;
+            case REPLAY:
+                drive =
+                        new PhoenixDrive(
+                                PhoenixDriveConstants.DrivetrainConstants,
+                                PhoenixDriveConstants.FrontLeft,
+                                PhoenixDriveConstants.FrontRight,
+                                PhoenixDriveConstants.BackLeft,
+                                PhoenixDriveConstants.BackRight);
 
-            masher.povDown()
-                    .onTrue(
-                            Commands.runOnce(
-                                    () -> drive.setSysIdRoutine(SysIdRoutineType.Rotation), drive));
-            masher.povRight()
-                    .onTrue(
-                            Commands.runOnce(
-                                    () -> drive.setSysIdRoutine(SysIdRoutineType.Steer), drive));
-            masher.povUp()
-                    .onTrue(
-                            Commands.runOnce(
-                                    () -> drive.setSysIdRoutine(SysIdRoutineType.Translation),
-                                    drive));
+                logger = new Telemetry(6);
+                break;
+        }
+    }
 
-            /* Bindings for drivetrain characterization */
-            /* These bindings require multiple buttons pushed to swap between quastatic and dynamic */
-            /* Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction */
-
-            masher.back().and(masher.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
-            masher.back().and(masher.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
-            masher.start().and(masher.y()).whileTrue(drive.sysIdQuasistatic(Direction.kForward));
-            masher.start().and(masher.x()).whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+    private void initVision() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
+                break;
+            case SIM:
+                if (FeatureFlags.runDrive) {
+                    tagVision =
+                            new VisionLocalizer(
+                                    new CameraContainerSim(
+                                            VisionConstants.cameras, logger::getModuleStates));
+                } else {
+                    /* TODO: Maybe try to spoof vision sim without drive telemetry by giving it
+                    all zeros */
+                    throw new NullPointerException("Vision simulation depends on drive!");
+                }
+                break;
+            case REPLAY:
+                tagVision = new VisionLocalizer(new CameraContainerReplay(VisionConstants.cameras));
+                break;
         }
 
-        if (Constants.FeatureFlags.runIntake) {
+        if (FeatureFlags.runVision) {
+            tagVision.setCameraConsumer(
+                    (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
+        }
+    }
+
+    private void initIntake() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
+                break;
+            case SIM:
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
+                break;
+            case REPLAY:
+                intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
+                break;
+        }
+    }
+
+    private void initScoring() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                scoringSubsystem =
+                        new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
+                break;
+            case SIM:
+                scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
+                break;
+            case REPLAY:
+                scoringSubsystem = new ScoringSubsystem(new ShooterIO() {}, new AimerIO() {});
+                break;
+        }
+    }
+
+    private void configureBindings() {
+        if (drive != null) {
+            drive.registerTelemetry(logger::telemeterize);
+            drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
+        }
+        if (DriverStation.isTest()) {
+            // SYS ID
+            if (drive != null) {
+                // NOTE: These if-statements are nested because other subsystems will go here too
+
+                /* Bindings for switching routines */
+                /* DPad up = Translation; DPad down = Rotation; DPad right = Steer */
+
+                masher.povDown()
+                        .onTrue(
+                                Commands.runOnce(
+                                        () -> drive.setSysIdRoutine(SysIdRoutineType.Rotation),
+                                        drive));
+                masher.povRight()
+                        .onTrue(
+                                Commands.runOnce(
+                                        () -> drive.setSysIdRoutine(SysIdRoutineType.Steer),
+                                        drive));
+                masher.povUp()
+                        .onTrue(
+                                Commands.runOnce(
+                                        () -> drive.setSysIdRoutine(SysIdRoutineType.Translation),
+                                        drive));
+
+                /* Bindings for drivetrain characterization */
+                /*
+                 * These bindings require multiple buttons pushed to swap between quastatic and
+                 * dynamic
+                 */
+                /*
+                 * Back/Start select dynamic/quasistatic, Y/X select forward/reverse direction
+                 */
+
+                masher.back().and(masher.y()).whileTrue(drive.sysIdDynamic(Direction.kForward));
+                masher.back().and(masher.x()).whileTrue(drive.sysIdDynamic(Direction.kReverse));
+                masher.start()
+                        .and(masher.y())
+                        .whileTrue(drive.sysIdQuasistatic(Direction.kForward));
+                masher.start()
+                        .and(masher.x())
+                        .whileTrue(drive.sysIdQuasistatic(Direction.kReverse));
+            }
+        }
+
+        if (FeatureFlags.runIntake) {
             masher.b()
                     .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.INTAKE)))
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
@@ -109,8 +237,7 @@ public class RobotContainer {
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
         }
 
-        if (Constants.FeatureFlags.runScoring) {
-
+        if (FeatureFlags.runScoring) {
             scoringSubsystem.setDefaultCommand(
                     new ShootWithGamepad(
                             () -> rightJoystick.getHID().getRawButton(4),
@@ -152,7 +279,7 @@ public class RobotContainer {
 
             masher.povUp();
         }
-        if (Constants.FeatureFlags.runDrive) {
+        if (FeatureFlags.runDrive) {
             masher.povUp()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 
@@ -182,35 +309,6 @@ public class RobotContainer {
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.RIGHT)));
         }
     } // spotless:on
-
-    private void configureSubsystems() {
-        // TODO: Potentially migrate to Constants.mode
-        if (Robot.isReal()) {
-            if (FeatureFlags.runVision) {
-                tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
-            }
-        } else {
-            if (FeatureFlags.simulateVision) {
-                tagVision =
-                        new VisionLocalizer(
-                                new CameraContainerSim(
-                                        VisionConstants.cameras, logger::getModuleStates));
-            }
-        }
-
-        if (FeatureFlags.runVision && Robot.isReal()
-                || FeatureFlags.simulateVision && !Robot.isReal()) {
-            tagVision.setCameraConsumer(
-                    (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
-        }
-        if (Constants.currentMode == Mode.REAL) {
-            scoringSubsystem = new ScoringSubsystem(new ShooterIOTalonFX(), new AimerIORoboRio());
-            intakeSubsystem = new IntakeSubsystem(new IntakeNEOVortex());
-        } else if (Constants.currentMode == Mode.SIM) {
-            scoringSubsystem = new ScoringSubsystem(new ShooterIOSim(), new AimerIOSim());
-            intakeSubsystem = new IntakeSubsystem(new IntakeIOSim());
-        }
-    }
 
     public void enabledInit() {
         intakeSubsystem.run(IntakeAction.NONE);

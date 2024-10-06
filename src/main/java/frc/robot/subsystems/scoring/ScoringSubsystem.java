@@ -2,7 +2,6 @@ package frc.robot.subsystems.scoring;
 
 import coppercore.controls.Tunable;
 import coppercore.math.InterpolateDouble;
-import coppercore.wpilib_interface.*;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,8 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.Mode;
+import frc.robot.constants.ModeConstants;
+import frc.robot.constants.ModeConstants.Mode;
 import frc.robot.constants.ScoringConstants;
 import frc.robot.utils.FieldFinder;
 import frc.robot.utils.FieldFinder.FieldLocations;
@@ -115,7 +114,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         aimerAngleTolerance = new InterpolateDouble(ScoringConstants.aimerToleranceTable());
 
-        if (Constants.currentMode == Mode.SIM) {
+        if (ModeConstants.currentMode == Mode.SIM) {
             mechanism = new Mechanism2d(2.2, 2.0);
             rootMechanism = mechanism.getRoot("scoring", 0.6, 0.3);
             aimMechanism = rootMechanism.append(new MechanismLigament2d("aimer", 0.5, 0.0));
@@ -461,7 +460,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         Logger.recordOutput("scoring/distance", findDistanceToGoal());
 
-        if (Constants.currentMode == Mode.SIM) {
+        if (ModeConstants.currentMode == Mode.SIM) {
             aimMechanism.setAngle(Units.radiansToDegrees(aimerInputs.aimAngleRad));
             Logger.recordOutput("scoring/mechanism2d", mechanism);
         }

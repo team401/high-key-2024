@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.Constants;
+import frc.robot.constants.ModeConstants;
+import frc.robot.constants.ModeConstants.Mode;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -28,11 +29,11 @@ public class Robot extends LoggedRobot {
 
         Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
 
-        if (isReal()) {
+        if (ModeConstants.currentMode == Mode.REAL) {
             Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
             Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
             new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
-        } else if (Constants.currentMode == Constants.Mode.SIM) {
+        } else if (ModeConstants.currentMode == Mode.SIM) {
             setUseTiming(false);
             Logger.addDataReceiver(new WPILOGWriter("logs/")); // This folder is gitignored
             Logger.addDataReceiver(new NT4Publisher());
