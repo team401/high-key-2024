@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.AlignToTarget;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.ShootWithGamepad;
 import frc.robot.constants.FeatureFlags;
@@ -307,27 +306,32 @@ public class RobotContainer {
             masher.povUp();
         }
         if (FeatureFlags.runDrive) {
-            masher.povUp().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.UP));
+            masher.povUp().onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.UP)));
 
-            masher.povRight().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.RIGHT));
+            masher.povRight()
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.RIGHT)));
 
-            masher.povLeft().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.LEFT));
+            masher.povLeft()
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.LEFT)));
 
-            masher.povDown().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.DOWN));
+            masher.povDown()
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.DOWN)));
 
-            rightJoystick.povUp().onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.UP));
+            rightJoystick
+                    .povUp()
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.UP)));
 
             rightJoystick
                     .povDown()
-                    .onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.DOWN));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.DOWN)));
 
             rightJoystick
                     .povLeft()
-                    .onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.LEFT));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.LEFT)));
 
             rightJoystick
                     .povRight()
-                    .onTrue(new AlignToTarget(drive, leftJoystick, AlignTarget.RIGHT));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.RIGHT)));
         }
     } // spotless:on
 

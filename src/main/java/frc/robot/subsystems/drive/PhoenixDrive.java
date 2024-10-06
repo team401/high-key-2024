@@ -17,6 +17,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -102,6 +103,11 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     private AlignTarget alignTarget = AlignTarget.NONE;
 
+    private ChassisSpeeds goalSpeeds = new ChassisSpeeds();
+    private boolean fieldCentric = true;
+
+    private PIDController rotationController;
+
     public PhoenixDrive(
             SwerveDrivetrainConstants driveConstants,
             double odometryUpdateFrequency,
@@ -126,6 +132,13 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        rotationController =
+                new PIDController(
+                        PhoenixDriveConstants.alignmentkP,
+                        PhoenixDriveConstants.alignmentkI,
+                        PhoenixDriveConstants.alignmentkD);
+        rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -154,7 +167,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue,
                 this);
 
-        PPHolonomicDriveController.setRotationTargetOverride(this::getAutoRotation);
+        PPHolonomicDriveController.setRotationTargetOverride(this::getAlignment);
     }
 
     public Command getAutoPath(String pathName) {
@@ -181,13 +194,33 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     }
 
     public void setGoalSpeeds(ChassisSpeeds goalSpeeds, boolean fieldCentric) {
+        this.goalSpeeds = goalSpeeds;
+        this.fieldCentric = fieldCentric;
+    }
+
+    public double getRotationalRate() {
+        // TODO: add override of alignment?
+        if (alignTarget != AlignTarget.NONE) {
+            // calculate rotational rate to target
+            double desiredHeading = this.getAlignment().get().getRadians();
+            double currentHeading = this.getState().Pose.getRotation().getRadians();
+
+            return rotationController.calculate(currentHeading, desiredHeading);
+        } else {
+            return goalSpeeds.omegaRadiansPerSecond;
+        }
+    }
+
+    public void applyGoalSpeeds() {
         SwerveRequest request;
+        double rotationalRate = getRotationalRate();
+
         if (fieldCentric) {
             request =
                     new SwerveRequest.FieldCentric()
                             .withVelocityX(goalSpeeds.vxMetersPerSecond)
                             .withVelocityY(goalSpeeds.vyMetersPerSecond)
-                            .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
+                            .withRotationalRate(rotationalRate)
                             .withDeadband(0.0)
                             .withRotationalDeadband(0.0)
                             .withDriveRequestType(DriveRequestType.Velocity);
@@ -196,7 +229,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                     new SwerveRequest.RobotCentric()
                             .withVelocityX(goalSpeeds.vxMetersPerSecond)
                             .withVelocityY(goalSpeeds.vyMetersPerSecond)
-                            .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
+                            .withRotationalRate(rotationalRate)
                             .withDeadband(0.0)
                             .withRotationalDeadband(0.0)
                             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -246,6 +279,10 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                             });
             hasAppliedOperatorPerspective = true;
         }
+        if (DriverStation.isTeleop()) {
+            // sets request with velocity and rotational rate (alignment or right joystick)
+            applyGoalSpeeds();
+        }
     }
 
     public void setAlignTarget(AlignTarget alignTarget) {
@@ -259,7 +296,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     // for scoring subsystem in auto
     public boolean isDriveAligned() {
         if (alignTarget != null) {
-            double desiredHeading = this.getAutoRotation().get().getRadians();
+            double desiredHeading = this.getAlignment().get().getRadians();
             double currentHeading = this.getState().Pose.getRotation().getRadians();
 
             if (Math.abs(desiredHeading - currentHeading)
@@ -283,11 +320,12 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         return desiredRotation;
     }
 
-    public Optional<Rotation2d> getAutoRotation() {
+    public Optional<Rotation2d> getAlignment() {
         System.out.println(alignTarget.toString());
         switch (alignTarget) {
             case SPEAKER:
-                if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                if (!DriverStation.getAlliance().isEmpty()
+                        && DriverStation.getAlliance().get() == Alliance.Blue) {
                     return Optional.of(
                             getTargetHeading(
                                     new Pose2d(
@@ -299,8 +337,40 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                                             FieldConstants.fieldToRedSpeaker, new Rotation2d())));
                 }
             case AMP:
-                return Optional.empty();
+                return Optional.of(FieldConstants.ampHeading);
+            case SOURCE:
+                if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                    return Optional.of(FieldConstants.blueSourceHeading);
+                } else {
+                    return Optional.of(FieldConstants.redSourceHeading);
+                }
+            case UP:
+                if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                    return Optional.of(FieldConstants.blueUpHeading);
+                } else {
+                    return Optional.of(FieldConstants.redUpHeading);
+                }
+            case DOWN:
+                if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                    return Optional.of(FieldConstants.blueDownHeading);
+                } else {
+                    return Optional.of(FieldConstants.redDownHeading);
+                }
+            case LEFT:
+                if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                    return Optional.of(FieldConstants.blueLeftHeading);
+                } else {
+                    return Optional.of(FieldConstants.redLeftHeading);
+                }
+            case RIGHT:
+                if (DriverStation.getAlliance().get() == Alliance.Blue) {
+                    return Optional.of(FieldConstants.blueRightHeading);
+                } else {
+                    return Optional.of(FieldConstants.redRightHeading);
+                }
             default:
+                // no pose to align to so set target to none
+                this.setAlignTarget(AlignTarget.NONE);
                 return Optional.empty();
         }
     }
