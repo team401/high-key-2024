@@ -7,8 +7,8 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.constants.Constants.SensorConstants;
 import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.SensorConstants;
 
 public class IntakeNEOVortex implements IntakeIO {
 
