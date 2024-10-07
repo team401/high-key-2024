@@ -212,8 +212,7 @@ public class RobotContainer {
             }
         }
 
-        if (FeatureFlags.runIntake && Robot.isReal()
-                || FeatureFlags.simulateIntake && !Robot.isReal()) {
+        if (FeatureFlags.runIntake) {
             masher.b()
                     .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.INTAKE)))
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
@@ -238,8 +237,7 @@ public class RobotContainer {
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
         }
 
-        if (FeatureFlags.runScoring && Robot.isReal()
-                || FeatureFlags.simulateScoring && !Robot.isReal()) {
+        if (FeatureFlags.runScoring) {
             scoringSubsystem.setDefaultCommand(
                     new ShootWithGamepad(
                             () -> rightJoystick.getHID().getRawButton(4),
@@ -281,8 +279,7 @@ public class RobotContainer {
 
             masher.povUp();
         }
-        if (FeatureFlags.runDrive && Robot.isReal()
-                || FeatureFlags.simulateDrive && !Robot.isReal()) {
+        if (FeatureFlags.runDrive) {
             masher.povUp()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 
