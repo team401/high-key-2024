@@ -54,10 +54,6 @@ public class IntakeSubsystem extends SubsystemBase {
         this.scorerWantsNote = scorerWantsNote;
     }
 
-    public boolean hasNote() {
-        return inputs.noteSensed;
-    }
-
     public void run(IntakeAction action) {
         this.action = action;
     }
@@ -71,7 +67,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     private void idle() {
-        if (action == IntakeAction.INTAKE) {
+        if (action == IntakeAction.INTAKE && !isNoteInIntake()) {
             state = State.SEEKING;
         } else if (action == IntakeAction.REVERSE) {
             state = State.REVERSING;
@@ -112,6 +108,10 @@ public class IntakeSubsystem extends SubsystemBase {
     public void setOverrideVolts(double intake, double belt) {
         intakeOverrideVolts = intake;
         beltOverrideVolts = belt;
+    }
+
+    public boolean isNoteInIntake() {
+        return inputs.noteSensed;
     }
 
     private enum State {

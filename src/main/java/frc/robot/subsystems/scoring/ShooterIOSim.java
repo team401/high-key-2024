@@ -91,7 +91,7 @@ public class ShooterIOSim implements ShooterIO {
         inputs.kickerAppliedVolts = kickerVolts;
         inputs.kickerStatorCurrentAmps = 0.0;
 
-        inputs.bannerSensor = false;
+        inputs.noteInShooter = false;
     }
 
     @Override

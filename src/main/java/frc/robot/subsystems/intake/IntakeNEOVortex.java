@@ -34,6 +34,8 @@ public class IntakeNEOVortex implements IntakeIO {
 
         inputs.centeringMotorVoltage = centeringMotor.getAppliedOutput();
         inputs.centeringMotorStatorCurrentAmps = centeringMotor.getOutputCurrent();
+
+        inputs.noteSensed = !bannerSensor.get();
     }
 
     @Override

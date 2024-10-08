@@ -133,6 +133,10 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         return Math.abs(aimerInputs.aimAngleRad - aimerInputs.aimGoalAngleRad) < 0.2;
     }
 
+    public boolean aimerReadyForNote() {
+        return Math.abs(aimerInputs.aimAngleRad) < 1e-10 && !shooterInputs.noteInShooter;
+    }
+
     private void idle() {
         aimerIo.setAimAngleRad(-0.03, true);
         shooterIo.setShooterVelocityRPM(0);
@@ -144,12 +148,13 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         Logger.recordOutput("scoring/aimGoal", 0.0);
 
-        SmartDashboard.putBoolean("Has Note", shooterInputs.bannerSensor);
+        SmartDashboard.putBoolean("Has Note", shooterInputs.noteInShooter);
         SmartDashboard.putNumber("Aimer Location", aimerInputs.aimAngleRad);
 
-        if ((!hasNote() || overrideIntake) && action == ScoringAction.INTAKE) {
+        if ((aimerReadyForNote() || overrideIntake) && action == ScoringAction.INTAKE) {
             state = ScoringState.INTAKE;
-        } else if ((!hasNote() || overrideIntake) && action == ScoringAction.SOURCE_INTAKE) {
+        } else if ((aimerReadyForNote() || overrideIntake)
+                && action == ScoringAction.SOURCE_INTAKE) {
             state = ScoringState.SOURCE_INTAKE;
             sourceTimerStarted = false;
         } else if (action == ScoringAction.SPIT) {
@@ -172,12 +177,12 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void intake() {
-        if (!aimerAtIntakePosition()) {
+        if (!aimerReadyForNote() && !shooterInputs.noteInShooter) {
             aimerIo.setAimAngleRad(ScoringConstants.intakeAngleToleranceRadians, true);
         }
         shooterIo.setKickerVolts(ScoringConstants.kickerIntakeVolts);
 
-        if ((hasNote()) || action != ScoringAction.INTAKE) {
+        if ((!aimerReadyForNote()) || action != ScoringAction.INTAKE) {
             state = ScoringState.IDLE;
         }
     }
@@ -189,7 +194,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         shooterIo.setOverrideMode(true);
         shooterIo.setOverrideVolts(-2);
 
-        if (hasNote() && !sourceTimerStarted) {
+        if (!shooterInputs.noteInShooter && !sourceTimerStarted) {
             sourceIntakeTimer.reset();
             sourceIntakeTimer.start();
 
@@ -220,7 +225,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         shooterIo.setShooterVelocityRPM(shooterInterpolated.getValue(distanceToGoal));
         aimerIo.setAimAngleRad(getAimerAngle(distanceToGoal), false);
         if (!overrideBeamBreak) {
-            shooterIo.setKickerVolts(hasNote() ? 0.0 : ScoringConstants.kickerIntakeVolts);
+            shooterIo.setKickerVolts(
+                    shooterInputs.noteInShooter ? 0.0 : ScoringConstants.kickerIntakeVolts);
         }
 
         boolean shooterReady =
@@ -259,7 +265,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
             }
         }
 
-        boolean notePresent = overrideBeamBreak ? true : hasNote();
+        boolean notePresent = overrideBeamBreak ? true : shooterInputs.noteInShooter;
 
         boolean primeReady = shooterReady && aimReady && driveReady && fieldLocationReady;
         readyToShoot = primeReady && notePresent;
@@ -379,19 +385,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                         Math.pow(Math.abs(robotPose.getX() - speakerPose.getX()), 2)
                                 + Math.pow(Math.abs(robotPose.getY() - speakerPose.getY()), 2));
         return distancetoGoal;
-    }
-
-    public boolean hasNote() {
-        return shooterInputs.bannerSensor;
-    }
-
-    public boolean aimerAtIntakePosition() {
-        return aimerInputs.aimAngleRad > ScoringConstants.intakeAngleToleranceRadians;
-        // return true;\][]
-    }
-
-    public boolean canIntake() {
-        return aimerAtIntakePosition() && !hasNote();
     }
 
     public void setPoseSupplier(Supplier<Pose2d> poseSupplier) {
