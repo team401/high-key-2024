@@ -4,47 +4,38 @@
 package frc.robot.subsystems.scoring;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.ScoringConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class AimerIORoboRio implements AimerIO {
-    private final TalonFX aimerLeft = new TalonFX(ScoringConstants.aimLeftMotorId);
-    private final TalonFX aimerRight = new TalonFX(ScoringConstants.aimRightMotorId);
+    private final TalonFX aimerMotor = new TalonFX(ScoringConstants.aimerMotorId);
 
-    private final PIDController controller =
-            new PIDController(
-                    ScoringConstants.aimerkP, ScoringConstants.aimerkI, ScoringConstants.aimerkD);
-    private ArmFeedforward feedforward =
-            new ArmFeedforward(
-                    ScoringConstants.aimerkS,
-                    ScoringConstants.aimerkG,
-                    ScoringConstants.aimerkV,
-                    ScoringConstants.aimerkA);
-    private TrapezoidProfile profile =
-            new TrapezoidProfile(
-                    new TrapezoidProfile.Constraints(
-                            ScoringConstants.aimCruiseVelocity, ScoringConstants.aimAcceleration));
+    private ControlRequest request;
 
-    private final DutyCycleEncoder encoder = new DutyCycleEncoder(ScoringConstants.aimEncoderPort);
+    private final CANcoder aimerEncoder = new CANcoder(ScoringConstants.aimerEncoderId);
 
     private final Timer timer = new Timer();
 
     private boolean override = false;
     private double overrideVolts = 0.0;
 
-    boolean newProfile = false;
     double previousGoalAngle = 0.0;
 
     double minAngleClamp = 0.0;
@@ -52,9 +43,6 @@ public class AimerIORoboRio implements AimerIO {
 
     double goalAngleRad = 0.0;
     double appliedVolts = 0.0;
-
-    double initialAngle = 0.0;
-    double initialVelocity = 0.0;
 
     double velocity = 0.0;
 
@@ -66,39 +54,57 @@ public class AimerIORoboRio implements AimerIO {
     boolean motorDisabled = false;
 
     public AimerIORoboRio() {
-        aimerLeft.setControl(new Follower(ScoringConstants.aimRightMotorId, true));
-
-        aimerLeft.setNeutralMode(NeutralModeValue.Brake);
-        aimerRight.setNeutralMode(NeutralModeValue.Brake);
-
-        aimerRight.setInverted(false);
+        aimerMotor.setNeutralMode(NeutralModeValue.Brake);
 
         setStatorCurrentLimit(ScoringConstants.aimerCurrentLimit);
 
-        aimerRight.setPosition(0.0);
+        CANcoderConfiguration cancoderConfiguration = new CANcoderConfiguration();
+        // TODO: Check all of these values
+        cancoderConfiguration.MagnetSensor.AbsoluteSensorRange =
+                AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+        cancoderConfiguration.MagnetSensor.SensorDirection =
+                SensorDirectionValue.CounterClockwise_Positive;
+        cancoderConfiguration.MagnetSensor.MagnetOffset = ScoringConstants.aimerEncoderOffset;
 
-        controller.setTolerance(ScoringConstants.aimAngleTolerance);
+        aimerEncoder.getConfigurator().apply(cancoderConfiguration);
+
+        TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
+
+        talonFXConfigs.Feedback.FeedbackRemoteSensorID = aimerEncoder.getDeviceID();
+        talonFXConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        talonFXConfigs.Feedback.SensorToMechanismRatio =
+                ScoringConstants.aimerEncoderToMechanismRatio;
+        talonFXConfigs.Feedback.RotorToSensorRatio = ScoringConstants.aimerRotorToSensorRatio;
+
+        Slot0Configs slot0Configs = talonFXConfigs.Slot0;
+        slot0Configs.kS = ScoringConstants.aimerkS;
+        slot0Configs.kV = ScoringConstants.aimerkV;
+        slot0Configs.kA = ScoringConstants.aimerkA;
+        slot0Configs.kG = ScoringConstants.aimerkG;
+
+        slot0Configs.kP = ScoringConstants.aimerkP;
+        slot0Configs.kI = ScoringConstants.aimerkI;
+        slot0Configs.kD = ScoringConstants.aimerkD;
+
+        MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ScoringConstants.aimerCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = ScoringConstants.aimerAcceleration;
+
+        aimerMotor.getConfigurator().apply(talonFXConfigs);
     }
 
-    public void resetPID() {
-        controller.reset();
-    }
+    public void resetPID() {}
 
     @Override
-    public void setAimAngleRad(double goalAngleRad, boolean newProfile) {
+    public void setAimAngleRad(double goalAngleRad) {
         this.goalAngleRad = goalAngleRad;
-        this.newProfile = newProfile;
     }
 
     @Override
     public void controlAimAngleRad() {
-        if (goalAngleRad != previousGoalAngle && newProfile) {
+        if (goalAngleRad != previousGoalAngle) {
             timer.reset();
             timer.start();
-
-            initialAngle =
-                    MathUtil.clamp(getEncoderPosition(), 0.0, ScoringConstants.aimMaxAngleRadians);
-            initialVelocity = velocity;
 
             previousGoalAngle = goalAngleRad;
         }
@@ -134,43 +140,50 @@ public class AimerIORoboRio implements AimerIO {
 
     @Override
     public void setPID(double p, double i, double d) {
-        controller.setP(p);
-        controller.setI(i);
-        controller.setD(d);
+        Slot0Configs slot0Configs = new Slot0Configs();
+
+        slot0Configs.kP = p;
+        slot0Configs.kI = i;
+        slot0Configs.kD = d;
+
+        aimerMotor.getConfigurator().apply(slot0Configs);
     }
 
     @Override
     public void setMaxProfile(double maxVelocity, double maxAcceleration) {
-        profile =
-                new TrapezoidProfile(
-                        new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
+        MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+        motionMagicConfigs.MotionMagicCruiseVelocity = maxVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = maxAcceleration;
+        aimerMotor.getConfigurator().apply(motionMagicConfigs);
     }
 
     @Override
     public void setFF(double kS, double kV, double kA, double kG) {
-        feedforward = new ArmFeedforward(kS, kG, kV, kA);
+        Slot0Configs slot0Configs = new Slot0Configs();
+
+        slot0Configs.kS = kS;
+        slot0Configs.kV = kV;
+        slot0Configs.kA = kA;
+        slot0Configs.kG = kG;
+
+        aimerMotor.getConfigurator().apply(slot0Configs);
     }
 
     @Override
     public void setBrakeMode(boolean brake) {
-        aimerLeft.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
-        aimerRight.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+        aimerMotor.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
     }
 
     private double getEncoderPosition() {
         // return aimerRight.getPosition().getValueAsDouble() * 2.0 * Math.PI * (1.0 / 80.0);
-        return encoder.getAbsolutePosition() * 2.0 * Math.PI - ScoringConstants.aimerEncoderOffset;
+        // return aimerEncoder.getAbsolutePosition().getValueAsDouble() * 2.0 * Math.PI -
+        // ScoringConstants.aimerEncoderOffset;
+        return aimerEncoder.getPosition().getValueAsDouble();
     }
 
     public void setStatorCurrentLimit(double limit) {
-        TalonFXConfigurator aimerLeftConfig = aimerLeft.getConfigurator();
-        aimerLeftConfig.apply(
-                new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(limit)
-                        .withStatorCurrentLimitEnable(true));
-
-        TalonFXConfigurator aimerRightConfig = aimerRight.getConfigurator();
-        aimerRightConfig.apply(
+        TalonFXConfigurator aimerMotorConfig = aimerMotor.getConfigurator();
+        aimerMotorConfig.apply(
                 new CurrentLimitsConfigs()
                         .withStatorCurrentLimit(limit)
                         .withStatorCurrentLimitEnable(true));
@@ -183,10 +196,11 @@ public class AimerIORoboRio implements AimerIO {
 
     @Override
     public void updateInputs(AimerInputs inputs) {
-
-        if (getEncoderPosition() == -1.75) {
-            motorDisabled = true;
-        }
+        // TODO: Add fault monitor for when encoder is unplugged
+        // This value will probably not work for the current encoder to indicate unplugged status
+        // if (getEncoderPosition() == -1.75) {
+        //     motorDisabled = true;
+        // }
 
         Logger.recordOutput("Scoring/motorDisabled", motorDisabled);
 
@@ -206,36 +220,29 @@ public class AimerIORoboRio implements AimerIO {
                 ((getEncoderPosition() - controlSetpoint) - lastError) / diffTime;
         lastError = getEncoderPosition() - controlSetpoint;
 
-        inputs.aimStatorCurrentAmps = aimerRight.getStatorCurrent().getValueAsDouble();
-        inputs.aimSupplyCurrentAmps = aimerRight.getSupplyCurrent().getValueAsDouble();
+        inputs.aimStatorCurrentAmps = aimerMotor.getStatorCurrent().getValueAsDouble();
+        inputs.aimSupplyCurrentAmps = aimerMotor.getSupplyCurrent().getValueAsDouble();
     }
 
     @Override
     public void applyOutputs(AimerOutputs outputs) {
+        MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0.0);
+        motionMagicVoltage.withPosition(goalAngleRad);
 
-        State trapezoidSetpoint =
-                profile.calculate(
-                        timer.get(),
-                        new State(initialAngle, initialVelocity),
-                        new State(goalAngleRad, 0));
+        request = motionMagicVoltage;
 
-        controlSetpoint = MathUtil.clamp(trapezoidSetpoint.position, minAngleClamp, maxAngleClamp);
-        double velocitySetpoint = trapezoidSetpoint.velocity;
-
+        controlSetpoint = aimerMotor.getClosedLoopReference().getValueAsDouble();
         if (override) {
             appliedVolts = overrideVolts;
+            request = new VoltageOut(overrideVolts);
         } else {
-            double controllerVolts = controller.calculate(getEncoderPosition(), controlSetpoint);
-            appliedVolts =
-                    feedforward.calculate(controlSetpoint, velocitySetpoint) + controllerVolts;
+            appliedVolts = aimerMotor.getClosedLoopOutput().getValueAsDouble();
         }
 
-        outputs.aimAppliedVoltage = MathUtil.clamp(appliedVolts, -12.0, 12.0);
-
         if (!motorDisabled || override) {
-            aimerRight.setVoltage(outputs.aimAppliedVoltage);
+            aimerMotor.setControl(request);
         } else {
-            aimerRight.setVoltage(0.0);
+            aimerMotor.setVoltage(0.0);
         }
     }
 }

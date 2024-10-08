@@ -21,27 +21,26 @@ public class ScoringConstants {
     public static final double shooterkV = 0.0095;
     public static final double shooterkA = 0.0;
 
-    public static final int aimLeftMotorId = 16;
-    public static final int aimRightMotorId = 15;
-
-    public static final int shooterLeftMotorId = 11;
-    public static final int shooterRightMotorId = 12;
+    public static final int aimerMotorId = 9;
 
     public static final int kickerMotorId = 13;
 
     public static final double shooterCurrentLimit = 120;
     public static final double kickerCurrentLimit = 120;
-    public static final double aimerCurrentLimit = 60;
+    public static final double aimerCurrentLimit = 40;
 
-    public static final int aimEncoderPort = 0;
+    public static final int aimerEncoderId = 13;
     public static final double aimerEncoderOffset = 1.75 - 0.01; // 0.027
+
+    public static final double aimerEncoderToMechanismRatio = 1.0;
+    public static final double aimerRotorToSensorRatio = 90.0;
 
     public static final double kickerIntakeVolts = 2.0;
 
     public static final double aimPositionTolerance = 0.017;
 
-    public static final double aimAcceleration = 4.5; // TODO: 15.0
-    public static final double aimCruiseVelocity = 7.0; // TODO: 15.0
+    public static final double aimerAcceleration = 4.5; // TODO: 15.0
+    public static final double aimerCruiseVelocity = 7.0; // TODO: 15.0
 
     public static final double shooterLowerVelocityMarginRPM = 50;
     public static final double shooterUpperVelocityMarginRPM = 150;
