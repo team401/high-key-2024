@@ -8,8 +8,9 @@ import org.littletonrobotics.junction.Logger;
 public class IntakeSubsystem extends SubsystemBase {
 
     private IntakeIO io;
-    private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-    private IntakeIOOutputsAutoLogged outputs = new IntakeIOOutputsAutoLogged();
+    private IntakeInputsAutoLogged inputs = new IntakeInputsAutoLogged();
+    private IntakeOutputsAutoLogged outputs = new IntakeOutputsAutoLogged();
+
     private State state = State.IDLE;
 
     private BooleanSupplier scorerWantsNote = () -> true;

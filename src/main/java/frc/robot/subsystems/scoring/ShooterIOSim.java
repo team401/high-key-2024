@@ -71,7 +71,7 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public void updateInputs(ShooterIOInputs inputs) {
+    public void updateInputs(ShooterInputs inputs) {
         shooterLeftSim.update(SimConstants.loopTime);
         shooterRightSim.update(SimConstants.loopTime);
 
@@ -95,7 +95,7 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public void applyOutputs(ShooterIOOutputs outputs) {
+    public void applyOutputs(ShooterOutputs outputs) {
 
         outputs.shooterLeftGoalVelocityRPM = shooterLeftGoalVelRPM;
         outputs.shooterRightGoalVelocityRPM = shooterRightGoalVelRPM;

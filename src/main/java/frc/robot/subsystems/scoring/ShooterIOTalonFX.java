@@ -110,7 +110,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     }
 
     @Override
-    public void updateInputs(ShooterIOInputs inputs) {
+    public void updateInputs(ShooterInputs inputs) {
 
         inputs.shooterLeftVelocityRPM =
                 shooterLeft.getVelocity().getValueAsDouble()
@@ -133,7 +133,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     }
 
     @Override
-    public void applyOutputs(ShooterIOOutputs outputs) {
+    public void applyOutputs(ShooterOutputs outputs) {
         outputs.shooterLeftGoalVelocityRPM = goalLeftVelocityRPM;
         outputs.shooterRightGoalVelocityRPM = goalRightVelocityRPM;
         outputs.kickerGoalVolts = kickerVolts;
