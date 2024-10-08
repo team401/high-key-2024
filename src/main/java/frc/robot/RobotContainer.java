@@ -306,32 +306,38 @@ public class RobotContainer {
             masher.povUp();
         }
         if (FeatureFlags.runDrive) {
-            masher.povUp().onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.UP)));
+            masher.povUp()
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 
             masher.povRight()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.RIGHT)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.AMP)));
 
             masher.povLeft()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.LEFT)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SOURCE)));
 
             masher.povDown()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.DOWN)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
 
             rightJoystick
                     .povUp()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.UP)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 
             rightJoystick
                     .povDown()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.DOWN)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.AMP)));
 
             rightJoystick
                     .povLeft()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.LEFT)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SOURCE)));
 
             rightJoystick
                     .povRight()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.RIGHT)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
+
+            rightJoystick
+                    .trigger()
+                    .onTrue(new InstantCommand(() -> drive.setAligning(true)))
+                    .onFalse(new InstantCommand(() -> drive.setAligning(false)));
         }
     } // spotless:on
 

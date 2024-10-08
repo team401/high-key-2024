@@ -17,7 +17,6 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -101,13 +100,11 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     /* Change this to the sysid routine you want to test */
     private SysIdRoutine routineToApply = SysIdRoutineTranslation;
 
-    private AlignTarget alignTarget = AlignTarget.AMP;
+    private AlignTarget alignTarget = AlignTarget.NONE;
     private boolean aligning = false;
 
     private ChassisSpeeds goalSpeeds = new ChassisSpeeds();
     private boolean fieldCentric = true;
-
-    private PIDController rotationController;
 
     public PhoenixDrive(
             SwerveDrivetrainConstants driveConstants,
@@ -133,13 +130,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-
-        rotationController =
-                new PIDController(
-                        PhoenixDriveConstants.alignmentkP,
-                        PhoenixDriveConstants.alignmentkI,
-                        PhoenixDriveConstants.alignmentkD);
-        rotationController.enableContinuousInput(-Math.PI, Math.PI);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -204,7 +194,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
         if (fieldCentric) {
             if (aligning) {
-                System.out.println("face angle request");
                 SwerveRequest.FieldCentricFacingAngle alignRequest =
                         new SwerveRequest.FieldCentricFacingAngle()
                                 .withVelocityX(goalSpeeds.vxMetersPerSecond)
@@ -270,26 +259,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return routineToApply.dynamic(direction);
-    }
-
-    @Override
-    public void periodic() {
-        this.setAligning(true);
-        if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-            DriverStation.getAlliance()
-                    .ifPresent(
-                            (color) -> {
-                                this.setOperatorPerspectiveForward(
-                                        color == Alliance.Red
-                                                ? RedAlliancePerspectiveRotation
-                                                : BlueAlliancePerspectiveRotation);
-                            });
-            hasAppliedOperatorPerspective = true;
-        }
-        if (DriverStation.isTeleop()) {
-            // sets request with velocity and rotational rate (alignment or right joystick)
-            applyGoalSpeeds();
-        }
     }
 
     public void setAlignTarget(AlignTarget alignTarget) {
@@ -386,6 +355,25 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 // no pose to align to so set target to none
                 this.setAlignTarget(AlignTarget.NONE);
                 return Optional.empty();
+        }
+    }
+
+    @Override
+    public void periodic() {
+        if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+            DriverStation.getAlliance()
+                    .ifPresent(
+                            (color) -> {
+                                this.setOperatorPerspectiveForward(
+                                        color == Alliance.Red
+                                                ? RedAlliancePerspectiveRotation
+                                                : BlueAlliancePerspectiveRotation);
+                            });
+            hasAppliedOperatorPerspective = true;
+        }
+        if (DriverStation.isTeleop()) {
+            // sets request with velocity and rotational rate (alignment or right joystick)
+            applyGoalSpeeds();
         }
     }
 }
