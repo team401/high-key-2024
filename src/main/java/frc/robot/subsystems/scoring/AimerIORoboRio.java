@@ -182,7 +182,7 @@ public class AimerIORoboRio implements AimerIO {
     }
 
     @Override
-    public void updateInputs(AimerIOInputs inputs) {
+    public void updateInputs(AimerInputs inputs) {
 
         if (getEncoderPosition() == -1.75) {
             motorDisabled = true;
@@ -211,7 +211,7 @@ public class AimerIORoboRio implements AimerIO {
     }
 
     @Override
-    public void applyOutputs(AimerIOOutputs outputs) {
+    public void applyOutputs(AimerOutputs outputs) {
 
         State trapezoidSetpoint =
                 profile.calculate(

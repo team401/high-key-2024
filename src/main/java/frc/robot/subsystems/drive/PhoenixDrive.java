@@ -191,6 +191,19 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     public void applyGoalSpeeds() {
         SwerveRequest request;
+      
+        Logger.recordOutput("Drive/goalSpeeds", goalSpeeds);
+
+        boolean idling =
+                Math.sqrt(
+                                        goalSpeeds.vxMetersPerSecond * goalSpeeds.vxMetersPerSecond
+                                                + goalSpeeds.vyMetersPerSecond
+                                                        * goalSpeeds.vyMetersPerSecond)
+                                < 1e-10
+                        && Math.abs(goalSpeeds.omegaRadiansPerSecond) < 1e-10;
+        Logger.recordOutput("Drive/idling", idling);
+        if (idling) {
+            request = new SwerveRequest.Idle();
 
         if (fieldCentric) {
             if (aligning) {
@@ -227,7 +240,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                             .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
                             .withDeadband(0.0)
                             .withRotationalDeadband(0.0)
-                            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+                            .withDriveRequestType(DriveRequestType.Velocity);
         }
         this.setControl(request);
     }
@@ -357,9 +370,20 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 return Optional.empty();
         }
     }
+      
+    public void logDrivetrainData() {
+        SwerveDriveState state = getState();
+        if (state.ModuleStates != null && state.ModuleTargets != null) {
+            for (int i = 0; i < 4; i++) {
+                Logger.recordOutput("Drive/module" + i + "/state", state.ModuleStates[i]);
+                Logger.recordOutput("Drive/module" + i + "/target", state.ModuleTargets[i]);
+            }
+        }
+    }
 
     @Override
     public void periodic() {
+        logDrivetrainData();
         if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
             DriverStation.getAlliance()
                     .ifPresent(

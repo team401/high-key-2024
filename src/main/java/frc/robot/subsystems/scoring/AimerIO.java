@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface AimerIO {
     @AutoLog
-    public static class AimerIOInputs {
+    public static class AimerInputs {
         public double aimAngleRad = 0.0;
         public double aimGoalAngleRad = 0.0;
         public double aimProfileGoalAngleRad = 0.0;
@@ -17,13 +17,13 @@ public interface AimerIO {
     }
 
     @AutoLog
-    public static class AimerIOOutputs {
+    public static class AimerOutputs {
         public double aimAppliedVoltage = 0.0;
     }
 
-    public default void updateInputs(AimerIOInputs inputs) {}
+    public default void updateInputs(AimerInputs inputs) {}
 
-    public default void applyOutputs(AimerIOOutputs outputs) {}
+    public default void applyOutputs(AimerOutputs outputs) {}
 
     public default void setAimAngleRad(double angle, boolean newProfile) {}
 
