@@ -204,8 +204,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         Logger.recordOutput("Drive/idling", idling);
         if (idling) {
             request = new SwerveRequest.Idle();
-        }
-        if (fieldCentric) {
+        } else if (fieldCentric) {
             if (aligning) {
                 SwerveRequest.FieldCentricFacingAngle alignRequest =
                         new SwerveRequest.FieldCentricFacingAngle()
