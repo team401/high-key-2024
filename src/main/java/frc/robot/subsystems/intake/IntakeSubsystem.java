@@ -9,6 +9,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private IntakeIO io;
     private IntakeInputsAutoLogged inputs = new IntakeInputsAutoLogged();
+    private IntakeOutputsAutoLogged outputs = new IntakeOutputsAutoLogged();
 
     private State state = State.IDLE;
 
@@ -27,6 +28,8 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("intake", inputs);
+        Logger.recordOutput("Intake/state", state);
+        Logger.recordOutput("Intake/action", action);
 
         switch (state) {
             case IDLE:
@@ -42,6 +45,9 @@ public class IntakeSubsystem extends SubsystemBase {
                 override();
                 break;
         }
+
+        io.applyOutputs(outputs);
+        // Logger.processInputs("intakeOutputs", outputs);
     }
 
     public void setScoringSupplier(BooleanSupplier scorerWantsNote) {
@@ -82,8 +88,7 @@ public class IntakeSubsystem extends SubsystemBase {
             state = State.IDLE;
         }
 
-        io.setIntakeVoltage(scorerWantsNote.getAsBoolean() ? IntakeConstants.intakePower : 0.0);
-        io.setBeltVoltage(IntakeConstants.beltPower);
+        io.setIntakeVoltage(IntakeConstants.intakePower);
     }
 
     private void reversing() {
