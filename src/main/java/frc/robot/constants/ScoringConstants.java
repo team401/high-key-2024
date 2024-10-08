@@ -39,8 +39,11 @@ public class ScoringConstants {
 
     public static final double aimPositionTolerance = 0.017;
 
-    public static final double aimerAcceleration = 4.5; // TODO: 15.0
-    public static final double aimerCruiseVelocity = 7.0; // TODO: 15.0
+    // These values have been reduced for tuning because we can't set a voltage limit on the motors anymore
+    //public static final double aimerAcceleration = 4.5; // TODO: 15.0
+    //public static final double aimerCruiseVelocity = 7.0; // TODO: 15.0
+    public static final double aimerAcceleration  = 1.0;
+    public static final double aimerCruiseVelocity = 1.0;
 
     public static final double shooterLowerVelocityMarginRPM = 50;
     public static final double shooterUpperVelocityMarginRPM = 150;
