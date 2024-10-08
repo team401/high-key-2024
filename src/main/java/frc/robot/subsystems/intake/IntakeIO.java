@@ -6,28 +6,22 @@ public interface IntakeIO {
 
     @AutoLog
     public static class IntakeIOInputs {
-        public double leftIntakeVoltage = 0.0;
-        public double leftIntakeStatorCurrent = 0.0;
-        public double leftIntakeSupplyCurrent = 0.0;
+        public double intakeMotorVoltage = 0.0;
+        public double intakeMotorStatorCurrentAmps = 0.0;
+        public double intakeMotorSupplyCurrentAmps = 0.0;
 
-        public double rightIntakeVoltage = 0.0;
-        public double rightIntakeStatorCurrent = 0.0;
-        public double rightIntakeSupplyCurrent = 0.0;
-
-        public double beltVoltage = 0.0;
-        public double beltStatorCurrent = 0.0;
-        public double beltSupplyCurrent = 0.0;
+        public double centeringMotorVoltage = 0.0;
+        public double centeringMotorStatorCurrentAmps = 0.0;
+        public double centeringMotorSupplyCurrentAmps = 0.0;
 
         public boolean noteSensed = false;
     }
 
     @AutoLog
     public static class IntakeIOOutputs {
-        public double leftIntakeGoalVoltage = 0.0;
+        public double intakeMotorVoltage = 0.0;
 
-        public double rightIntakeGoalVoltage = 0.0;
-
-        public double beltGoalVoltage = 0.0;
+        public double centeringMotorVoltage = 0.0;
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {}
