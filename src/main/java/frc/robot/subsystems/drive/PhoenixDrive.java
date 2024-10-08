@@ -191,7 +191,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     public void applyGoalSpeeds() {
         SwerveRequest request;
-      
+
         Logger.recordOutput("Drive/goalSpeeds", goalSpeeds);
 
         boolean idling =
@@ -204,7 +204,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         Logger.recordOutput("Drive/idling", idling);
         if (idling) {
             request = new SwerveRequest.Idle();
-
+        }
         if (fieldCentric) {
             if (aligning) {
                 SwerveRequest.FieldCentricFacingAngle alignRequest =
@@ -370,7 +370,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 return Optional.empty();
         }
     }
-      
+
     public void logDrivetrainData() {
         SwerveDriveState state = getState();
         if (state.ModuleStates != null && state.ModuleTargets != null) {
