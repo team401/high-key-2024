@@ -17,7 +17,7 @@ public class IntakeIOSim implements IntakeIO {
     public IntakeIOSim() {}
 
     @Override
-    public void updateInputs(IntakeIOInputs inputs) {
+    public void updateInputs(IntakeInputs inputs) {
         inputs.leftIntakeVoltage = intakeWheelsAppliedVolts;
         inputs.leftIntakeStatorCurrent = noteInIntakeWheels ? 100000 : 0;
         inputs.rightIntakeVoltage = intakeWheelsAppliedVolts;

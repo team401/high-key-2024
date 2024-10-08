@@ -103,7 +103,7 @@ public class AimerIOSim implements AimerIO {
     }
 
     @Override
-    public void updateInputs(AimerIOInputs inputs) {
+    public void updateInputs(AimerInputs inputs) {
         sim.update(SimConstants.loopTime);
 
         inputs.aimGoalAngleRad = goalAngleRad;
@@ -116,7 +116,7 @@ public class AimerIOSim implements AimerIO {
     }
 
     @Override
-    public void applyOutputs(AimerIOOutputs outputs) {
+    public void applyOutputs(AimerOutputs outputs) {
         State trapezoidSetpoint =
                 profile.calculate(
                         timer.get(),
