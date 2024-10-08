@@ -7,7 +7,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.constants.TunerConstants;
+import frc.robot.constants.PhoenixDriveConstants;
 // import frc.robot.constants.DriveConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.VisionConstants.CameraParams;
@@ -88,7 +88,7 @@ public class CameraContainerSim implements CameraContainer {
                                             .getRadians()));
         }
 
-        Twist2d twist = TunerConstants.kinematics.toTwist2d(deltas);
+        Twist2d twist = PhoenixDriveConstants.kinematics.toTwist2d(deltas);
         latestOdometryPose = latestOdometryPose.exp(twist);
 
         Logger.recordOutput("Vision/GroundTruth", latestOdometryPose);

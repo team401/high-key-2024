@@ -1,11 +1,13 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.Utils;
+import coppercore.math.Deadband;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.constants.DriverConstants;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 
@@ -29,6 +31,8 @@ public class DriveWithJoysticks extends Command {
 
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
+    private Deadband joystickDeadband = new Deadband();
+
     public DriveWithJoysticks(
             PhoenixDrive drivetrain, CommandJoystick leftJoystick, CommandJoystick rightJoystick) {
         this.drivetrain = drivetrain;
@@ -43,9 +47,19 @@ public class DriveWithJoysticks extends Command {
 
     @Override
     public void execute() {
-        double filteredVY = -leftJoystick.getY() * PhoenixDriveConstants.maxSpeedMetPerSec;
-        double filteredVX = -leftJoystick.getX() * PhoenixDriveConstants.maxSpeedMetPerSec;
-        double filteredOmega = rightJoystick.getX() * PhoenixDriveConstants.MaxAngularRateRadPerSec;
+        double[] leftJoystickDeadbanded =
+                Deadband.twoAxisDeadband(
+                        leftJoystick.getX(),
+                        leftJoystick.getY(),
+                        DriverConstants.leftJoystickDeadband);
+        double filteredVY = -leftJoystickDeadbanded[1] * PhoenixDriveConstants.maxSpeedMetPerSec;
+        double filteredVX = -leftJoystickDeadbanded[0] * PhoenixDriveConstants.maxSpeedMetPerSec;
+
+        double rightJoystickDeadbanded =
+                Deadband.oneAxisDeadband(
+                        rightJoystick.getX(), DriverConstants.rightJoystickDeadband);
+        double filteredOmega =
+                -rightJoystickDeadbanded * PhoenixDriveConstants.MaxAngularRateRadPerSec;
 
         chassisSpeeds = new ChassisSpeeds(filteredVY, filteredVX, filteredOmega);
         drivetrain.setGoalSpeeds(chassisSpeeds, true);
