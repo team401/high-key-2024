@@ -18,14 +18,14 @@ public class IntakeIOSim implements IntakeIO {
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.leftIntakeVoltage = intakeWheelsAppliedVolts;
-        inputs.leftIntakeStatorCurrent = noteInIntakeWheels ? 100000 : 0;
-        inputs.rightIntakeVoltage = intakeWheelsAppliedVolts;
-        inputs.rightIntakeStatorCurrent = noteInIntakeWheels ? 100000 : 0;
+        // inputs.leftIntakeVoltage = intakeWheelsAppliedVolts;
+        // inputs.leftIntakeStatorCurrent = noteInIntakeWheels ? 100000 : 0;
+        // inputs.rightIntakeVoltage = intakeWheelsAppliedVolts;
+        // inputs.rightIntakeStatorCurrent = noteInIntakeWheels ? 100000 : 0;
 
-        inputs.beltVoltage = beltAppliedVolts;
-        inputs.beltStatorCurrent = noteInBelts ? 100000 : 0;
-        inputs.leftIntakeStatorCurrent = noteInIntakeWheels ? 100000 : 0;
+        // inputs.beltVoltage = beltAppliedVolts;
+        // inputs.beltStatorCurrent = noteInBelts ? 100000 : 0;
+        // inputs.leftIntakeStatorCurrent = noteInIntakeWheels ? 100000 : 0;
 
         inputs.noteSensed = noteInIntakeWheels;
     }
