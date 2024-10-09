@@ -31,7 +31,7 @@ public class DriveWithJoysticks extends Command {
 
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds();
 
-    private Deadband joystickDeadband = new Deadband();
+    // private Deadband joystickDeadband = new Deadband();
 
     public DriveWithJoysticks(
             PhoenixDrive drivetrain, CommandJoystick leftJoystick, CommandJoystick rightJoystick) {

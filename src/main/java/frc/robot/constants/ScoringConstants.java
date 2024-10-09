@@ -25,6 +25,10 @@ public class ScoringConstants {
 
     public static final int kickerMotorId = 13;
 
+    // TODO: REPLACE THIS WHEN THE ACTUAL SHOOTER IO IS MERGED
+    public static final int shooterLeftMotorId = -1;
+    public static final int shooterRightMotorId = -1;
+
     public static final double shooterCurrentLimit = 120;
     public static final double kickerCurrentLimit = 120;
     public static final double aimerCurrentLimit = 40;
