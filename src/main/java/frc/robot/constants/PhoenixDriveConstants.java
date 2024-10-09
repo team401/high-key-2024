@@ -46,6 +46,11 @@ public final class PhoenixDriveConstants {
                     .withKV(0.12)
                     .withKA(0.01);
 
+    public static final double alignmentkP = 1.5;
+    public static final double alignmentkI = 0.01;
+    public static final double alignmentkD = 0.15;
+    public static final double alignToleranceRadians = 0.1;
+
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
     private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
