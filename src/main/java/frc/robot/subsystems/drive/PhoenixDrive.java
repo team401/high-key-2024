@@ -202,7 +202,9 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                                 < 1e-10
                         && Math.abs(goalSpeeds.omegaRadiansPerSecond) < 1e-10;
         Logger.recordOutput("Drive/idling", idling);
-        if (idling) {
+
+        // sticks zeroed out will cause false idle when wanting alignment
+        if (idling && !aligning) {
             request = new SwerveRequest.Idle();
         } else if (fieldCentric) {
             if (aligning) {
