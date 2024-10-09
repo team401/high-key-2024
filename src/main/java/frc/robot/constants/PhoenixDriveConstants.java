@@ -109,18 +109,11 @@ public final class PhoenixDriveConstants {
     public static final double kSimLoopPeriod = 0.005;
 
     // Front Left
-<<<<<<< HEAD
     private static final int kFrontLeftDriveMotorId = 7;
     private static final int kFrontLeftSteerMotorId = 8;
     private static final int kFrontLeftEncoderId = 9;
     private static final double kFrontLeftEncoderOffset = -0.267822265625;
     private static final boolean kFrontLeftSteerInvert = false;
-=======
-    private static final int kBackRightDriveMotorId = 2;
-    private static final int kBackRightSteerMotorId = 0; // 1
-    private static final int kBackRightEncoderId = 0; // 1
-    private static final double kBackRightEncoderOffset = 0.3486328125;
->>>>>>> bf323bd (shooter works, intake does not)
 
     private static final double kFrontLeftXPosInches = 10.75;
     private static final double kFrontLeftYPosInches = 11.5;
