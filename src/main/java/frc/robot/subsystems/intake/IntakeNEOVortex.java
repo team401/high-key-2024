@@ -22,7 +22,7 @@ public class IntakeNEOVortex implements IntakeIO {
         intakeMotor.setSmartCurrentLimit(80);
         intakeMotor.setIdleMode(IdleMode.kBrake);
         intakeMotor.setInverted(true);
-      
+
         centeringMotor.setSmartCurrentLimit(60);
     }
 
