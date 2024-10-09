@@ -10,36 +10,51 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+<<<<<<< HEAD
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
+=======
+>>>>>>> 3f9157c (formatting + removing second arm motor)
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+<<<<<<< HEAD
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
+=======
+>>>>>>> 3f9157c (formatting + removing second arm motor)
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.ScoringConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class AimerIORoboRio implements AimerIO {
+<<<<<<< HEAD
     private final TalonFX aimerMotor = new TalonFX(ScoringConstants.aimerMotorId);
+=======
+    private final TalonFX aimerLeft = new TalonFX(ScoringConstants.aimMotorId);
+>>>>>>> 3f9157c (formatting + removing second arm motor)
 
     private ControlRequest request;
 
+<<<<<<< HEAD
     private final CANcoder aimerEncoder = new CANcoder(ScoringConstants.aimerEncoderId);
+=======
+    // replace with fusedencoder from aiden?
+    // private final DutyCycleEncoder encoder = new
+    // DutyCycleEncoder(ScoringConstants.aimEncoderPort);
+>>>>>>> 3f9157c (formatting + removing second arm motor)
 
     private final Timer timer = new Timer();
 
@@ -183,6 +198,7 @@ public class AimerIORoboRio implements AimerIO {
 
     @Override
     public void setBrakeMode(boolean brake) {
+<<<<<<< HEAD
         aimerMotor.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
     }
 
@@ -196,6 +212,18 @@ public class AimerIORoboRio implements AimerIO {
     public void setStatorCurrentLimit(double limit) {
         TalonFXConfigurator aimerMotorConfig = aimerMotor.getConfigurator();
         aimerMotorConfig.apply(
+=======
+        aimerLeft.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+    }
+
+    private double getEncoderPosition() {
+        return aimerLeft.getPosition().getValueAsDouble();
+    }
+
+    public void setStatorCurrentLimit(double limit) {
+        TalonFXConfigurator aimerLeftConfig = aimerLeft.getConfigurator();
+        aimerLeftConfig.apply(
+>>>>>>> 3f9157c (formatting + removing second arm motor)
                 new CurrentLimitsConfigs()
                         .withStatorCurrentLimit(limit)
                         .withStatorCurrentLimitEnable(true));
@@ -232,8 +260,13 @@ public class AimerIORoboRio implements AimerIO {
                 ((getEncoderPosition() - controlSetpoint) - lastError) / diffTime;
         lastError = getEncoderPosition() - controlSetpoint;
 
+<<<<<<< HEAD
         inputs.aimStatorCurrentAmps = aimerMotor.getStatorCurrent().getValueAsDouble();
         inputs.aimSupplyCurrentAmps = aimerMotor.getSupplyCurrent().getValueAsDouble();
+=======
+        inputs.aimStatorCurrentAmps = aimerLeft.getStatorCurrent().getValueAsDouble();
+        inputs.aimSupplyCurrentAmps = aimerLeft.getSupplyCurrent().getValueAsDouble();
+>>>>>>> 3f9157c (formatting + removing second arm motor)
     }
 
     @Override
@@ -252,9 +285,15 @@ public class AimerIORoboRio implements AimerIO {
         }
 
         if (!motorDisabled || override) {
+<<<<<<< HEAD
             aimerMotor.setControl(request);
         } else {
             aimerMotor.setVoltage(0.0);
+=======
+            aimerLeft.setVoltage(outputs.aimAppliedVoltage);
+        } else {
+            aimerLeft.setVoltage(0.0);
+>>>>>>> 3f9157c (formatting + removing second arm motor)
         }
     }
 }
