@@ -34,6 +34,8 @@ import frc.robot.subsystems.scoring.AimerIORoboRio;
 import frc.robot.subsystems.scoring.AimerIOSim;
 import frc.robot.subsystems.scoring.ScoringSubsystem;
 import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
+import frc.robot.utils.feedforward.TuneG;
+import frc.robot.utils.feedforward.TuneS;
 import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
@@ -353,11 +355,11 @@ public class RobotContainer {
                 scoringSubsystem.setAction(ScoringAction.OVERRIDE);
 
                 // TODO: Add Tunables to coppercore!
-                // masher.a()
-                //         .onTrue(new TuneS(scoringSubsystem, 0));
+                masher.a()
+                        .onTrue(new TuneS(scoringSubsystem, 0));
 
-                // masher.b()
-                //         .onTrue(new TuneG(scoringSubsystem, 0));
+                masher.b()
+                        .onTrue(new TuneG(scoringSubsystem, 0));
 
                 masher.y()
                         .onTrue(
