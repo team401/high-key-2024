@@ -34,14 +34,14 @@ public class AimerIOSim implements AimerIO {
     private final TrapezoidProfile profile =
             new TrapezoidProfile(
                     new TrapezoidProfile.Constraints(
-                            ScoringConstants.aimCruiseVelocity, ScoringConstants.aimAcceleration));
+                            ScoringConstants.aimerCruiseVelocity,
+                            ScoringConstants.aimerAcceleration));
 
     private final Timer timer = new Timer();
 
     private boolean override = false;
     private double overrideVolts = 0.0;
 
-    boolean newProfile = false;
     double previousGoalAngle = 0.0;
 
     double minAngleClamp = 0.0;
@@ -55,14 +55,13 @@ public class AimerIOSim implements AimerIO {
     double initialVelocity = 0.0;
 
     @Override
-    public void setAimAngleRad(double goalAngleRad, boolean newProfile) {
+    public void setAimAngleRad(double goalAngleRad) {
         this.goalAngleRad = goalAngleRad;
-        this.newProfile = newProfile;
     }
 
     @Override
     public void controlAimAngleRad() {
-        if (goalAngleRad != previousGoalAngle && newProfile) {
+        if (goalAngleRad != previousGoalAngle) {
             timer.reset();
             timer.start();
 

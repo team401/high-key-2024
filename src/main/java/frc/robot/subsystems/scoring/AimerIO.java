@@ -25,7 +25,7 @@ public interface AimerIO {
 
     public default void applyOutputs(AimerOutputs outputs) {}
 
-    public default void setAimAngleRad(double angle, boolean newProfile) {}
+    public default void setAimAngleRad(double angle) {}
 
     public default void controlAimAngleRad() {}
 
