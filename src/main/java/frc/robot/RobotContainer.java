@@ -15,7 +15,6 @@ import frc.robot.commands.ShootWithGamepad;
 import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.PhoenixDriveConstants;
-import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
@@ -35,8 +34,6 @@ import frc.robot.subsystems.scoring.AimerIORoboRio;
 import frc.robot.subsystems.scoring.AimerIOSim;
 import frc.robot.subsystems.scoring.ScoringSubsystem;
 import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
-import frc.robot.utils.feedforward.TuneG;
-import frc.robot.utils.feedforward.TuneS;
 import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
@@ -485,14 +482,15 @@ public class RobotContainer {
                 scoringSubsystem.setAction(ScoringAction.OVERRIDE);
 
                 // TODO: Add Tunables to coppercore!
-                masher.a()
-                        .onTrue(new TuneS(scoringSubsystem, 1));
+                masher.a().onTrue(new TuneS(scoringSubsystem, 1));
 
-                masher.b()
-                        .onTrue(new TuneG(scoringSubsystem, 1));
+                masher.b().onTrue(new TuneG(scoringSubsystem, 1));
 
                 masher.y()
-                        .onTrue(new InstantCommand(() -> scoringSubsystem.setPID(
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setPID(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/shooter/kP",
                                                                 ScoringConstants.shooterkP),
@@ -519,7 +517,6 @@ public class RobotContainer {
                         .onFalse(
                                 new InstantCommand(
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
-                }
         }
-
+    }
 }
