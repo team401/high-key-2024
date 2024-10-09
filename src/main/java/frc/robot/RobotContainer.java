@@ -34,11 +34,11 @@ import frc.robot.subsystems.scoring.AimerIORoboRio;
 import frc.robot.subsystems.scoring.AimerIOSim;
 import frc.robot.subsystems.scoring.ScoringSubsystem;
 import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
-import frc.robot.utils.feedforward.TuneG;
-import frc.robot.utils.feedforward.TuneS;
 import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
+import frc.robot.utils.feedforward.TuneG;
+import frc.robot.utils.feedforward.TuneS;
 
 public class RobotContainer {
     PhoenixDrive drive;
@@ -349,17 +349,15 @@ public class RobotContainer {
                         "Test-Mode/aimer/profileMaxAcceleration",
                         ScoringConstants.aimerAcceleration);
 
-                SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.25);
+                SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.0);
                 SmartDashboard.putNumber("Test-Mode/aimer/volts", 2.0);
 
                 scoringSubsystem.setAction(ScoringAction.OVERRIDE);
 
                 // TODO: Add Tunables to coppercore!
-                masher.a()
-                        .onTrue(new TuneS(scoringSubsystem, 0));
+                masher.a().onTrue(new TuneS(scoringSubsystem, 0));
 
-                masher.b()
-                        .onTrue(new TuneG(scoringSubsystem, 0));
+                masher.b().onTrue(new TuneG(scoringSubsystem, 0));
 
                 masher.y()
                         .onTrue(
@@ -394,7 +392,7 @@ public class RobotContainer {
                                                 scoringSubsystem.runToPosition(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/setpointPosition",
-                                                                0.25),
+                                                                0.0),
                                                         0)))
                         .onTrue(
                                 new InstantCommand(
@@ -415,7 +413,8 @@ public class RobotContainer {
                 //                                         ScoringAction.TEMPORARY_SETPOINT)))
                 //         .onFalse(
                 //                 new InstantCommand(
-                //                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+                //                         () ->
+                // scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
 
                 // masher.povDown()
                 //         .onTrue(new InstantCommand(() -> scoringSubsystem.runToPosition(0.0, 0)))
@@ -426,7 +425,8 @@ public class RobotContainer {
                 //                                         ScoringAction.TEMPORARY_SETPOINT)))
                 //         .onFalse(
                 //                 new InstantCommand(
-                //                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+                //                         () ->
+                // scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
 
                 // masher.leftBumper()
                 //         .onTrue(

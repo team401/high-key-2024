@@ -134,7 +134,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void idle() {
-        aimerIo.setAimAngleRad(-0.03);
+        aimerIo.setAimAngleRad(0.0);
         shooterIo.setShooterVelocityRPM(0);
         shooterIo.setKickerVolts(0);
 
@@ -156,7 +156,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
             state = ScoringState.SPIT;
         } else if (action == ScoringAction.AIM || action == ScoringAction.SHOOT) {
             state = ScoringState.PRIME;
-            aimerIo.setAimAngleRad(aimerInputs.aimAngleRad + 0.001);
+            // aimerIo.setAimAngleRad(aimerInputs.aimAngleRad + 0.001);
             shooterIo.setShooterVelocityRPM(2000);
         } else if (action == ScoringAction.AMP_AIM) {
             state = ScoringState.AMP_PRIME;

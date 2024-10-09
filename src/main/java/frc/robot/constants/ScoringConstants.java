@@ -4,14 +4,14 @@ import edu.wpi.first.math.util.Units;
 import java.util.HashMap;
 
 public class ScoringConstants {
-    public static final double aimerkP = 17.0;
-    public static final double aimerkI = 10.0; // 5.0
+    public static final double aimerkP = 23.0;
+    public static final double aimerkI = 4.0; // 5.0
     public static final double aimerkD = 0.0;
 
-    public static final double aimerkS = 0.265;
-    public static final double aimerkG = 0.1;
-    public static final double aimerkV = 1.51;
-    public static final double aimerkA = 0.01;
+    public static final double aimerkS = 0.0;
+    public static final double aimerkG = 0.2;
+    public static final double aimerkV = 0.0;
+    public static final double aimerkA = 0.0;
 
     public static final double shooterkP = 0.05;
     public static final double shooterkI = 0.2;
@@ -31,10 +31,10 @@ public class ScoringConstants {
 
     public static final double shooterCurrentLimit = 120;
     public static final double kickerCurrentLimit = 120;
-    public static final double aimerCurrentLimit = 40;
+    public static final double aimerCurrentLimit = 60;
 
     public static final int aimerEncoderId = 13;
-    public static final double aimerEncoderOffset = 1.75 - 0.01; // 0.027
+    public static final double aimerEncoderOffset = 0.184570;
 
     public static final double aimerEncoderToMechanismRatio = 1.0;
     public static final double aimerRotorToSensorRatio = 90.0;
@@ -47,8 +47,8 @@ public class ScoringConstants {
     // anymore
     // public static final double aimerAcceleration = 4.5; // TODO: 15.0
     // public static final double aimerCruiseVelocity = 7.0; // TODO: 15.0
-    public static final double aimerAcceleration = 1.0;
-    public static final double aimerCruiseVelocity = 1.0;
+    public static final double aimerAcceleration = 0.7;
+    public static final double aimerCruiseVelocity = 0.4;
 
     public static final double shooterLowerVelocityMarginRPM = 50;
     public static final double shooterUpperVelocityMarginRPM = 150;
@@ -60,8 +60,8 @@ public class ScoringConstants {
 
     public static final double shooterAmpVelocityRPM = 2000;
 
-    public static final double aimMaxAngleRadians = 2 * Math.PI; // Math.PI / 2
-    public static final double aimMinAngleRadians = Math.PI;
+    public static final double aimMaxAngleRadians = 0.361328 - 0.184570; // Math.PI / 2
+    public static final double aimMinAngleRadians = -0.037598 - 0.184570;
     public static final double aimAngleTolerance = 0.015;
 
     public static final double maxAimIntake = 0.0;
@@ -96,7 +96,7 @@ public class ScoringConstants {
         return map;
     }
 
-    public static final double aimerStaticOffset = 0.01;
+    public static final double aimerStaticOffset = 0.0;
 
     // NOTE - This should be monotonically increasing
     // Key - Distance in meters

@@ -17,6 +17,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
@@ -64,7 +65,7 @@ public class AimerIORoboRio implements AimerIO {
                 AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
         cancoderConfiguration.MagnetSensor.SensorDirection =
                 SensorDirectionValue.CounterClockwise_Positive;
-        cancoderConfiguration.MagnetSensor.MagnetOffset = ScoringConstants.aimerEncoderOffset;
+        cancoderConfiguration.MagnetSensor.MagnetOffset = -ScoringConstants.aimerEncoderOffset;
 
         aimerEncoder.getConfigurator().apply(cancoderConfiguration);
 
@@ -77,6 +78,8 @@ public class AimerIORoboRio implements AimerIO {
         talonFXConfigs.Feedback.RotorToSensorRatio = ScoringConstants.aimerRotorToSensorRatio;
 
         Slot0Configs slot0Configs = talonFXConfigs.Slot0;
+        slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
+
         slot0Configs.kS = ScoringConstants.aimerkS;
         slot0Configs.kV = ScoringConstants.aimerkV;
         slot0Configs.kA = ScoringConstants.aimerkA;
