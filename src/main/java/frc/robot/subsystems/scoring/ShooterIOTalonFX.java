@@ -12,12 +12,8 @@ import frc.robot.constants.ConversionConstants;
 import frc.robot.constants.ScoringConstants;
 
 public class ShooterIOTalonFX implements ShooterIO {
-<<<<<<< HEAD
-    // private final TalonFX kicker = new TalonFX(ScoringConstants.kickerMotorId);
-=======
     private final CANSparkFlex kicker =
             new CANSparkFlex(ScoringConstants.kickerMotorId, MotorType.kBrushless);
->>>>>>> 759e657 (cleaning up)
 
     private final TalonFX shooterLeft = new TalonFX(ScoringConstants.shooterLeftMotorId);
     private final TalonFX shooterRight = new TalonFX(ScoringConstants.shooterRightMotorId);
@@ -53,15 +49,6 @@ public class ShooterIOTalonFX implements ShooterIO {
                         .withStatorCurrentLimit(ScoringConstants.shooterCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
-<<<<<<< HEAD
-        // TalonFXConfigurator kickerConfig = kicker.getConfigurator();
-        // kickerConfig.apply(
-        //         new CurrentLimitsConfigs()
-        //                 .withStatorCurrentLimit(ScoringConstants.kickerCurrentLimit)
-        //                 .withStatorCurrentLimitEnable(true));
-
-=======
->>>>>>> 759e657 (cleaning up)
         slot0.withKP(ScoringConstants.shooterkP);
         slot0.withKI(ScoringConstants.shooterkI);
         slot0.withKD(ScoringConstants.shooterkD);
@@ -132,13 +119,8 @@ public class ShooterIOTalonFX implements ShooterIO {
         inputs.shooterRightStatorCurrentAmps = shooterRight.getStatorCurrent().getValueAsDouble();
         inputs.shooterRightSupplyCurrentAmps = shooterRight.getSupplyCurrent().getValueAsDouble();
 
-<<<<<<< HEAD
-        // inputs.kickerAppliedVolts = kicker.getMotorVoltage().getValueAsDouble();
-        // inputs.kickerStatorCurrentAmps = kicker.getStatorCurrent().getValueAsDouble();
-=======
         inputs.kickerAppliedVolts = kicker.getBusVoltage();
         inputs.kickerStatorCurrentAmps = kicker.getOutputCurrent();
->>>>>>> 759e657 (cleaning up)
 
         inputs.bannerSensor =
                 kicker.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
