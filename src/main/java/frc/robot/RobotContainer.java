@@ -1,6 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -14,6 +16,7 @@ import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
+import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
@@ -34,6 +37,8 @@ import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
 import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
+import frc.robot.utils.feedforward.TuneG;
+import frc.robot.utils.feedforward.TuneS;
 
 public class RobotContainer {
     PhoenixDrive drive;
@@ -49,8 +54,11 @@ public class RobotContainer {
 
     VisionLocalizer tagVision;
 
+    SendableChooser<String> testModeChooser = new SendableChooser<String>();
+
     public RobotContainer() {
         configureSubsystems();
+        configureModes();
         configureBindings();
     }
 
@@ -161,6 +169,14 @@ public class RobotContainer {
                 scoringSubsystem = new ScoringSubsystem(new ShooterIO() {}, new AimerIO() {});
                 break;
         }
+    }
+
+    private void configureModes() {
+        testModeChooser.setDefaultOption("Blank", "tuning");
+
+        testModeChooser.setDefaultOption("Aimer Tunig", "tuning-aimer");
+
+        SmartDashboard.putData("Test Mode Chooser", testModeChooser);
     }
 
     private void configureBindings() {
@@ -313,6 +329,126 @@ public class RobotContainer {
     public void enabledInit() {
         intakeSubsystem.run(IntakeAction.NONE);
         scoringSubsystem.setAction(ScoringAction.WAIT);
+    }
+
+    public void testInit() {
+        // Reset bindings
+        masher = new CommandXboxController(2);
+
+        switch (testModeChooser.getSelected()) {
+            case "tuning":
+                break;
+            case "tuning-aimer":
+                SmartDashboard.putNumber("Test-Mode/aimer/kP", ScoringConstants.aimerkP);
+                SmartDashboard.putNumber("Test-Mode/aimer/kI", ScoringConstants.aimerkI);
+                SmartDashboard.putNumber("Test-Mode/aimer/kD", ScoringConstants.aimerkD);
+
+                SmartDashboard.putNumber(
+                        "Test-Mode/aimer/profileMaxVelocity", ScoringConstants.aimerCruiseVelocity);
+                SmartDashboard.putNumber(
+                        "Test-Mode/aimer/profileMaxAcceleration",
+                        ScoringConstants.aimerAcceleration);
+
+                SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.0);
+                SmartDashboard.putNumber("Test-Mode/aimer/volts", 2.0);
+
+                scoringSubsystem.setAction(ScoringAction.OVERRIDE);
+
+                // TODO: Add Tunables to coppercore!
+                masher.a().onTrue(new TuneS(scoringSubsystem, 0));
+
+                masher.b().onTrue(new TuneG(scoringSubsystem, 0));
+
+                masher.y()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setPID(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/kP",
+                                                                ScoringConstants.aimerkP),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/kI",
+                                                                ScoringConstants.aimerkI),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/kD",
+                                                                ScoringConstants.aimerkD),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setMaxProfileProperties(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/profileMaxVelocity",
+                                                                ScoringConstants
+                                                                        .aimerCruiseVelocity),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/profileMaxAcceleration",
+                                                                ScoringConstants.aimerAcceleration),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/setpointPosition",
+                                                                0.0),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                // TODO: Figure out which of these we need
+                // masher.povUp()
+                //         .onTrue(new InstantCommand(() -> scoringSubsystem.runToPosition(1.1, 0)))
+                //         .onTrue(
+                //                 new InstantCommand(
+                //                         () ->
+                //                                 scoringSubsystem.setAction(
+                //                                         ScoringAction.TEMPORARY_SETPOINT)))
+                //         .onFalse(
+                //                 new InstantCommand(
+                //                         () ->
+                // scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                // masher.povDown()
+                //         .onTrue(new InstantCommand(() -> scoringSubsystem.runToPosition(0.0, 0)))
+                //         .onTrue(
+                //                 new InstantCommand(
+                //                         () ->
+                //                                 scoringSubsystem.setAction(
+                //                                         ScoringAction.TEMPORARY_SETPOINT)))
+                //         .onFalse(
+                //                 new InstantCommand(
+                //                         () ->
+                // scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                // masher.leftBumper()
+                //         .onTrue(
+                //                 new InstantCommand(
+                //                         () ->
+                //                                 scoringSubsystem.setVolts(
+                //                                         SmartDashboard.getNumber(
+                //                                                 "Test-Mode/aimer/volts", 2.0),
+                //                                         0)))
+                //         .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
+
+                // masher.rightBumper()
+                //         .onTrue(
+                //                 new InstantCommand(
+                //                         () ->
+                //                                 scoringSubsystem.setVolts(
+                //                                         -SmartDashboard.getNumber(
+                //                                                 "Test-Mode/aimer/volts", 2.0),
+                //                                         0)))
+                //         .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
+                break;
+        }
     }
 
     public Command getAutonomousCommand() {
