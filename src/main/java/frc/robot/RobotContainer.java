@@ -15,6 +15,7 @@ import frc.robot.commands.ShootWithGamepad;
 import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.PhoenixDriveConstants;
+import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
@@ -34,6 +35,8 @@ import frc.robot.subsystems.scoring.AimerIORoboRio;
 import frc.robot.subsystems.scoring.AimerIOSim;
 import frc.robot.subsystems.scoring.ScoringSubsystem;
 import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
+import frc.robot.utils.feedforward.TuneG;
+import frc.robot.utils.feedforward.TuneS;
 import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
@@ -60,6 +63,7 @@ public class RobotContainer {
         configureSubsystems();
         configureModes();
         configureBindings();
+        configureModes();
     }
 
     private void configureSubsystems() {
@@ -454,4 +458,68 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         return Commands.print("No autonomous command configured");
     }
+
+    private void configureModes() {
+        testModeChooser.setDefaultOption("Blank", "tuning");
+
+        testModeChooser.setDefaultOption("Shooter Tuning", "tuning-shooter");
+
+        SmartDashboard.putData("Test Mode Chooser", testModeChooser);
+    }
+
+    public void testInit() {
+        // Reset bindings
+        masher = new CommandXboxController(2);
+
+        switch (testModeChooser.getSelected()) {
+            case "tuning":
+                break;
+            case "tuning-shooter":
+                SmartDashboard.putNumber("Test-Mode/shooter/kP", ScoringConstants.shooterkP);
+                SmartDashboard.putNumber("Test-Mode/shooter/kI", ScoringConstants.shooterkI);
+                SmartDashboard.putNumber("Test-Mode/shooter/kD", ScoringConstants.shooterkD);
+
+                SmartDashboard.putNumber("Test-Mode/shooter/setpointPosition", 0.25);
+                SmartDashboard.putNumber("Test-Mode/shooter/volts", 2.0);
+
+                scoringSubsystem.setAction(ScoringAction.OVERRIDE);
+
+                // TODO: Add Tunables to coppercore!
+                masher.a()
+                        .onTrue(new TuneS(scoringSubsystem, 1));
+
+                masher.b()
+                        .onTrue(new TuneG(scoringSubsystem, 1));
+
+                masher.y()
+                        .onTrue(new InstantCommand(() -> scoringSubsystem.setPID(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/kP",
+                                                                ScoringConstants.shooterkP),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/kI",
+                                                                ScoringConstants.shooterkI),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/kD",
+                                                                ScoringConstants.shooterkD),
+                                                        1)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/setpointPosition",
+                                                                0.25),
+                                                        1)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+                }
+        }
+
 }

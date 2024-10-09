@@ -2,12 +2,21 @@
 
 package frc.robot.utils.feedforward;
 
+<<<<<<< HEAD
 import coppercore.controls.Tunable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.ArrayList;
 
 // TODO: USE COPPERCORE VERSION
+=======
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import coppercore.controls.Tunable;
+import java.util.ArrayList;
+
+//TODO: USE COPPERCORE VERSION
+>>>>>>> 97e6997 (added tuning)
 public class TuneV extends Command {
     private Tunable subsystem;
 
