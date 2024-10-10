@@ -3,22 +3,23 @@ package frc.robot.subsystems.scoring;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.DigitalInput;
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkLimitSwitch;
 import frc.robot.constants.ConversionConstants;
 import frc.robot.constants.ScoringConstants;
-import frc.robot.constants.SensorConstants;
 
 public class ShooterIOTalonFX implements ShooterIO {
-    // private final TalonFX kicker = new TalonFX(ScoringConstants.kickerMotorId);
+    private final CANSparkFlex kicker =
+            new CANSparkFlex(ScoringConstants.kickerMotorId, MotorType.kBrushless);
 
     private final TalonFX shooterLeft = new TalonFX(ScoringConstants.shooterLeftMotorId);
     private final TalonFX shooterRight = new TalonFX(ScoringConstants.shooterRightMotorId);
 
     private final Slot0Configs slot0 = new Slot0Configs();
-
-    DigitalInput bannerSensor = new DigitalInput(SensorConstants.indexerSensorPort);
 
     private boolean override = false;
     private double overrideVolts = 0.0;
@@ -31,8 +32,8 @@ public class ShooterIOTalonFX implements ShooterIO {
     public ShooterIOTalonFX() {
         // kicker.setInverted(true);
 
-        shooterLeft.setInverted(true);
-        shooterRight.setInverted(false);
+        shooterLeft.setInverted(false);
+        shooterRight.setInverted(true);
 
         shooterLeft.setNeutralMode(NeutralModeValue.Coast);
         shooterRight.setNeutralMode(NeutralModeValue.Coast);
@@ -48,12 +49,6 @@ public class ShooterIOTalonFX implements ShooterIO {
                 new CurrentLimitsConfigs()
                         .withStatorCurrentLimit(ScoringConstants.shooterCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
-
-        // TalonFXConfigurator kickerConfig = kicker.getConfigurator();
-        // kickerConfig.apply(
-        //         new CurrentLimitsConfigs()
-        //                 .withStatorCurrentLimit(ScoringConstants.kickerCurrentLimit)
-        //                 .withStatorCurrentLimitEnable(true));
 
         slot0.withKP(ScoringConstants.shooterkP);
         slot0.withKI(ScoringConstants.shooterkI);
@@ -125,42 +120,39 @@ public class ShooterIOTalonFX implements ShooterIO {
         inputs.shooterRightStatorCurrentAmps = shooterRight.getStatorCurrent().getValueAsDouble();
         inputs.shooterRightSupplyCurrentAmps = shooterRight.getSupplyCurrent().getValueAsDouble();
 
-        // inputs.kickerAppliedVolts = kicker.getMotorVoltage().getValueAsDouble();
-        // inputs.kickerStatorCurrentAmps = kicker.getStatorCurrent().getValueAsDouble();
+        inputs.kickerAppliedVolts = kicker.getBusVoltage();
+        inputs.kickerStatorCurrentAmps = kicker.getOutputCurrent();
 
-        inputs.bannerSensor = !bannerSensor.get();
+        inputs.bannerSensor =
+                kicker.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
     }
 
     @Override
     public void applyOutputs(ShooterOutputs outputs) {
-        shooterLeft.setVoltage(0.0);
-        shooterRight.setVoltage(0.0);
-        // kicker.setVoltage(0.0);
-        return;
-        // outputs.shooterLeftGoalVelocityRPM = goalLeftVelocityRPM;
-        // outputs.shooterRightGoalVelocityRPM = goalRightVelocityRPM;
-        // outputs.kickerGoalVolts = kickerVolts;
+        outputs.shooterLeftGoalVelocityRPM = goalLeftVelocityRPM;
+        outputs.shooterRightGoalVelocityRPM = goalRightVelocityRPM;
+        outputs.kickerGoalVolts = kickerVolts;
 
-        // if (override) {
-        //     shooterLeft.setVoltage(overrideVolts);
-        //     shooterRight.setVoltage(overrideVolts);
-        //     return;
-        // }
+        if (override) {
+            shooterLeft.setVoltage(overrideVolts);
+            shooterRight.setVoltage(overrideVolts);
+            return;
+        }
 
-        // if (outputs.shooterLeftGoalVelocityRPM == 0.0) {
-        //     shooterLeft.setVoltage(0.0);
-        //     shooterRight.setVoltage(0.0);
-        // } else {
-        //     shooterLeft.setControl(
-        //             new VelocityDutyCycle(
-        //                     outputs.shooterLeftGoalVelocityRPM
-        //                             / ConversionConstants.kMinutesToSeconds));
-        //     shooterRight.setControl(
-        //             new VelocityDutyCycle(
-        //                     outputs.shooterRightGoalVelocityRPM
-        //                             / ConversionConstants.kMinutesToSeconds));
-        // }
+        if (outputs.shooterLeftGoalVelocityRPM == 0.0) {
+            shooterLeft.setVoltage(0.0);
+            shooterRight.setVoltage(0.0);
+        } else {
+            shooterLeft.setControl(
+                    new VelocityDutyCycle(
+                            outputs.shooterLeftGoalVelocityRPM
+                                    / ConversionConstants.kMinutesToSeconds));
+            shooterRight.setControl(
+                    new VelocityDutyCycle(
+                            outputs.shooterRightGoalVelocityRPM
+                                    / ConversionConstants.kMinutesToSeconds));
+        }
 
-        // kicker.setVoltage(outputs.kickerGoalVolts);
+        kicker.setVoltage(outputs.kickerGoalVolts);
     }
 }

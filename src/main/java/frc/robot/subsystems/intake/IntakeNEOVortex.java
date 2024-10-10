@@ -3,9 +3,7 @@ package frc.robot.subsystems.intake;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.constants.IntakeConstants;
-import frc.robot.constants.SensorConstants;
 
 public class IntakeNEOVortex implements IntakeIO {
 
@@ -14,7 +12,7 @@ public class IntakeNEOVortex implements IntakeIO {
     private CANSparkFlex centeringMotor =
             new CANSparkFlex(IntakeConstants.centeringMotorID, MotorType.kBrushless);
 
-    DigitalInput bannerSensor = new DigitalInput(SensorConstants.uptakeSensorPort);
+    // DigitalInput bannerSensor = new DigitalInput(SensorConstants.uptakeSensorPort);
 
     private double intakeMotorVolts, centeringMotorVolts;
 
@@ -41,9 +39,8 @@ public class IntakeNEOVortex implements IntakeIO {
         outputs.intakeMotorVoltage = intakeMotorVolts;
 
         outputs.centeringMotorVoltage = centeringMotorVolts;
-
-        intakeMotor.setVoltage(outputs.intakeMotorVoltage);
-        centeringMotor.setVoltage(outputs.centeringMotorVoltage);
+        intakeMotor.setVoltage(intakeMotorVolts);
+        centeringMotor.setVoltage(centeringMotorVolts);
     }
 
     @Override

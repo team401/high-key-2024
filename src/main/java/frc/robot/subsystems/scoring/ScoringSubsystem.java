@@ -134,7 +134,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void idle() {
-        aimerIo.setAimAngleRad(0.0);
+        aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRadians + 0.01);
         shooterIo.setShooterVelocityRPM(0);
         shooterIo.setKickerVolts(0);
 
@@ -173,7 +173,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     private void intake() {
         if (!aimerAtIntakePosition()) {
-            aimerIo.setAimAngleRad(ScoringConstants.intakeAngleToleranceRadians);
+            aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRadians);
         }
         shooterIo.setKickerVolts(ScoringConstants.kickerIntakeVolts);
 
@@ -303,7 +303,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         double aimAngleRad = aimerInterpolated.getValue(distancetoGoal);
         aimerIo.setAimAngleRad(aimAngleRad);
 
-        shooterIo.setKickerVolts(10);
+        shooterIo.setKickerVolts(12);
 
         if (shootTimer.get() > 0.5) { // TODO: Tune time
             state = ScoringState.PRIME;
@@ -386,7 +386,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     public boolean aimerAtIntakePosition() {
-        return aimerInputs.aimAngleRad > ScoringConstants.intakeAngleToleranceRadians;
+        return aimerInputs.aimAngleRad
+                < ScoringConstants.aimMinAngleRadians
+                        + ScoringConstants.intakeAngleToleranceRadians;
         // return true;\][]
     }
 
@@ -428,6 +430,30 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         if (!SmartDashboard.containsKey("Beam Break Overridden")) {
             SmartDashboard.putBoolean("Beam Break Overridden", overrideBeamBreak);
         }
+
+        // SmartDashboard Tuning
+        /*setPID(
+                SmartDashboard.getNumber("P_Aimer", ScoringConstants.aimerkP),
+                SmartDashboard.getNumber("I_Aimer", ScoringConstants.aimerkI),
+                SmartDashboard.getNumber("D_Aimer", ScoringConstants.aimerkD),
+                0);
+        setPID(
+                SmartDashboard.getNumber("P_Shooter", ScoringConstants.shooterkP),
+                SmartDashboard.getNumber("I_Shooter", ScoringConstants.shooterkI),
+                SmartDashboard.getNumber("D_Shooter", ScoringConstants.shooterkD),
+                1);
+        setFF(
+                SmartDashboard.getNumber("kS_Aimer", ScoringConstants.aimerkS),
+                SmartDashboard.getNumber("kV_Aimer", ScoringConstants.aimerkV),
+                SmartDashboard.getNumber("kA_Aimer", ScoringConstants.aimerkA),
+                SmartDashboard.getNumber("kG_Aimer", ScoringConstants.aimerkG),
+                0);
+        setFF(
+                SmartDashboard.getNumber("kS_Shooter", ScoringConstants.shooterkS),
+                SmartDashboard.getNumber("kV_Shooter", ScoringConstants.shooterkV),
+                SmartDashboard.getNumber("kA_Shooter", ScoringConstants.shooterkA),
+                0,
+                0);*/
 
         overrideBeamBreak = SmartDashboard.getBoolean("Beam Break Overridden", overrideBeamBreak);
 
@@ -516,8 +542,10 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         shooterIo.applyOutputs(shooterOutputs);
         aimerIo.applyOutputs(aimerOutputs);
 
-        Logger.processInputs("scoring/shooter", shooterInputs);
-        Logger.processInputs("scoring/aimer", aimerInputs);
+        Logger.processInputs("scoring/shooterInputs", shooterInputs);
+        Logger.processInputs("scoring/shooterOutputs", shooterOutputs);
+        Logger.processInputs("scoring/aimerInputs", aimerInputs);
+        Logger.processInputs("scoring/aimerOutputs", shooterOutputs);
     }
 
     public void setTuningKickerVolts(double kickerVoltsTuning) {
@@ -643,7 +671,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                 aimerIo.setFF(kS, kV, kA, kG);
                 break;
                 // Shooter
-            case 2:
+            case 1:
                 shooterIo.setFF(kS, kV, kA);
                 break;
             default:

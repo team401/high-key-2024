@@ -27,9 +27,10 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("intake", inputs);
         Logger.recordOutput("Intake/state", state);
         Logger.recordOutput("Intake/action", action);
+        Logger.processInputs("Intake/inputs", inputs);
+        Logger.processInputs("Intake/outputs", outputs);
 
         switch (state) {
             case IDLE:
