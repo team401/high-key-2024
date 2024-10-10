@@ -134,7 +134,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     public boolean aimerReadyForNote() {
-        return Math.abs(aimerInputs.aimAngleRad) < 1e-10 && !shooterInputs.noteInShooter;
+        return Math.abs(aimerInputs.aimAngleRad - ScoringConstants.aimMinAngleRadians) < 1e-5
+                && !shooterInputs.noteInShooter;
     }
 
     private void idle() {
@@ -178,7 +179,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     private void intake() {
         if (!aimerReadyForNote() && !shooterInputs.noteInShooter) {
-            aimerIo.setAimAngleRad(ScoringConstants.intakeAngleToleranceRadians, true);
+            aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRadians);
         }
         shooterIo.setKickerVolts(ScoringConstants.kickerIntakeVolts);
 

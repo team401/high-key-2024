@@ -38,9 +38,9 @@ import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
 import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
-import java.util.function.BooleanSupplier;
 import frc.robot.utils.feedforward.TuneG;
 import frc.robot.utils.feedforward.TuneS;
+import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
     PhoenixDrive drive;
