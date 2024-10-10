@@ -14,11 +14,11 @@ public class ScoringConstants {
     public static final double aimerkA = 0.0;
 
     public static final double shooterkP = 0.05;
-    public static final double shooterkI = 0.2;
+    public static final double shooterkI = 1;
     public static final double shooterkD = 0.0;
 
     public static final double shooterkS = 0.0; // TODO: Find Imperically
-    public static final double shooterkV = 0.0095;
+    public static final double shooterkV = 0.005;
     public static final double shooterkA = 0.0;
 
     public static final int aimerMotorId = 9;
@@ -55,7 +55,7 @@ public class ScoringConstants {
     public static final double aimAngleMarginRadians = Units.degreesToRadians(1);
     public static final double aimAngleVelocityMargin = 2.0; // Units.degreesToRadians(5);
 
-    public static final double intakeAngleToleranceRadians = 0.2;
+    public static final double intakeAngleToleranceRadians = 0.05;
     // Math.PI / 2 - Units.degreesToRadians(40);
 
     public static final double shooterAmpVelocityRPM = 2000;
@@ -77,21 +77,7 @@ public class ScoringConstants {
     // Value - Aimer angle in radians
     public static HashMap<Double, Double> getAimerMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, 2 * Math.PI - 0.8);
-        map.put(1.45, 2 * Math.PI - 0.8);
-        map.put(1.98, 2 * Math.PI - 0.62);
-        map.put(2.41, 2 * Math.PI - 0.53);
-        map.put(3.02, 2 * Math.PI - 0.45);
-        map.put(3.22, 2 * Math.PI - 0.45);
-        map.put(3.9, 2 * Math.PI - 0.36);
-        map.put(4.55, 2 * Math.PI - 0.35);
-        map.put(4.95, 2 * Math.PI - 0.32);
-        map.put(5.15, 2 * Math.PI - 0.295);
-        map.put(5.35, 2 * Math.PI - 0.295);
-        map.put(5.5, 2 * Math.PI - 0.295);
-        map.put(5.64, 2 * Math.PI - 0.29);
-        // map.put(5.82, 0.275);
-        map.put(6.0, 2 * Math.PI - 0.29);
+        map.put(0.0, -0.18);
 
         return map;
     }
@@ -103,19 +89,7 @@ public class ScoringConstants {
     // Value - Shooter RPM
     public static HashMap<Double, Double> getShooterMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, 2700.0);
-        map.put(1.45, 2700.0);
-        map.put(1.98, 2700.0);
-        map.put(2.41, 3000.0);
-        map.put(3.02, 3300.0);
-        map.put(3.22, 3300.0);
-        map.put(3.9, 3300.0);
-        map.put(4.55, 3500.0);
-        map.put(4.95, 3500.0); // 4000.0
-        map.put(5.15, 3500.0);
-        map.put(5.35, 3500.0);
-        map.put(5.64, 3500.0);
-        map.put(5.82, 3500.0);
+        map.put(0.0, 4000.0);
 
         return map;
     }
@@ -139,8 +113,6 @@ public class ScoringConstants {
     public static HashMap<Double, Double> aimerToleranceTable() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
         map.put(0.0, 0.1);
-        map.put(2.0, 0.1);
-        map.put(10.0, 0.015);
 
         return map;
     }

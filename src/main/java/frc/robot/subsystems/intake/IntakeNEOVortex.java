@@ -39,9 +39,8 @@ public class IntakeNEOVortex implements IntakeIO {
         outputs.intakeMotorVoltage = intakeMotorVolts;
 
         outputs.centeringMotorVoltage = centeringMotorVolts;
-
-        intakeMotor.setVoltage(outputs.intakeMotorVoltage);
-        centeringMotor.setVoltage(outputs.centeringMotorVoltage);
+        intakeMotor.setVoltage(intakeMotorVolts);
+        centeringMotor.setVoltage(centeringMotorVolts);
     }
 
     @Override
