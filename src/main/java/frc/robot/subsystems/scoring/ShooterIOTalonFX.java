@@ -128,7 +128,7 @@ public class ShooterIOTalonFX implements ShooterIO {
         // inputs.kickerAppliedVolts = kicker.getMotorVoltage().getValueAsDouble();
         // inputs.kickerStatorCurrentAmps = kicker.getStatorCurrent().getValueAsDouble();
 
-        inputs.bannerSensor = !bannerSensor.get();
+        inputs.noteInShooter = !bannerSensor.get();
     }
 
     @Override

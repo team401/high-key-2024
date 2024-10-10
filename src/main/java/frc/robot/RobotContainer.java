@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -39,6 +40,7 @@ import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
 import frc.robot.utils.feedforward.TuneG;
 import frc.robot.utils.feedforward.TuneS;
+import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
     PhoenixDrive drive;
@@ -229,8 +231,25 @@ public class RobotContainer {
         }
 
         if (FeatureFlags.runIntake) {
+            BooleanSupplier canIntakeRun =
+                    () -> {
+                        if (scoringSubsystem.aimerReadyForNote()) {
+                            return true;
+                        } else if (!intakeSubsystem.isNoteInIntake()) {
+                            return true;
+                        }
+                        return false;
+                    };
+
+            // runs intake while b is true and aimer is ready or intake does not have note yet
             masher.b()
-                    .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.INTAKE)))
+                    .onTrue(
+                            new ConditionalCommand(
+                                    new InstantCommand(
+                                            () -> intakeSubsystem.run(IntakeAction.INTAKE)),
+                                    new InstantCommand(
+                                            () -> intakeSubsystem.run(IntakeAction.NONE)),
+                                    canIntakeRun))
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
 
             masher.a()
