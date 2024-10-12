@@ -60,6 +60,7 @@ public class RobotContainer {
         configureSubsystems();
         configureModes();
         configureBindings();
+        configureModes();
     }
 
     private void configureSubsystems() {
@@ -169,14 +170,6 @@ public class RobotContainer {
                 scoringSubsystem = new ScoringSubsystem(new ShooterIO() {}, new AimerIO() {});
                 break;
         }
-    }
-
-    private void configureModes() {
-        testModeChooser.setDefaultOption("Blank", "tuning");
-
-        testModeChooser.setDefaultOption("Aimer Tunig", "tuning-aimer");
-
-        SmartDashboard.putData("Test Mode Chooser", testModeChooser);
     }
 
     private void configureBindings() {
@@ -331,6 +324,18 @@ public class RobotContainer {
         scoringSubsystem.setAction(ScoringAction.WAIT);
     }
 
+    public Command getAutonomousCommand() {
+        return Commands.print("No autonomous command configured");
+    }
+
+    private void configureModes() {
+        testModeChooser.setDefaultOption("Blank", "tuning");
+
+        testModeChooser.setDefaultOption("Shooter Tuning", "tuning-shooter");
+
+        SmartDashboard.putData("Test Mode Chooser", testModeChooser);
+    }
+
     public void testInit() {
         // Reset bindings
         masher = new CommandXboxController(2);
@@ -338,26 +343,20 @@ public class RobotContainer {
         switch (testModeChooser.getSelected()) {
             case "tuning":
                 break;
-            case "tuning-aimer":
-                SmartDashboard.putNumber("Test-Mode/aimer/kP", ScoringConstants.aimerkP);
-                SmartDashboard.putNumber("Test-Mode/aimer/kI", ScoringConstants.aimerkI);
-                SmartDashboard.putNumber("Test-Mode/aimer/kD", ScoringConstants.aimerkD);
+            case "tuning-shooter":
+                SmartDashboard.putNumber("Test-Mode/shooter/kP", ScoringConstants.shooterkP);
+                SmartDashboard.putNumber("Test-Mode/shooter/kI", ScoringConstants.shooterkI);
+                SmartDashboard.putNumber("Test-Mode/shooter/kD", ScoringConstants.shooterkD);
 
-                SmartDashboard.putNumber(
-                        "Test-Mode/aimer/profileMaxVelocity", ScoringConstants.aimerCruiseVelocity);
-                SmartDashboard.putNumber(
-                        "Test-Mode/aimer/profileMaxAcceleration",
-                        ScoringConstants.aimerAcceleration);
-
-                SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.0);
-                SmartDashboard.putNumber("Test-Mode/aimer/volts", 2.0);
+                SmartDashboard.putNumber("Test-Mode/shooter/setpointPosition", 0.25);
+                SmartDashboard.putNumber("Test-Mode/shooter/volts", 2.0);
 
                 scoringSubsystem.setAction(ScoringAction.OVERRIDE);
 
                 // TODO: Add Tunables to coppercore!
-                masher.a().onTrue(new TuneS(scoringSubsystem, 0));
+                masher.a().onTrue(new TuneS(scoringSubsystem, 1));
 
-                masher.b().onTrue(new TuneG(scoringSubsystem, 0));
+                masher.b().onTrue(new TuneG(scoringSubsystem, 1));
 
                 masher.y()
                         .onTrue(
@@ -365,35 +364,23 @@ public class RobotContainer {
                                         () ->
                                                 scoringSubsystem.setPID(
                                                         SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/kP",
-                                                                ScoringConstants.aimerkP),
+                                                                "Test-Mode/shooter/kP",
+                                                                ScoringConstants.shooterkP),
                                                         SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/kI",
-                                                                ScoringConstants.aimerkI),
+                                                                "Test-Mode/shooter/kI",
+                                                                ScoringConstants.shooterkI),
                                                         SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/kD",
-                                                                ScoringConstants.aimerkD),
-                                                        0)))
-                        .onTrue(
-                                new InstantCommand(
-                                        () ->
-                                                scoringSubsystem.setMaxProfileProperties(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/profileMaxVelocity",
-                                                                ScoringConstants
-                                                                        .aimerCruiseVelocity),
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/profileMaxAcceleration",
-                                                                ScoringConstants.aimerAcceleration),
-                                                        0)))
+                                                                "Test-Mode/shooter/kD",
+                                                                ScoringConstants.shooterkD),
+                                                        1)))
                         .onTrue(
                                 new InstantCommand(
                                         () ->
                                                 scoringSubsystem.runToPosition(
                                                         SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/setpointPosition",
-                                                                0.0),
-                                                        0)))
+                                                                "Test-Mode/shooter/setpointPosition",
+                                                                0.25),
+                                                        1)))
                         .onTrue(
                                 new InstantCommand(
                                         () ->
@@ -402,56 +389,6 @@ public class RobotContainer {
                         .onFalse(
                                 new InstantCommand(
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
-
-                // TODO: Figure out which of these we need
-                // masher.povUp()
-                //         .onTrue(new InstantCommand(() -> scoringSubsystem.runToPosition(1.1, 0)))
-                //         .onTrue(
-                //                 new InstantCommand(
-                //                         () ->
-                //                                 scoringSubsystem.setAction(
-                //                                         ScoringAction.TEMPORARY_SETPOINT)))
-                //         .onFalse(
-                //                 new InstantCommand(
-                //                         () ->
-                // scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
-
-                // masher.povDown()
-                //         .onTrue(new InstantCommand(() -> scoringSubsystem.runToPosition(0.0, 0)))
-                //         .onTrue(
-                //                 new InstantCommand(
-                //                         () ->
-                //                                 scoringSubsystem.setAction(
-                //                                         ScoringAction.TEMPORARY_SETPOINT)))
-                //         .onFalse(
-                //                 new InstantCommand(
-                //                         () ->
-                // scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
-
-                // masher.leftBumper()
-                //         .onTrue(
-                //                 new InstantCommand(
-                //                         () ->
-                //                                 scoringSubsystem.setVolts(
-                //                                         SmartDashboard.getNumber(
-                //                                                 "Test-Mode/aimer/volts", 2.0),
-                //                                         0)))
-                //         .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
-
-                // masher.rightBumper()
-                //         .onTrue(
-                //                 new InstantCommand(
-                //                         () ->
-                //                                 scoringSubsystem.setVolts(
-                //                                         -SmartDashboard.getNumber(
-                //                                                 "Test-Mode/aimer/volts", 2.0),
-                //                                         0)))
-                //         .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
-                break;
         }
-    }
-
-    public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
     }
 }
