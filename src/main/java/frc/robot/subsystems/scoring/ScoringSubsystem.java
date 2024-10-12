@@ -431,7 +431,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
             SmartDashboard.putBoolean("Beam Break Overridden", overrideBeamBreak);
         }
 
-
         overrideBeamBreak = SmartDashboard.getBoolean("Beam Break Overridden", overrideBeamBreak);
 
         if (state == ScoringState.TEMPORARY_SETPOINT) {
