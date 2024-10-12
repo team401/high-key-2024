@@ -4,11 +4,11 @@ import edu.wpi.first.math.util.Units;
 import java.util.HashMap;
 
 public class ScoringConstants {
-    public static final double aimerkP = 23.0;
-    public static final double aimerkI = 4.0; // 5.0
+    public static final double aimerkP = 40.0;
+    public static final double aimerkI = 10.0; // 5.0
     public static final double aimerkD = 0.0;
 
-    public static final double aimerkS = 0.0;
+    public static final double aimerkS = 0.25;
     public static final double aimerkG = 0.2;
     public static final double aimerkV = 0.0;
     public static final double aimerkA = 0.0;
@@ -41,7 +41,7 @@ public class ScoringConstants {
 
     public static final double kickerIntakeVolts = 2.0;
 
-    public static final double aimPositionTolerance = 0.017;
+    public static final double aimPositionTolerance = 0.003;
 
     // These values have been reduced for tuning because we can't set a voltage limit on the motors
     // anymore
