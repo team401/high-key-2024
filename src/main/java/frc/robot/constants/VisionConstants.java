@@ -41,7 +41,9 @@ public final class VisionConstants {
     public static final List<CameraParams> cameras =
             List.of(
                     new CameraParams(
-                            "Front-Right",
+                            // TODO: Rename front right camera from Front-Left to Front-Right in
+                            // photonvision
+                            "Front-Left", // This is actually the front right camera
                             1280,
                             960,
                             50,

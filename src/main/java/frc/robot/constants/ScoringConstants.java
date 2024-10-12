@@ -77,7 +77,8 @@ public class ScoringConstants {
     // Value - Aimer angle in radians
     public static HashMap<Double, Double> getAimerMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, -0.18);
+        map.put(0.0, -0.103);
+        map.put(1.0, -0.18);
 
         return map;
     }
@@ -89,7 +90,8 @@ public class ScoringConstants {
     // Value - Shooter RPM
     public static HashMap<Double, Double> getShooterMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, 4000.0);
+        map.put(0.0, 3500.0);
+        map.put(1.0, 4000.0);
 
         return map;
     }
