@@ -43,7 +43,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private Supplier<Pose2d> poseSupplier = () -> new Pose2d();
     private Supplier<Vector<N2>> velocitySupplier = () -> VecBuilder.fill(0.0, 0.0);
     private DoubleSupplier elevatorPositionSupplier = () -> 0.0;
-    private Supplier<Boolean> driveAllignedSupplier = () -> true;
+    private Supplier<Boolean> driveAlignedSupplier = () -> true;
 
     private final InterpolateDouble shooterInterpolated;
     private final InterpolateDouble aimerInterpolated;
@@ -144,7 +144,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         Logger.recordOutput("scoring/aimGoal", 0.0);
 
-        SmartDashboard.putBoolean("Has Note", shooterInputs.bannerSensor);
+        SmartDashboard.putBoolean("Has Note", shooterInputs.noteInShooter);
         SmartDashboard.putNumber("Aimer Location", aimerInputs.aimAngleRad);
 
         if ((!hasNote() || overrideIntake) && action == ScoringAction.INTAKE) {
@@ -175,7 +175,12 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         if (!aimerAtIntakePosition()) {
             aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRadians);
         }
-        shooterIo.setKickerVolts(ScoringConstants.kickerIntakeVolts);
+
+        if (!hasNote()) {
+            shooterIo.setKickerVolts(ScoringConstants.kickerIntakeVolts);
+        } else {
+            shooterIo.setKickerVolts(0.0);
+        }
 
         if ((hasNote()) || action != ScoringAction.INTAKE) {
             state = ScoringState.IDLE;
@@ -235,7 +240,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                 < aimerAngleTolerance.getValue(distanceToGoal)
                         && Math.abs(aimerInputs.aimVelocityErrorRadPerSec)
                                 < ScoringConstants.aimAngleVelocityMargin;
-        boolean driveReady = driveAllignedSupplier.get();
+        boolean driveReady = driveAlignedSupplier.get();
         boolean fieldLocationReady = true;
 
         if (!DriverStation.getAlliance().isPresent()) {
@@ -261,7 +266,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         boolean notePresent = overrideBeamBreak ? true : hasNote();
 
-        boolean primeReady = shooterReady && aimReady && driveReady && fieldLocationReady;
+        boolean primeReady = shooterReady && aimReady && driveReady /*&& fieldLocationReady*/;
         readyToShoot = primeReady && notePresent;
 
         Logger.recordOutput("scoring/shooterReady", shooterReady);
@@ -382,7 +387,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     public boolean hasNote() {
-        return shooterInputs.bannerSensor;
+        return shooterInputs.noteInShooter;
     }
 
     public boolean aimerAtIntakePosition() {
@@ -408,8 +413,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         this.elevatorPositionSupplier = elevatorPositionSupplier;
     }
 
-    public void setDriveAllignedSupplier(Supplier<Boolean> driveAllignedSupplier) {
-        this.driveAllignedSupplier = driveAllignedSupplier;
+    public void setDriveAlignedSupplier(Supplier<Boolean> driveAllignedSupplier) {
+        this.driveAlignedSupplier = driveAllignedSupplier;
     }
 
     public void enabledInit() {

@@ -39,6 +39,7 @@ import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
 import frc.robot.utils.feedforward.TuneG;
 import frc.robot.utils.feedforward.TuneS;
+import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
     PhoenixDrive drive;
@@ -70,11 +71,11 @@ public class RobotContainer {
         if (FeatureFlags.runVision) {
             initVision();
         }
-        if (FeatureFlags.runIntake) {
-            initIntake();
-        }
         if (FeatureFlags.runScoring) {
             initScoring();
+        }
+        if (FeatureFlags.runIntake) {
+            initIntake();
         }
     }
 
@@ -155,6 +156,17 @@ public class RobotContainer {
                 intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
                 break;
         }
+
+        BooleanSupplier shooterHasNote =
+                () -> {
+                    return scoringSubsystem.hasNote();
+                };
+        BooleanSupplier shooterInIntakePosition =
+                () -> {
+                    return scoringSubsystem.aimerAtIntakePosition();
+                };
+        intakeSubsystem.setShooterHasNoteSupplier(shooterHasNote);
+        intakeSubsystem.setShooterAtIntakePosition(shooterInIntakePosition);
     }
 
     private void initScoring() {

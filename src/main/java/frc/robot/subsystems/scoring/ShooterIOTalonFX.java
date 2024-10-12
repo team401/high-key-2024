@@ -123,7 +123,7 @@ public class ShooterIOTalonFX implements ShooterIO {
         inputs.kickerAppliedVolts = kicker.getBusVoltage();
         inputs.kickerStatorCurrentAmps = kicker.getOutputCurrent();
 
-        inputs.bannerSensor =
+        inputs.noteInShooter =
                 kicker.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
     }
 
