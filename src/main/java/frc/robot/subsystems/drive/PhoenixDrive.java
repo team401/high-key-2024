@@ -314,7 +314,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         double targetVectorX = desiredTargetPose.getX() - currentPose.getX();
         double targetVectorY = desiredTargetPose.getY() - currentPose.getY();
 
-        Rotation2d desiredRotation = new Rotation2d(targetVectorX, targetVectorY);
+        Rotation2d desiredRotation =
+                new Rotation2d(targetVectorX, targetVectorY).minus(new Rotation2d(Math.PI));
         return desiredRotation;
     }
 
@@ -380,6 +381,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 Logger.recordOutput("Drive/module" + i + "/target", state.ModuleTargets[i]);
             }
         }
+
+        Logger.recordOutput("Align Target", alignTarget.toString());
     }
 
     @Override

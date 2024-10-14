@@ -203,6 +203,7 @@ public class RobotContainer {
             }
 
             scoringSubsystem.setPoseSupplier(poseSupplier);
+            scoringSubsystem.setDriveAlignedSupplier(() -> true);
         }
 
         if (FeatureFlags.runIntake) {
@@ -238,10 +239,7 @@ public class RobotContainer {
     private void configureBindings() {
         if (drive != null) {
             drive.registerTelemetry(logger::telemeterize);
-            setUpDriveWithJoysticks();
-            if (scoringSubsystem != null) {
-                scoringSubsystem.setDriveAlignedSupplier(() -> drive.isDriveAligned());
-            }
+            drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
         }
         if (DriverStation.isTest()) {
             // SYS ID

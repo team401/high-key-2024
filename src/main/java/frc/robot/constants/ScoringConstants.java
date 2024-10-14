@@ -4,8 +4,8 @@ import edu.wpi.first.math.util.Units;
 import java.util.HashMap;
 
 public class ScoringConstants {
-    public static final double aimerkP = 40.0;
-    public static final double aimerkI = 10.0; // 5.0
+    public static final double aimerkP = 60.0;
+    public static final double aimerkI = 17.0; // 5.0
     public static final double aimerkD = 0.0;
 
     public static final double aimerkS = 0.25;
@@ -79,8 +79,8 @@ public class ScoringConstants {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
         map.put(0.0, -0.094);
         map.put(1.0, -0.18);
-        map.put(2.0, -0.2);
-        map.put(3.0, -0.2);
+        map.put(2.0, -0.094);
+        map.put(3.0, -0.094);
 
         return map;
     }
