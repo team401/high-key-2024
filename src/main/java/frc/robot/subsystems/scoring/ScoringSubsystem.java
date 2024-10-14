@@ -110,7 +110,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         aimerInterpolated =
                 new InterpolateDouble(
-                        ScoringConstants.getAimerMap(), 0.0, ScoringConstants.aimMaxAngleRadians);
+                        ScoringConstants.getAimerMap(),
+                        ScoringConstants.aimMinAngleRadians,
+                        ScoringConstants.aimMaxAngleRadians);
 
         aimerAngleTolerance = new InterpolateDouble(ScoringConstants.aimerToleranceTable());
 

@@ -61,7 +61,7 @@ public class ScoringConstants {
     public static final double shooterAmpVelocityRPM = 2000;
 
     public static final double aimMaxAngleRadians = 0.361328 - 0.184570; // Math.PI / 2
-    public static final double aimMinAngleRadians = -0.037598 - 0.184570;
+    public static final double aimMinAngleRadians = -0.037598 - 0.184570 - 0.015;
     public static final double aimAngleTolerance = 0.015;
 
     public static final double maxAimIntake = 0.0;
@@ -77,8 +77,10 @@ public class ScoringConstants {
     // Value - Aimer angle in radians
     public static HashMap<Double, Double> getAimerMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, -0.103);
+        map.put(0.0, -0.094);
         map.put(1.0, -0.18);
+        map.put(2.0, -0.2);
+        map.put(3.0, -0.2);
 
         return map;
     }
@@ -114,7 +116,7 @@ public class ScoringConstants {
     // Value - Aimer angle tolerance in radians
     public static HashMap<Double, Double> aimerToleranceTable() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, 0.1);
+        map.put(0.0, 0.003);
 
         return map;
     }
