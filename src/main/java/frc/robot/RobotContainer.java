@@ -203,7 +203,7 @@ public class RobotContainer {
             }
 
             scoringSubsystem.setPoseSupplier(poseSupplier);
-            scoringSubsystem.setDriveAlignedSupplier(() -> drive.isDriveAligned());
+            scoringSubsystem.setDriveAlignedSupplier(() -> true);
         }
 
         if (FeatureFlags.runIntake) {
