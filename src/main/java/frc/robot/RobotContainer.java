@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +41,7 @@ import frc.robot.subsystems.scoring.ShooterIOTalonFX;
 import frc.robot.utils.feedforward.TuneG;
 import frc.robot.utils.feedforward.TuneS;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class RobotContainer {
     PhoenixDrive drive;
@@ -59,6 +61,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureSubsystems();
+        configureSuppliers();
         configureModes();
         configureBindings();
         configureModes();
@@ -137,11 +140,6 @@ public class RobotContainer {
                 tagVision = new VisionLocalizer(new CameraContainerReplay(VisionConstants.cameras));
                 break;
         }
-
-        if (FeatureFlags.runVision) {
-            tagVision.setCameraConsumer(
-                    (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
-        }
     }
 
     private void initIntake() {
@@ -156,17 +154,6 @@ public class RobotContainer {
                 intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
                 break;
         }
-
-        BooleanSupplier shooterHasNote =
-                () -> {
-                    return scoringSubsystem.hasNote();
-                };
-        BooleanSupplier shooterInIntakePosition =
-                () -> {
-                    return scoringSubsystem.aimerAtIntakePosition();
-                };
-        intakeSubsystem.setShooterHasNoteSupplier(shooterHasNote);
-        intakeSubsystem.setShooterAtIntakePosition(shooterInIntakePosition);
     }
 
     private void initScoring() {
@@ -181,6 +168,48 @@ public class RobotContainer {
             case REPLAY:
                 scoringSubsystem = new ScoringSubsystem(new ShooterIO() {}, new AimerIO() {});
                 break;
+        }
+    }
+
+    private void configureSuppliers() {
+        if (FeatureFlags.runScoring) {
+            Supplier<Pose2d> poseSupplier;
+            if (drive != null) {
+                poseSupplier = () -> drive.getState().Pose;
+            } else {
+                poseSupplier = () -> new Pose2d();
+            }
+
+            scoringSubsystem.setPoseSupplier(poseSupplier);
+        }
+
+        if (FeatureFlags.runIntake) {
+            BooleanSupplier shooterHasNote;
+            BooleanSupplier shooterInIntakePosition;
+            if (scoringSubsystem != null) {
+                shooterHasNote =
+                        () -> {
+                            return scoringSubsystem.hasNote();
+                        };
+                shooterInIntakePosition =
+                        () -> {
+                            return scoringSubsystem.aimerAtIntakePosition();
+                        };
+            } else {
+                shooterHasNote = () -> false;
+                shooterInIntakePosition = () -> false;
+            }
+            intakeSubsystem.setShooterHasNoteSupplier(shooterHasNote);
+            intakeSubsystem.setShooterAtIntakePosition(shooterInIntakePosition);
+        }
+
+        if (FeatureFlags.runVision) {
+            if (drive != null) {
+                tagVision.setCameraConsumer(
+                        (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
+            } else {
+                tagVision.setCameraConsumer((m) -> {});
+            }
         }
     }
 
