@@ -400,7 +400,8 @@ public class RobotContainer {
     private void configureModes() {
         testModeChooser.setDefaultOption("Blank", "tuning");
 
-        testModeChooser.setDefaultOption("Shooter Tuning", "tuning-shooter");
+        testModeChooser.addOption("Shooter Tuning", "tuning-shooter");
+        testModeChooser.addOption("Shot Tuning", "tuning-shot");
 
         SmartDashboard.putData("Test Mode Chooser", testModeChooser);
     }
@@ -458,6 +459,51 @@ public class RobotContainer {
                         .onFalse(
                                 new InstantCommand(
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+                break;
+            case "tuning-shot":
+                scoringSubsystem.setAction(ScoringAction.TUNING);
+                SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.0);
+                SmartDashboard.putNumber("Test-Mode/shooter/setpointRPM", 2000);
+
+                setUpDriveWithJoysticks();
+
+                masher.y()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/setpointPosition",
+                                                                0.0),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/setpointRPM",
+                                                                2000),
+                                                        2)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                masher.leftBumper()
+                        .onTrue(new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(10)))
+                        .onFalse(
+                                new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(0)));
+                break;
+        }
+    }
+
+    private void setUpDriveWithJoysticks() {
+        if (FeatureFlags.runDrive) {
+            drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
         }
     }
 }
