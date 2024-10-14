@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +41,7 @@ import frc.robot.subsystems.scoring.ShooterIOTalonFX;
 import frc.robot.utils.feedforward.TuneG;
 import frc.robot.utils.feedforward.TuneS;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class RobotContainer {
     PhoenixDrive drive;
@@ -182,6 +184,15 @@ public class RobotContainer {
                 scoringSubsystem = new ScoringSubsystem(new ShooterIO() {}, new AimerIO() {});
                 break;
         }
+
+        Supplier<Pose2d> poseSupplier;
+        if (drive != null) {
+            poseSupplier = () -> drive.getState().Pose;
+        } else {
+            poseSupplier = () -> new Pose2d();
+        }
+
+        scoringSubsystem.setPoseSupplier(poseSupplier);
     }
 
     private void configureBindings() {
