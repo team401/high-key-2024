@@ -2,6 +2,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -16,6 +18,7 @@ import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
+import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
@@ -36,6 +39,9 @@ import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
 import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
+import frc.robot.utils.feedforward.TuneG;
+import frc.robot.utils.feedforward.TuneS;
+import java.util.function.BooleanSupplier;
 
 public class RobotContainer {
     PhoenixDrive drive;
@@ -51,10 +57,13 @@ public class RobotContainer {
 
     VisionLocalizer tagVision;
 
+    SendableChooser<String> testModeChooser = new SendableChooser<String>();
+
     public RobotContainer() {
         configureSubsystems();
         configureNamedCommands();
         configureBindings();
+        configureModes();
     }
 
     private void configureNamedCommands() {
@@ -84,11 +93,11 @@ public class RobotContainer {
         if (FeatureFlags.runVision) {
             initVision();
         }
-        if (FeatureFlags.runIntake) {
-            initIntake();
-        }
         if (FeatureFlags.runScoring) {
             initScoring();
+        }
+        if (FeatureFlags.runIntake) {
+            initIntake();
         }
     }
 
@@ -169,6 +178,17 @@ public class RobotContainer {
                 intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
                 break;
         }
+
+        BooleanSupplier shooterHasNote =
+                () -> {
+                    return scoringSubsystem.hasNote();
+                };
+        BooleanSupplier shooterInIntakePosition =
+                () -> {
+                    return scoringSubsystem.aimerAtIntakePosition();
+                };
+        intakeSubsystem.setShooterHasNoteSupplier(shooterHasNote);
+        intakeSubsystem.setShooterAtIntakePosition(shooterInIntakePosition);
     }
 
     private void initScoring() {
@@ -348,5 +368,69 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return drive.getAutoPath("Example");
+    }
+
+    private void configureModes() {
+        testModeChooser.setDefaultOption("Blank", "tuning");
+
+        testModeChooser.setDefaultOption("Shooter Tuning", "tuning-shooter");
+
+        SmartDashboard.putData("Test Mode Chooser", testModeChooser);
+    }
+
+    public void testInit() {
+        // Reset bindings
+        masher = new CommandXboxController(2);
+
+        switch (testModeChooser.getSelected()) {
+            case "tuning":
+                break;
+            case "tuning-shooter":
+                SmartDashboard.putNumber("Test-Mode/shooter/kP", ScoringConstants.shooterkP);
+                SmartDashboard.putNumber("Test-Mode/shooter/kI", ScoringConstants.shooterkI);
+                SmartDashboard.putNumber("Test-Mode/shooter/kD", ScoringConstants.shooterkD);
+
+                SmartDashboard.putNumber("Test-Mode/shooter/setpointPosition", 0.25);
+                SmartDashboard.putNumber("Test-Mode/shooter/volts", 2.0);
+
+                scoringSubsystem.setAction(ScoringAction.OVERRIDE);
+
+                // TODO: Add Tunables to coppercore!
+                masher.a().onTrue(new TuneS(scoringSubsystem, 1));
+
+                masher.b().onTrue(new TuneG(scoringSubsystem, 1));
+
+                masher.y()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setPID(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/kP",
+                                                                ScoringConstants.shooterkP),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/kI",
+                                                                ScoringConstants.shooterkI),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/kD",
+                                                                ScoringConstants.shooterkD),
+                                                        1)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/setpointPosition",
+                                                                0.25),
+                                                        1)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+        }
     }
 }

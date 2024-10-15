@@ -18,7 +18,7 @@ public interface ShooterIO {
         public double kickerAppliedVolts = 0.0;
         public double kickerStatorCurrentAmps = 0.0;
 
-        public boolean bannerSensor = false;
+        public boolean noteInShooter = false;
     }
 
     @AutoLog

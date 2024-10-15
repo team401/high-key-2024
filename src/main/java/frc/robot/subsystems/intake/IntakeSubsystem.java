@@ -13,7 +13,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private State state = State.IDLE;
 
-    private BooleanSupplier scorerWantsNote = () -> true;
+    private BooleanSupplier shooterHasNote = () -> false;
+    private BooleanSupplier shooterAtIntakePosition = () -> false;
 
     private IntakeAction action = IntakeAction.NONE;
 
@@ -27,9 +28,10 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("intake", inputs);
         Logger.recordOutput("Intake/state", state);
         Logger.recordOutput("Intake/action", action);
+        Logger.processInputs("Intake/inputs", inputs);
+        Logger.processInputs("Intake/outputs", outputs);
 
         switch (state) {
             case IDLE:
@@ -50,8 +52,12 @@ public class IntakeSubsystem extends SubsystemBase {
         // Logger.processInputs("intakeOutputs", outputs);
     }
 
-    public void setScoringSupplier(BooleanSupplier scorerWantsNote) {
-        this.scorerWantsNote = scorerWantsNote;
+    public void setShooterHasNoteSupplier(BooleanSupplier shooterHasNote) {
+        this.shooterHasNote = shooterHasNote;
+    }
+
+    public void setShooterAtIntakePosition(BooleanSupplier shooterAtIntakePosition) {
+        this.shooterAtIntakePosition = shooterAtIntakePosition;
     }
 
     public boolean hasNote() {
@@ -71,7 +77,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     private void idle() {
-        if (action == IntakeAction.INTAKE) {
+        if (action == IntakeAction.INTAKE && !shooterHasNote.getAsBoolean()) {
             state = State.SEEKING;
         } else if (action == IntakeAction.REVERSE) {
             state = State.REVERSING;
@@ -88,7 +94,15 @@ public class IntakeSubsystem extends SubsystemBase {
             state = State.IDLE;
         }
 
-        io.setIntakeVoltage(IntakeConstants.intakePower);
+        boolean noNotes = !inputs.noteSensed && !shooterHasNote.getAsBoolean();
+        boolean readyToPassNoteToShooter =
+                !shooterHasNote.getAsBoolean() && shooterAtIntakePosition.getAsBoolean();
+
+        if (noNotes || readyToPassNoteToShooter) {
+            io.setIntakeVoltage(IntakeConstants.intakePower);
+        } else {
+            io.setIntakeVoltage(0.0);
+        }
     }
 
     private void reversing() {

@@ -6,20 +6,20 @@ import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.DigitalInput;
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkLimitSwitch;
 import frc.robot.constants.ConversionConstants;
 import frc.robot.constants.ScoringConstants;
-import frc.robot.constants.SensorConstants;
 
 public class ShooterIOTalonFX implements ShooterIO {
-    private final TalonFX kicker = new TalonFX(ScoringConstants.kickerMotorId);
+    private final CANSparkFlex kicker =
+            new CANSparkFlex(ScoringConstants.kickerMotorId, MotorType.kBrushless);
 
     private final TalonFX shooterLeft = new TalonFX(ScoringConstants.shooterLeftMotorId);
     private final TalonFX shooterRight = new TalonFX(ScoringConstants.shooterRightMotorId);
 
     private final Slot0Configs slot0 = new Slot0Configs();
-
-    DigitalInput bannerSensor = new DigitalInput(SensorConstants.indexerSensorPort);
 
     private boolean override = false;
     private double overrideVolts = 0.0;
@@ -30,10 +30,10 @@ public class ShooterIOTalonFX implements ShooterIO {
     double kickerVolts = 0.0;
 
     public ShooterIOTalonFX() {
-        kicker.setInverted(true);
+        // kicker.setInverted(true);
 
-        shooterLeft.setInverted(true);
-        shooterRight.setInverted(false);
+        shooterLeft.setInverted(false);
+        shooterRight.setInverted(true);
 
         shooterLeft.setNeutralMode(NeutralModeValue.Coast);
         shooterRight.setNeutralMode(NeutralModeValue.Coast);
@@ -48,12 +48,6 @@ public class ShooterIOTalonFX implements ShooterIO {
         shooterRightConfig.apply(
                 new CurrentLimitsConfigs()
                         .withStatorCurrentLimit(ScoringConstants.shooterCurrentLimit)
-                        .withStatorCurrentLimitEnable(true));
-
-        TalonFXConfigurator kickerConfig = kicker.getConfigurator();
-        kickerConfig.apply(
-                new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(ScoringConstants.kickerCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
         slot0.withKP(ScoringConstants.shooterkP);
@@ -126,10 +120,11 @@ public class ShooterIOTalonFX implements ShooterIO {
         inputs.shooterRightStatorCurrentAmps = shooterRight.getStatorCurrent().getValueAsDouble();
         inputs.shooterRightSupplyCurrentAmps = shooterRight.getSupplyCurrent().getValueAsDouble();
 
-        inputs.kickerAppliedVolts = kicker.getMotorVoltage().getValueAsDouble();
-        inputs.kickerStatorCurrentAmps = kicker.getStatorCurrent().getValueAsDouble();
+        inputs.kickerAppliedVolts = kicker.getBusVoltage();
+        inputs.kickerStatorCurrentAmps = kicker.getOutputCurrent();
 
-        inputs.bannerSensor = !bannerSensor.get();
+        inputs.noteInShooter =
+                kicker.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).isPressed();
     }
 
     @Override
