@@ -1,10 +1,12 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -59,9 +61,29 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureSubsystems();
-        configureModes();
+        configureNamedCommands();
         configureBindings();
         configureModes();
+    }
+
+    private void configureNamedCommands() {
+        NamedCommands.registerCommand(
+                "alignToSpeaker",
+                new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
+
+        NamedCommands.registerCommand(
+                "intakeNote",
+                // intakes to start, ends by setting action to NONE when intake subsystem has note
+                new FunctionalCommand(
+                        () -> intakeSubsystem.run(IntakeAction.INTAKE),
+                        () -> {},
+                        interrupted -> intakeSubsystem.run(IntakeAction.NONE),
+                        () -> intakeSubsystem.hasNote(),
+                        intakeSubsystem));
+
+        NamedCommands.registerCommand(
+                "shootNoteAtSpeaker",
+                new InstantCommand(() -> scoringSubsystem.setAction(ScoringAction.SHOOT)));
     }
 
     private void configureSubsystems() {
@@ -315,19 +337,24 @@ public class RobotContainer {
 
             rightJoystick
                     .povUp()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.UP)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 
             rightJoystick
                     .povDown()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.DOWN)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.AMP)));
 
             rightJoystick
                     .povLeft()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.LEFT)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SOURCE)));
 
             rightJoystick
                     .povRight()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.RIGHT)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
+
+            rightJoystick
+                    .trigger()
+                    .onTrue(new InstantCommand(() -> drive.setAligning(true)))
+                    .onFalse(new InstantCommand(() -> drive.setAligning(false)));
         }
     } // spotless:on
 
@@ -337,7 +364,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return drive.getAutoPath("Example");
     }
 
     private void configureModes() {
