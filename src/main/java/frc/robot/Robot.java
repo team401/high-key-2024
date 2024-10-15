@@ -66,6 +66,9 @@ public class Robot extends LoggedRobot {
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
+
+        m_robotContainer.enabledInit();
+        m_robotContainer.testInit();
     }
 
     @Override
