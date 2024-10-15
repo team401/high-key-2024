@@ -54,6 +54,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     private final SwerveRequest.ApplyChassisSpeeds AutoRequest =
             new SwerveRequest.ApplyChassisSpeeds();
 
+    private Rotation2d goalRotation = new Rotation2d();
+
     private final SwerveRequest.SysIdSwerveTranslation TranslationCharacterization =
             new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveRotation RotationCharacterization =
@@ -208,11 +210,12 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             request = new SwerveRequest.Idle();
         } else if (fieldCentric) {
             if (aligning) {
+                goalRotation = this.getAlignment().get();
                 SwerveRequest.FieldCentricFacingAngle alignRequest =
                         new SwerveRequest.FieldCentricFacingAngle()
                                 .withVelocityX(goalSpeeds.vxMetersPerSecond)
                                 .withVelocityY(goalSpeeds.vyMetersPerSecond)
-                                .withTargetDirection(this.getAlignment().get())
+                                .withTargetDirection(goalRotation)
                                 .withDeadband(0.0)
                                 .withRotationalDeadband(0.0)
                                 .withDriveRequestType(DriveRequestType.Velocity);
@@ -284,7 +287,11 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     }
 
     public void setAligning(boolean aligning) {
-        this.aligning = aligning;
+        if (alignTarget == AlignTarget.NONE) {
+            this.aligning = false;
+        } else {
+            this.aligning = aligning;
+        }
     }
 
     public boolean isAligning() {
@@ -369,6 +376,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             default:
                 // no pose to align to so set target to none
                 this.setAlignTarget(AlignTarget.NONE);
+                this.setAligning(false);
                 return Optional.empty();
         }
     }
@@ -382,7 +390,12 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             }
         }
 
-        Logger.recordOutput("Align Target", alignTarget.toString());
+        Logger.recordOutput("drive/alignment/alignTarget", alignTarget.toString());
+        Logger.recordOutput("drive/alignment/isAligning", aligning);
+        if (aligning) {
+            Logger.recordOutput("drive/alignment/goalAlignment", goalRotation);
+            Logger.recordOutput("drive/alignment/currentAlignemnt", getState().Pose.getRotation());
+        }
     }
 
     @Override
