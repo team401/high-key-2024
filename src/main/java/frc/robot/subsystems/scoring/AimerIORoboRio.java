@@ -28,6 +28,7 @@ import org.littletonrobotics.junction.Logger;
 public class AimerIORoboRio implements AimerIO {
     private final TalonFX aimerMotor = new TalonFX(ScoringConstants.aimerMotorId);
 
+    MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0.0);
     private ControlRequest request;
 
     private final CANcoder aimerEncoder = new CANcoder(ScoringConstants.aimerEncoderId);
@@ -229,14 +230,13 @@ public class AimerIORoboRio implements AimerIO {
 
     @Override
     public void applyOutputs(AimerOutputs outputs) {
-        MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0.0);
-        motionMagicVoltage.withPosition(goalAngleRad);
-
-        request = motionMagicVoltage;
 
         if (goalAngleRad
                 < ScoringConstants.aimMinAngleRadians + ScoringConstants.aimAngleTolerance) {
             request = new VoltageOut(0.0);
+        } else {
+            motionMagicVoltage.withPosition(goalAngleRad);
+            request = motionMagicVoltage;
         }
 
         controlSetpoint = aimerMotor.getClosedLoopReference().getValueAsDouble();
