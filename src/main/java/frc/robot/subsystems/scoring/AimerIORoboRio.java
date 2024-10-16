@@ -234,6 +234,11 @@ public class AimerIORoboRio implements AimerIO {
 
         request = motionMagicVoltage;
 
+        if (goalAngleRad
+                < ScoringConstants.aimMinAngleRadians + ScoringConstants.aimAngleTolerance) {
+            request = new VoltageOut(0.0);
+        }
+
         controlSetpoint = aimerMotor.getClosedLoopReference().getValueAsDouble();
         if (override) {
             appliedVolts = overrideVolts;
