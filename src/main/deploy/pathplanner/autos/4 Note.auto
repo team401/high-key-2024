@@ -30,15 +30,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "baseline-C1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "intakeNote"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "baseline-C1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeNote"
+                }
+              }
+            ]
           }
         },
         {

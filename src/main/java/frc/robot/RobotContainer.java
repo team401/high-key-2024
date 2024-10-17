@@ -88,7 +88,7 @@ public class RobotContainer {
                         () -> intakeSubsystem.run(IntakeAction.INTAKE),
                         () -> {},
                         interrupted -> intakeSubsystem.run(IntakeAction.NONE),
-                        () -> intakeSubsystem.hasNote(),
+                        () -> scoringSubsystem.hasNote(),
                         intakeSubsystem));
 
         NamedCommands.registerCommand(
