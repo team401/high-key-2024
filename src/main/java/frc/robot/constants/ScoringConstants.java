@@ -77,12 +77,12 @@ public class ScoringConstants {
     // Value - Aimer angle in radians
     public static HashMap<Double, Double> getAimerMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, -0.074);
-        map.put(1.6, -0.08);
-        map.put(1.8, -0.09);
-        map.put(2.5, -0.12);
-        map.put(3.7, -0.15);
-        map.put(7.0, -0.18);
+        map.put(0.0, -0.084);
+        map.put(1.6, -0.09);
+        map.put(1.8, -0.10);
+        map.put(2.5, -0.13);
+        map.put(3.7, -0.16);
+        map.put(7.0, -0.19);
 
         return map;
     }

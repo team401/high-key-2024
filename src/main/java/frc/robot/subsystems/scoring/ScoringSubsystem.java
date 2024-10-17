@@ -137,7 +137,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void idle() {
-        aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRadians + 0.01);
+        aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRadians + 0.001);
         shooterIo.setShooterVelocityRPM(0);
         shooterIo.setKickerVolts(0);
 
