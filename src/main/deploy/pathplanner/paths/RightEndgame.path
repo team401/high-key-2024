@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 15.20189859699934,
-        "y": 7.328155479208991
+        "x": 4.980663700146722,
+        "y": 4.156048097427144
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.933626435455016,
-        "y": 7.288308561552193
+        "x": 4.801402102115242,
+        "y": 3.845557901790632
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 15.70121179598352,
-        "y": 3.451135345920066
+        "x": 4.657578689039311,
+        "y": 3.6714205807660276
       },
       "prevControl": {
-        "x": 14.599785621753712,
-        "y": 4.376333332273104
+        "x": 4.873538126480276,
+        "y": 4.045473298787772
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Arnit"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,17 +33,20 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 60.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
-  "useDefaultConstraints": false
+  "previewStartingState": {
+    "rotation": 59.036243467926546,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
 }

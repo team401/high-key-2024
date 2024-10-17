@@ -4,12 +4,12 @@ import edu.wpi.first.math.util.Units;
 import java.util.HashMap;
 
 public class ScoringConstants {
-    public static final double aimerkP = 60.0;
-    public static final double aimerkI = 17.0; // 5.0
+    public static final double aimerkP = 85.0;
+    public static final double aimerkI = 0.0; // 5.0
     public static final double aimerkD = 0.0;
 
-    public static final double aimerkS = 0.25;
-    public static final double aimerkG = 0.2;
+    public static final double aimerkS = 0.3; // 0.25;
+    public static final double aimerkG = 0.955; // 0.2;
     public static final double aimerkV = 0.0;
     public static final double aimerkA = 0.0;
 
@@ -34,7 +34,7 @@ public class ScoringConstants {
     public static final double aimerCurrentLimit = 60;
 
     public static final int aimerEncoderId = 13;
-    public static final double aimerEncoderOffset = 0.184570;
+    public static final double aimerEncoderOffset = 0.156006; // Armencoder is zeroed
 
     public static final double aimerEncoderToMechanismRatio = 1.0;
     public static final double aimerRotorToSensorRatio = 90.0;
@@ -47,8 +47,8 @@ public class ScoringConstants {
     // anymore
     // public static final double aimerAcceleration = 4.5; // TODO: 15.0
     // public static final double aimerCruiseVelocity = 7.0; // TODO: 15.0
-    public static final double aimerAcceleration = 0.7;
-    public static final double aimerCruiseVelocity = 0.4;
+    public static final double aimerAcceleration = 3.5; // 0.7;
+    public static final double aimerCruiseVelocity = 0.8; // 0.4;
 
     public static final double shooterLowerVelocityMarginRPM = 50;
     public static final double shooterUpperVelocityMarginRPM = 150;
@@ -61,7 +61,7 @@ public class ScoringConstants {
     public static final double shooterAmpVelocityRPM = 2000;
 
     public static final double aimMaxAngleRadians = 0.361328 - 0.184570; // Math.PI / 2
-    public static final double aimMinAngleRadians = -0.214; // -0.037598 - 0.184570;
+    public static final double aimMinAngleRadians = -0.195; // -0.037598 - 0.184570;
     public static final double aimAngleTolerance = 0.015;
 
     public static final double maxAimIntake = 0.0;
@@ -77,11 +77,12 @@ public class ScoringConstants {
     // Value - Aimer angle in radians
     public static HashMap<Double, Double> getAimerMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, -0.094);
-        map.put(1.6, -0.11);
-        map.put(1.8, -0.12);
-        map.put(2.5, -0.15);
-        map.put(3.7, -0.18);
+        map.put(0.0, -0.074);
+        map.put(1.6, -0.08);
+        map.put(1.8, -0.09);
+        map.put(2.5, -0.12);
+        map.put(3.7, -0.15);
+        map.put(7.0, -0.18);
 
         return map;
     }

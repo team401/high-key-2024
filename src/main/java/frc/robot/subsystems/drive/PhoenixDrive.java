@@ -127,8 +127,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             SwerveDrivetrainConstants driveConstants, SwerveModuleConstants... modules) {
         super(driveConstants, modules);
 
-        configurePathPlanner();
-
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -136,7 +134,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
-    private void configurePathPlanner() {
+    public void configurePathPlanner() {
         double driveBaseRadius = 0;
         for (var moduleLocation : m_moduleLocations) {
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
@@ -149,15 +147,12 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 this::getCurrentSpeeds,
                 (speeds) -> this.setControl(AutoRequest.withSpeeds(speeds)),
                 new HolonomicPathFollowerConfig(
-                        new PIDConstants(2),
-                        new PIDConstants(
-                                PhoenixDriveConstants.autoAlignmentkP,
-                                PhoenixDriveConstants.autoAlignmentkI,
-                                PhoenixDriveConstants.autoAlignmentkD),
+                        new PIDConstants(0),
+                        new PIDConstants(1, 0, 0),
                         PhoenixDriveConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig(false, false)),
-                () -> DriverStation.getAlliance().orElse(Alliance.Red) == Alliance.Blue,
+                () -> DriverStation.getAlliance().get() == Alliance.Red,
                 this);
 
         PPHolonomicDriveController.setRotationTargetOverride(this::getAlignment);

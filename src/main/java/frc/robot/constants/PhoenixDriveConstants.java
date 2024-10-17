@@ -40,7 +40,7 @@ public final class PhoenixDriveConstants {
     public static final Slot0Configs driveGains =
             new Slot0Configs()
                     .withKP(0.1)
-                    .withKI(12.0)
+                    .withKI(0.0)
                     .withKD(0.0)
                     .withKS(0.1)
                     .withKV(0.12)

@@ -97,6 +97,11 @@ public class Robot extends LoggedRobot {
     }
 
     @Override
+    public void driverStationConnected() {
+        m_robotContainer.onDSConnect();
+    }
+
+    @Override
     public void teleopPeriodic() {}
 
     @Override

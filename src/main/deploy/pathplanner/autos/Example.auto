@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 15.610759508556056,
-      "y": 7.131113651116192
+      "x": 0.765872873427322,
+      "y": 6.726042503963363
     },
-    "rotation": 0
+    "rotation": -119.98163936884927
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "alignToSpeaker"
+            "pathName": "S1-W1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Go To Speaker"
+            "pathName": "W1-W2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "W2-W3"
           }
         }
       ]
