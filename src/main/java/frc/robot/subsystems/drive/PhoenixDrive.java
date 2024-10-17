@@ -11,7 +11,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -145,7 +144,11 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 () -> this.getState().Pose,
                 this::seedFieldRelative,
                 this::getCurrentSpeeds,
-                (speeds) -> this.setControl(AutoRequest.withSpeeds(speeds)),
+                (speeds) -> {
+                    if (!aligning) {
+                        this.setControl(AutoRequest.withSpeeds(speeds));
+                    }
+                },
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(0),
                         new PIDConstants(1, 0, 0),
@@ -155,7 +158,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 () -> DriverStation.getAlliance().get() == Alliance.Red,
                 this);
 
-        PPHolonomicDriveController.setRotationTargetOverride(this::getAlignment);
+        // PPHolonomicDriveController.setRotationTargetOverride(this::getAlignment);
     }
 
     public Command getAutoPath(String pathName) {
@@ -295,8 +298,9 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     // for scoring subsystem in auto
     public boolean isDriveAligned() {
-        if (alignTarget != null && aligning) {
-            double desiredHeading = this.getAlignment().get().getRadians();
+        if (alignTarget != AlignTarget.NONE && aligning) {
+            double desiredHeading =
+                    this.getAlignment().get().plus(new Rotation2d(Math.PI)).getRadians();
             double currentHeading = this.getState().Pose.getRotation().getRadians();
 
             if (Math.abs(desiredHeading - currentHeading)
@@ -387,10 +391,11 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
         Logger.recordOutput("drive/alignment/alignTarget", alignTarget.toString());
         Logger.recordOutput("drive/alignment/isAligning", aligning);
-        if (aligning) {
-            Logger.recordOutput("drive/alignment/goalAlignment", goalRotation);
-            Logger.recordOutput("drive/alignment/currentAlignemnt", getState().Pose.getRotation());
-        }
+
+        Logger.recordOutput(
+                "drive/alignment/goalAlignment", goalRotation.plus(new Rotation2d(Math.PI)));
+        Logger.recordOutput("drive/alignment/currentAlignemnt", getState().Pose.getRotation());
+        Logger.recordOutput("drive/alignment/isDriveAligned", isDriveAligned());
     }
 
     @Override

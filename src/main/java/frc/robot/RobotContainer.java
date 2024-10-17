@@ -72,7 +72,14 @@ public class RobotContainer {
     private void configureNamedCommands() {
         NamedCommands.registerCommand(
                 "alignToSpeaker",
-                new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
+                new InstantCommand(
+                        () -> {
+                            drive.setAlignTarget(AlignTarget.SPEAKER);
+                            drive.setAligning(true);
+                        }));
+
+        NamedCommands.registerCommand(
+                "stopAlignToSpeaker", new InstantCommand(() -> drive.setAligning(false)));
 
         NamedCommands.registerCommand(
                 "intakeNote",
@@ -83,6 +90,10 @@ public class RobotContainer {
                         interrupted -> intakeSubsystem.run(IntakeAction.NONE),
                         () -> intakeSubsystem.hasNote(),
                         intakeSubsystem));
+
+        NamedCommands.registerCommand(
+                "waitForAlignment",
+                Commands.waitUntil(() -> drive.isDriveAligned() && !scoringSubsystem.hasNote()));
 
         NamedCommands.registerCommand(
                 "shootNoteAtSpeaker",
@@ -203,7 +214,7 @@ public class RobotContainer {
             }
 
             scoringSubsystem.setPoseSupplier(poseSupplier);
-            scoringSubsystem.setDriveAlignedSupplier(() -> true);
+            scoringSubsystem.setDriveAlignedSupplier(() -> drive.isDriveAligned());
         }
 
         if (FeatureFlags.runIntake) {
@@ -398,7 +409,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return drive.getAutoPath("Example");
+        return drive.getAutoPath("4 Note");
     }
 
     private void configureModes() {
