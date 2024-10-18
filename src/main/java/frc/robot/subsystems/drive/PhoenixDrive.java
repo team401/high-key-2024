@@ -147,7 +147,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 () -> this.getState().Pose,
                 this::seedFieldRelative,
                 this::getCurrentSpeeds,
-                (speeds) -> this.setControl(AutoRequest.withSpeeds(speeds)),
+                (speeds) -> this.setGoalSpeeds(speeds, false),
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(0),
                         new PIDConstants(1, 0, 0),
@@ -157,6 +157,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 () -> DriverStation.getAlliance().get() == Alliance.Red,
                 this);
 
+        // set up available autos
         autoChooser.setDefaultOption("Default (nothing)", Commands.none());
         autoChooser.addOption("Amp Side - 2 Note", new PathPlannerAuto("Amp Side - 2 Note"));
     }
@@ -203,41 +204,29 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                         && Math.abs(goalSpeeds.omegaRadiansPerSecond) < 1e-10;
         Logger.recordOutput("Drive/idling", idling);
 
-        // sticks zeroed out will cause false idle when wanting alignment
-        if (DriverStation.isTeleop()) {
-            if (idling && !aligning) {
-                request = new SwerveRequest.Idle();
-            } else if (fieldCentric) {
-                if (aligning) {
-                    goalRotation = this.getAlignment().get();
-                    SwerveRequest.FieldCentricFacingAngle alignRequest =
-                            new SwerveRequest.FieldCentricFacingAngle()
-                                    .withVelocityX(goalSpeeds.vxMetersPerSecond)
-                                    .withVelocityY(goalSpeeds.vyMetersPerSecond)
-                                    .withTargetDirection(goalRotation)
-                                    .withDeadband(0.0)
-                                    .withRotationalDeadband(0.0)
-                                    .withDriveRequestType(DriveRequestType.Velocity);
+        if (idling && !aligning) {
+            request = new SwerveRequest.Idle();
+        } else if (fieldCentric) {
+            if (aligning) {
+                goalRotation = this.getAlignment().get();
+                SwerveRequest.FieldCentricFacingAngle alignRequest =
+                        new SwerveRequest.FieldCentricFacingAngle()
+                                .withVelocityX(goalSpeeds.vxMetersPerSecond)
+                                .withVelocityY(goalSpeeds.vyMetersPerSecond)
+                                .withTargetDirection(goalRotation)
+                                .withDeadband(0.0)
+                                .withRotationalDeadband(0.0)
+                                .withDriveRequestType(DriveRequestType.Velocity);
 
-                    alignRequest.HeadingController.setPID(
-                            PhoenixDriveConstants.alignmentkP,
-                            PhoenixDriveConstants.alignmentkI,
-                            PhoenixDriveConstants.alignmentkD);
+                alignRequest.HeadingController.setPID(
+                        PhoenixDriveConstants.alignmentkP,
+                        PhoenixDriveConstants.alignmentkI,
+                        PhoenixDriveConstants.alignmentkD);
 
-                    request = alignRequest;
-                } else {
-                    request =
-                            new SwerveRequest.FieldCentric()
-                                    .withVelocityX(goalSpeeds.vxMetersPerSecond)
-                                    .withVelocityY(goalSpeeds.vyMetersPerSecond)
-                                    .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
-                                    .withDeadband(0.0)
-                                    .withRotationalDeadband(0.0)
-                                    .withDriveRequestType(DriveRequestType.Velocity);
-                }
+                request = alignRequest;
             } else {
                 request =
-                        new SwerveRequest.RobotCentric()
+                        new SwerveRequest.FieldCentric()
                                 .withVelocityX(goalSpeeds.vxMetersPerSecond)
                                 .withVelocityY(goalSpeeds.vyMetersPerSecond)
                                 .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
@@ -245,13 +234,12 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                                 .withRotationalDeadband(0.0)
                                 .withDriveRequestType(DriveRequestType.Velocity);
             }
-            this.setControl(request);
-        } else if (DriverStation.isAutonomous() && aligning) {
+        } else if (aligning) {
             goalRotation = this.getAlignment().get();
             SwerveRequest.FieldCentricFacingAngle alignRequest =
                     new SwerveRequest.FieldCentricFacingAngle()
-                            .withVelocityX(goalSpeeds.vxMetersPerSecond)
-                            .withVelocityY(goalSpeeds.vyMetersPerSecond)
+                            .withVelocityX(0)
+                            .withVelocityY(0)
                             .withTargetDirection(goalRotation)
                             .withDeadband(0.0)
                             .withRotationalDeadband(0.0)
@@ -263,8 +251,17 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                     PhoenixDriveConstants.alignmentkD);
 
             request = alignRequest;
-            this.setControl(request);
+        } else {
+            request =
+                    new SwerveRequest.RobotCentric()
+                            .withVelocityX(goalSpeeds.vxMetersPerSecond)
+                            .withVelocityY(goalSpeeds.vyMetersPerSecond)
+                            .withRotationalRate(goalSpeeds.omegaRadiansPerSecond)
+                            .withDeadband(0.0)
+                            .withRotationalDeadband(0.0)
+                            .withDriveRequestType(DriveRequestType.Velocity);
         }
+        this.setControl(request);
     }
 
     // SYS ID
@@ -319,8 +316,13 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     // for scoring subsystem in auto
     public boolean isDriveAligned() {
         if (alignTarget != AlignTarget.NONE && aligning) {
-            double desiredHeading =
-                    this.getAlignment().get().plus(new Rotation2d(Math.PI)).getRadians();
+            double desiredHeading = this.getAlignment().get().getRadians();
+
+            // Speaker on red side has to have flipped rotation to align properly (add pi back here
+            // to actually get alignment truth)
+            if (alignTarget == AlignTarget.SPEAKER) {
+                desiredHeading += Math.PI;
+            }
             double currentHeading = this.getState().Pose.getRotation().getRadians();
 
             if (Math.abs(desiredHeading - currentHeading)
@@ -414,7 +416,10 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
         Logger.recordOutput(
                 "drive/alignment/goalAlignment", goalRotation.plus(new Rotation2d(Math.PI)));
-        Logger.recordOutput("drive/alignment/currentAlignemnt", getState().Pose.getRotation());
+
+        Logger.recordOutput(
+                "drive/alignment/currentAlignemnt",
+                getState().Pose != null ? getState().Pose.getRotation() : new Pose2d());
         Logger.recordOutput("drive/alignment/isDriveAligned", isDriveAligned());
     }
 

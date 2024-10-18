@@ -389,11 +389,16 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private double findDistanceToGoal() {
         Translation2d speakerPose = AllianceUtil.getFieldToSpeaker();
         Pose2d robotPose = poseSupplier.get();
-        double distancetoGoal =
-                Math.sqrt(
-                        Math.pow(Math.abs(robotPose.getX() - speakerPose.getX()), 2)
-                                + Math.pow(Math.abs(robotPose.getY() - speakerPose.getY()), 2));
-        return distancetoGoal;
+        double distanceToGoal;
+        if (robotPose != null) {
+            distanceToGoal =
+                    Math.sqrt(
+                            Math.pow(Math.abs(robotPose.getX() - speakerPose.getX()), 2)
+                                    + Math.pow(Math.abs(robotPose.getY() - speakerPose.getY()), 2));
+        } else {
+            distanceToGoal = 0.0;
+        }
+        return distanceToGoal;
     }
 
     public boolean hasNote() {
