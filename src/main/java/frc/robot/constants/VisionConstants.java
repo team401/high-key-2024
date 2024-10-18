@@ -41,26 +41,28 @@ public final class VisionConstants {
     public static final List<CameraParams> cameras =
             List.of(
                     new CameraParams(
-                            "Front-Left",
+                            // TODO: Rename front right camera from Front-Left to Front-Right in
+                            // photonvision
+                            "Front-Left", // This is actually the front right camera
                             1280,
                             960,
                             50,
                             Rotation2d.fromDegrees(70),
                             new Transform3d(
-                                    new Translation3d(0.306, 0.259, 0.211),
-                                    new Rotation3d(0, -0.349, 0.785)),
-                            CameraTrustZone.LEFT));
+                                    new Translation3d(0.0328422, -0.3103626, 0.430911),
+                                    new Rotation3d(0, -0.261799, 0.0)),
+                            CameraTrustZone.RIGHT),
+                    new CameraParams(
+                            "Back-Right",
+                            1280,
+                            960,
+                            50,
+                            Rotation2d.fromDegrees(70),
+                            new Transform3d(
+                                    new Translation3d(-0.3160014, -0.2327402, 0.3163316),
+                                    new Rotation3d(0.0, -0.408546671, 0.0)),
+                            CameraTrustZone.RIGHT));
 
-    //     new CameraParams(
-    //             "Front-Right",
-    //             1280,
-    //             960,
-    //             50,
-    //             Rotation2d.fromDegrees(70),
-    //             new Transform3d(
-    //                     new Translation3d(0.312, -0.304, 0.217),
-    //                     new Rotation3d(0.0, -0.349, -0.785)),
-    //             CameraTrustZone.RIGHT),
     //     new CameraParams(
     //             "Front-Center",
     //             1280,
