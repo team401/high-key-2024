@@ -291,8 +291,11 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void ampPrime() {
-        shooterIo.setShooterVelocityRPM(ScoringConstants.shooterAmpVelocityRPM);
-        aimerIo.setAimAngleRad(1.65);
+        // shooterIo.setShooterVelocityRPM(ScoringConstants.shooterAmpVelocityRPM);
+        // TODO: Test this out
+        aimerIo.setAimAngleRad(
+                0.25); // This is actually in rotations and not radians, I really need to rename all
+        // of the aimer IO functions
         if (action != ScoringAction.SHOOT && action != ScoringAction.AMP_AIM) {
             state = ScoringState.IDLE;
         } else if (action == ScoringAction.SHOOT) {
@@ -321,13 +324,17 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void ampShoot() {
-        shooterIo.setKickerVolts(10);
+        shooterIo.setKickerVolts(-12); // TODO: Test if this kicks note forward or backward
 
-        if (shootTimer.get() > 1.0) { // TODO: Tune time
-            state = ScoringState.AMP_PRIME;
+        // I see no reason why amp should not shoot within 1 second but if it takes longer than
+        // that, we should probably let it
+
+        // Therefore this is all commented out for now
+        /* if (shootTimer.get() > 1.0) { // TODO: Tune time
+           state = ScoringState.AMP_PRIME;
 
             shootTimer.stop();
-        }
+        } */
     }
 
     private void endgame() {
