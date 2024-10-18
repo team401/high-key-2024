@@ -376,6 +376,11 @@ public class RobotContainer {
             masher.povDown()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
 
+            leftJoystick
+                    .trigger()
+                    .onTrue(new InstantCommand(() -> drive.setAligning(true)))
+                    .onFalse(new InstantCommand(() -> drive.setAligning(false)));
+
             rightJoystick
                     .povUp()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
@@ -391,11 +396,6 @@ public class RobotContainer {
             rightJoystick
                     .povRight()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
-
-            rightJoystick
-                    .trigger()
-                    .onTrue(new InstantCommand(() -> drive.setAligning(true)))
-                    .onFalse(new InstantCommand(() -> drive.setAligning(false)));
         }
     } // spotless:on
 
