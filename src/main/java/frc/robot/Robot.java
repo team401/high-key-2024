@@ -66,6 +66,9 @@ public class Robot extends LoggedRobot {
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
+
+        m_robotContainer.enabledInit();
+        m_robotContainer.testInit();
     }
 
     @Override
@@ -91,6 +94,11 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+    }
+
+    @Override
+    public void driverStationConnected() {
+        m_robotContainer.onDSConnect();
     }
 
     @Override

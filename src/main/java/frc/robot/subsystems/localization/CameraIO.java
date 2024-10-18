@@ -14,6 +14,7 @@ public interface CameraIO {
         public int nTags = 0;
 
         public double latestTimestampSeconds = 0.0;
+        public double latencySeconds = 0.0;
         public boolean connected = false;
         public boolean isNewMeasurement = false;
 
