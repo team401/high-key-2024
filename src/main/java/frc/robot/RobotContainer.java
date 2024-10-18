@@ -409,7 +409,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return drive.getAutoPath("4 Note");
+        return drive.getAutoPath();
     }
 
     private void configureModes() {
