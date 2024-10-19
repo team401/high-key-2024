@@ -24,8 +24,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.FieldConstants;
@@ -156,8 +158,10 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 () -> DriverStation.getAlliance().get() == Alliance.Red,
                 this);
 
-        //  autoChooser.setDefaultOption("Default (nothing)", Commands.none());
-        autoChooser.setDefaultOption("Amp Side - 2 Note", new PathPlannerAuto("Amp Side - 2 Note"));
+        autoChooser.setDefaultOption("Default (nothing)", Commands.none());
+        autoChooser.addOption("Amp Side - 2 Note", new PathPlannerAuto("Amp Side - 2 Note"));
+        autoChooser.addOption("Center - 4 Note", new PathPlannerAuto("Center - 4 Note"));
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     public Command getAutoPath() {
