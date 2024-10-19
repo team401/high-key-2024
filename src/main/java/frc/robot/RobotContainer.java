@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -42,6 +43,7 @@ import frc.robot.subsystems.scoring.ShooterIOTalonFX;
 import frc.robot.utils.feedforward.TuneG;
 import frc.robot.utils.feedforward.TuneS;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 public class RobotContainer {
     PhoenixDrive drive;
@@ -61,6 +63,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureSubsystems();
+        configureSuppliers();
         configureNamedCommands();
         configureBindings();
         configureModes();
@@ -69,7 +72,14 @@ public class RobotContainer {
     private void configureNamedCommands() {
         NamedCommands.registerCommand(
                 "alignToSpeaker",
-                new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
+                new InstantCommand(
+                        () -> {
+                            drive.setAlignTarget(AlignTarget.SPEAKER);
+                            drive.setAligning(true);
+                        }));
+
+        NamedCommands.registerCommand(
+                "stopAlignToSpeaker", new InstantCommand(() -> drive.setAligning(false)));
 
         NamedCommands.registerCommand(
                 "intakeNote",
@@ -78,8 +88,12 @@ public class RobotContainer {
                         () -> intakeSubsystem.run(IntakeAction.INTAKE),
                         () -> {},
                         interrupted -> intakeSubsystem.run(IntakeAction.NONE),
-                        () -> intakeSubsystem.hasNote(),
+                        () -> scoringSubsystem.hasNote(),
                         intakeSubsystem));
+
+        NamedCommands.registerCommand(
+                "waitForAlignment",
+                Commands.waitUntil(() -> drive.isDriveAligned() && !scoringSubsystem.hasNote()));
 
         NamedCommands.registerCommand(
                 "shootNoteAtSpeaker",
@@ -159,11 +173,6 @@ public class RobotContainer {
                 tagVision = new VisionLocalizer(new CameraContainerReplay(VisionConstants.cameras));
                 break;
         }
-
-        if (FeatureFlags.runVision) {
-            tagVision.setCameraConsumer(
-                    (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
-        }
     }
 
     private void initIntake() {
@@ -178,17 +187,6 @@ public class RobotContainer {
                 intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
                 break;
         }
-
-        BooleanSupplier shooterHasNote =
-                () -> {
-                    return scoringSubsystem.hasNote();
-                };
-        BooleanSupplier shooterInIntakePosition =
-                () -> {
-                    return scoringSubsystem.aimerAtIntakePosition();
-                };
-        intakeSubsystem.setShooterHasNoteSupplier(shooterHasNote);
-        intakeSubsystem.setShooterAtIntakePosition(shooterInIntakePosition);
     }
 
     private void initScoring() {
@@ -203,6 +201,49 @@ public class RobotContainer {
             case REPLAY:
                 scoringSubsystem = new ScoringSubsystem(new ShooterIO() {}, new AimerIO() {});
                 break;
+        }
+    }
+
+    private void configureSuppliers() {
+        if (FeatureFlags.runScoring) {
+            Supplier<Pose2d> poseSupplier;
+            if (drive != null) {
+                poseSupplier = () -> drive.getState().Pose;
+            } else {
+                poseSupplier = () -> new Pose2d();
+            }
+
+            scoringSubsystem.setPoseSupplier(poseSupplier);
+            scoringSubsystem.setDriveAlignedSupplier(() -> drive.isDriveAligned());
+        }
+
+        if (FeatureFlags.runIntake) {
+            BooleanSupplier shooterHasNote;
+            BooleanSupplier shooterInIntakePosition;
+            if (scoringSubsystem != null) {
+                shooterHasNote =
+                        () -> {
+                            return scoringSubsystem.hasNote();
+                        };
+                shooterInIntakePosition =
+                        () -> {
+                            return scoringSubsystem.aimerAtIntakePosition();
+                        };
+            } else {
+                shooterHasNote = () -> false;
+                shooterInIntakePosition = () -> false;
+            }
+            intakeSubsystem.setShooterHasNoteSupplier(shooterHasNote);
+            intakeSubsystem.setShooterAtIntakePosition(shooterInIntakePosition);
+        }
+
+        if (FeatureFlags.runVision) {
+            if (drive != null) {
+                tagVision.setCameraConsumer(
+                        (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
+            } else {
+                tagVision.setCameraConsumer((m) -> {});
+            }
         }
     }
 
@@ -335,6 +376,11 @@ public class RobotContainer {
             masher.povDown()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
 
+            leftJoystick
+                    .trigger()
+                    .onTrue(new InstantCommand(() -> drive.setAligning(true)))
+                    .onFalse(new InstantCommand(() -> drive.setAligning(false)));
+
             rightJoystick
                     .povUp()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
@@ -350,11 +396,6 @@ public class RobotContainer {
             rightJoystick
                     .povRight()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
-
-            rightJoystick
-                    .trigger()
-                    .onTrue(new InstantCommand(() -> drive.setAligning(true)))
-                    .onFalse(new InstantCommand(() -> drive.setAligning(false)));
         }
     } // spotless:on
 
@@ -363,14 +404,20 @@ public class RobotContainer {
         scoringSubsystem.setAction(ScoringAction.WAIT);
     }
 
+    public void onDSConnect() {
+        drive.configurePathPlanner();
+    }
+
     public Command getAutonomousCommand() {
-        return drive.getAutoPath("Example");
+        return drive.getAutoPath();
     }
 
     private void configureModes() {
         testModeChooser.setDefaultOption("Blank", "tuning");
 
-        testModeChooser.setDefaultOption("Shooter Tuning", "tuning-shooter");
+        testModeChooser.addOption("Shooter Tuning", "tuning-shooter");
+        testModeChooser.addOption("Aimer Tuning", "tuning-aimer");
+        testModeChooser.addOption("Shot Tuning", "tuning-shot");
 
         SmartDashboard.putData("Test Mode Chooser", testModeChooser);
     }
@@ -428,6 +475,173 @@ public class RobotContainer {
                         .onFalse(
                                 new InstantCommand(
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+                break;
+            case "tuning-shot":
+                scoringSubsystem.setAction(ScoringAction.TUNING);
+                SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.0);
+                SmartDashboard.putNumber("Test-Mode/shooter/setpointRPM", 2000);
+
+                setUpDriveWithJoysticks();
+
+                masher.y()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/setpointPosition",
+                                                                0.0),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/shooter/setpointRPM",
+                                                                2000),
+                                                        2)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                masher.leftBumper()
+                        .onTrue(new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(10)))
+                        .onFalse(
+                                new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(0)));
+                break;
+            case "tuning-aimer":
+                SmartDashboard.putNumber("Test-Mode/aimer/kP", ScoringConstants.aimerkP);
+                SmartDashboard.putNumber("Test-Mode/aimer/kI", ScoringConstants.aimerkI);
+                SmartDashboard.putNumber("Test-Mode/aimer/kD", ScoringConstants.aimerkD);
+
+                SmartDashboard.putNumber("Test-Mode/aimer/kG", ScoringConstants.aimerkG);
+                SmartDashboard.putNumber("Test-Mode/aimer/kS", ScoringConstants.aimerkS);
+
+                SmartDashboard.putNumber(
+                        "Test-Mode/aimer/profileMaxVelocity", ScoringConstants.aimerCruiseVelocity);
+                SmartDashboard.putNumber(
+                        "Test-Mode/aimer/profileMaxAcceleration",
+                        ScoringConstants.aimerAcceleration);
+
+                SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.25);
+                SmartDashboard.putNumber("Test-Mode/aimer/volts", 2.0);
+
+                scoringSubsystem.setAction(ScoringAction.OVERRIDE);
+
+                masher.a().onTrue(new TuneS(scoringSubsystem, 0));
+
+                masher.b().onTrue(new TuneG(scoringSubsystem, 0));
+
+                masher.y()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setPID(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/kP",
+                                                                ScoringConstants.aimerkP),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/kI",
+                                                                ScoringConstants.aimerkI),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/kD",
+                                                                ScoringConstants.aimerkD),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setMaxProfileProperties(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/profileMaxVelocity",
+                                                                ScoringConstants
+                                                                        .aimerCruiseVelocity),
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/profileMaxAcceleration",
+                                                                ScoringConstants.aimerAcceleration),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setFF(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/kS",
+                                                                ScoringConstants.aimerkS),
+                                                        0.0,
+                                                        0.0,
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/kG",
+                                                                ScoringConstants.aimerkG),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/setpointPosition",
+                                                                0.0),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                masher.povUp()
+                        .onTrue(new InstantCommand(() -> scoringSubsystem.runToPosition(1.1, 0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                masher.povDown()
+                        .onTrue(new InstantCommand(() -> scoringSubsystem.runToPosition(0.0, 0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                masher.leftBumper()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setVolts(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/volts", 2.0),
+                                                        0)))
+                        .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
+
+                masher.rightBumper()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setVolts(
+                                                        -SmartDashboard.getNumber(
+                                                                "Test-Mode/aimer/volts", 2.0),
+                                                        0)))
+                        .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
+                break;
+        }
+    }
+
+    private void setUpDriveWithJoysticks() {
+        if (FeatureFlags.runDrive) {
+            drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
         }
     }
 }
