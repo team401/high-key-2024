@@ -206,7 +206,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         if (aligning) {
             Rotation2d goalRotation = this.getAlignment().get();
             omega =
-                    -thetaController.calculate(
+                    thetaController.calculate(
                             this.getState().Pose.getRotation().getRadians(),
                             goalRotation.getRadians());
         }
