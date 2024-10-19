@@ -23,8 +23,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.FieldConstants;
@@ -52,6 +54,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     private final SwerveRequest.ApplyChassisSpeeds AutoRequest =
             new SwerveRequest.ApplyChassisSpeeds();
+    private SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
     private Rotation2d goalRotation = new Rotation2d();
 
@@ -153,10 +156,13 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                         new ReplanningConfig(false, false)),
                 () -> DriverStation.getAlliance().get() == Alliance.Red,
                 this);
+
+        autoChooser.setDefaultOption("Default (nothing)", Commands.none());
+        autoChooser.addOption("Amp Side - 2 Note", new PathPlannerAuto("Amp Side - 2 Note"));
     }
 
-    public Command getAutoPath(String pathName) {
-        return new PathPlannerAuto(pathName);
+    public Command getAutoPath() {
+        return autoChooser.getSelected();
     }
 
     private void startSimThread() {
