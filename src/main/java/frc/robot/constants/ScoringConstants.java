@@ -61,7 +61,7 @@ public class ScoringConstants {
     public static final double shooterAmpVelocityRPM = 2000;
 
     public static final double aimMaxAngleRadians = 0.361328 - 0.184570; // Math.PI / 2
-    public static final double aimMinAngleRadians = -0.195; // -0.037598 - 0.184570;
+    public static final double aimMinAngleRadians = -0.24; // -0.037598 - 0.184570;
     public static final double aimAngleTolerance = 0.015;
 
     public static final double maxAimIntake = 0.0;

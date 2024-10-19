@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.FieldConstants;
@@ -157,8 +156,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 () -> DriverStation.getAlliance().get() == Alliance.Red,
                 this);
 
-        autoChooser.setDefaultOption("Default (nothing)", Commands.none());
-        autoChooser.addOption("Amp Side - 2 Note", new PathPlannerAuto("Amp Side - 2 Note"));
+        //  autoChooser.setDefaultOption("Default (nothing)", Commands.none());
+        autoChooser.setDefaultOption("Amp Side - 2 Note", new PathPlannerAuto("Amp Side - 2 Note"));
     }
 
     public Command getAutoPath() {
@@ -341,7 +340,9 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         double targetVectorY = desiredTargetPose.getY() - currentPose.getY();
 
         Rotation2d desiredRotation =
-                new Rotation2d(targetVectorX, targetVectorY).minus(new Rotation2d(Math.PI));
+                new Rotation2d(
+                        targetVectorX,
+                        targetVectorY); /*.minus(new Rotation2d(Math.PI)*/ /*TODO: Figure out if we actually need to invert align or not */
         return desiredRotation;
     }
 

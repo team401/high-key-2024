@@ -1,0 +1,166 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNoteAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitForAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAlignToSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "baseline-C3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNoteAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitForAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAlignToSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C3-C2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNoteAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitForAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAlignToSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C2-C1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNoteAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitForAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAlignToSpeaker"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

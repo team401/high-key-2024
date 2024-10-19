@@ -40,6 +40,7 @@ import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
 import frc.robot.subsystems.scoring.ShooterIO;
 import frc.robot.subsystems.scoring.ShooterIOSim;
 import frc.robot.subsystems.scoring.ShooterIOTalonFX;
+import frc.robot.utils.AllianceUtil;
 import frc.robot.utils.feedforward.TuneG;
 import frc.robot.utils.feedforward.TuneS;
 import java.util.function.BooleanSupplier;
@@ -381,6 +382,14 @@ public class RobotContainer {
                     .onTrue(new InstantCommand(() -> drive.setAligning(true)))
                     .onFalse(new InstantCommand(() -> drive.setAligning(false)));
 
+            leftJoystick
+                    .top()
+                    .onTrue(
+                            new InstantCommand(
+                                    () ->
+                                            drive.seedFieldRelative(
+                                                    AllianceUtil.getPoseAgainstSpeaker())));
+
             rightJoystick
                     .povUp()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
@@ -420,6 +429,12 @@ public class RobotContainer {
         testModeChooser.addOption("Shot Tuning", "tuning-shot");
 
         SmartDashboard.putData("Test Mode Chooser", testModeChooser);
+    }
+
+    public void teleopInit() {
+        if (drive != null) {
+            drive.setAligning(false);
+        }
     }
 
     public void testInit() {
