@@ -140,6 +140,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             startSimThread();
         }
 
+        thetaController.enableContinuousInput(0.0, 2 * Math.PI);
+
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
@@ -207,8 +209,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             Rotation2d goalRotation = this.getAlignment().get();
             omega =
                     thetaController.calculate(
-                            this.getState().Pose.getRotation().getRadians(),
-                            goalRotation.getRadians());
+                            this.getState().Pose.getRotation().getRadians() % (Math.PI * 2),
+                            goalRotation.getRadians() % (Math.PI * 2));
         }
 
         SwerveRequest request;
