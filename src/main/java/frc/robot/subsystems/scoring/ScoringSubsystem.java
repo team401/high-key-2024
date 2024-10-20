@@ -112,8 +112,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         aimerInterpolated =
                 new InterpolateDouble(
                         ScoringConstants.getAimerMap(),
-                        ScoringConstants.aimMinAngleRadians,
-                        ScoringConstants.aimMaxAngleRadians);
+                        ScoringConstants.aimMinAngleRotations,
+                        ScoringConstants.aimMaxAngleRotations);
 
         aimerAngleTolerance = new InterpolateDouble(ScoringConstants.aimerToleranceTable());
 
@@ -133,11 +133,13 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     public boolean atAimerGoalPosition() {
-        return Math.abs(aimerInputs.aimAngleRad - aimerInputs.aimGoalAngleRad) < 0.2;
+        return Math.abs(aimerInputs.aimAngleRot - aimerInputs.aimGoalAngleRot) < 0.2;
     }
 
     private void idle() {
-        aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRadians + 0.001);
+        // aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRotations + 0.001);
+        // Todo: if we can trust aimer, figure out if we really need to add 0.001 to the min angle
+        aimerIo.setAimAngleRot(ScoringConstants.aimMinAngleRotations);
         shooterIo.setShooterVelocityRPM(0);
         shooterIo.setKickerVolts(0);
 
@@ -148,7 +150,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         Logger.recordOutput("scoring/aimGoal", 0.0);
 
         SmartDashboard.putBoolean("Has Note", shooterInputs.noteInShooter);
-        SmartDashboard.putNumber("Aimer Location", aimerInputs.aimAngleRad);
+        SmartDashboard.putNumber("Aimer Location", aimerInputs.aimAngleRot);
 
         if ((!hasNote() || overrideIntake) && action == ScoringAction.INTAKE) {
             state = ScoringState.INTAKE;
@@ -176,7 +178,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     private void intake() {
         if (!aimerAtIntakePosition()) {
-            aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRadians);
+            aimerIo.setAimAngleRot(ScoringConstants.aimMinAngleRotations);
         }
 
         if (!hasNote()) {
@@ -191,7 +193,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void sourceIntake() {
-        aimerIo.setAimAngleRad(0.35);
+        aimerIo.setAimAngleRot(0.35);
         shooterIo.setKickerVolts(-1);
 
         shooterIo.setOverrideMode(true);
@@ -226,7 +228,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         double distanceToGoal = findDistanceToGoal();
         Logger.recordOutput("scoring/aimGoal", getAimerAngle(distanceToGoal));
         shooterIo.setShooterVelocityRPM(shooterInterpolated.getValue(distanceToGoal));
-        aimerIo.setAimAngleRad(getAimerAngle(distanceToGoal));
+        aimerIo.setAimAngleRot(getAimerAngle(distanceToGoal));
         if (!overrideBeamBreak) {
             shooterIo.setKickerVolts(hasNote() ? 0.0 : ScoringConstants.kickerIntakeVolts);
         }
@@ -239,9 +241,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                 > (shooterOutputs.shooterLeftGoalVelocityRPM
                                         - ScoringConstants.shooterLowerVelocityMarginRPM);
         boolean aimReady =
-                Math.abs(aimerInputs.aimAngleRad - aimerInputs.aimGoalAngleRad)
+                Math.abs(aimerInputs.aimAngleRot - aimerInputs.aimGoalAngleRot)
                                 < aimerAngleTolerance.getValue(distanceToGoal)
-                        && Math.abs(aimerInputs.aimVelocityErrorRadPerSec)
+                        && Math.abs(aimerInputs.aimVelocityErrorRotPerSec)
                                 < ScoringConstants.aimAngleVelocityMargin;
         boolean driveReady = driveAlignedSupplier.get();
         boolean fieldLocationReady = true;
@@ -293,7 +295,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private void ampPrime() {
         // shooterIo.setShooterVelocityRPM(ScoringConstants.shooterAmpVelocityRPM);
         // TODO: Test this out
-        aimerIo.setAimAngleRad(
+        aimerIo.setAimAngleRot(
                 0.25); // This is actually in rotations and not radians, I really need to rename all
         // of the aimer IO functions
         if (action != ScoringAction.SHOOT && action != ScoringAction.AMP_AIM) {
@@ -312,7 +314,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         double shootRPM = shooterInterpolated.getValue(distancetoGoal);
         shooterIo.setShooterVelocityRPM(shootRPM);
         double aimAngleRad = aimerInterpolated.getValue(distancetoGoal);
-        aimerIo.setAimAngleRad(aimAngleRad);
+        aimerIo.setAimAngleRot(aimAngleRad);
 
         shooterIo.setKickerVolts(12);
 
@@ -338,7 +340,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void endgame() {
-        aimerIo.setAimAngleRad(Math.PI / 2);
+        aimerIo.setAimAngleRot(Math.PI / 2);
         shooterIo.setShooterVelocityRPM(ScoringConstants.shooterAmpVelocityRPM);
         shooterIo.setKickerVolts(action == ScoringAction.TRAP_SCORE ? 10 : 0);
         if (action != ScoringAction.ENDGAME && action != ScoringAction.TRAP_SCORE) {
@@ -350,7 +352,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         shooterGoalVelocityRPMTuning = SmartDashboard.getNumber("Test-Mode/ShooterGoal", 0.0);
         aimerGoalAngleRadTuning = SmartDashboard.getNumber("Test-Mode/AimerGoal", 0.0);
         shooterIo.setShooterVelocityRPM(shooterGoalVelocityRPMTuning);
-        aimerIo.setAimAngleRad(aimerGoalAngleRadTuning);
+        aimerIo.setAimAngleRot(aimerGoalAngleRadTuning);
         shooterIo.setKickerVolts(kickerVoltsTuning);
 
         if (action != ScoringAction.TUNING) {
@@ -401,9 +403,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     public boolean aimerAtIntakePosition() {
-        return aimerInputs.aimAngleRad
-                < ScoringConstants.aimMinAngleRadians
-                        + ScoringConstants.intakeAngleToleranceRadians;
+        return aimerInputs.aimAngleRot
+                < ScoringConstants.aimMinAngleRotations
+                        + ScoringConstants.intakeAngleToleranceRotations;
         // return true;\][]
     }
 
@@ -432,7 +434,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         setOverrideStageAvoidance(false);
         setOverrideShoot(false);
-        aimerIo.setAimAngleRad(aimerInputs.aimAngleRad);
+        aimerIo.setAimAngleRot(aimerInputs.aimAngleRot);
     }
 
     @Override
@@ -449,17 +451,17 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         overrideBeamBreak = SmartDashboard.getBoolean("Beam Break Overridden", overrideBeamBreak);
 
         if (state == ScoringState.TEMPORARY_SETPOINT) {
-            aimerIo.setAngleClampsRad(
-                    ScoringConstants.aimMinAngleRadians, ScoringConstants.aimMaxAngleRadians);
+            aimerIo.setAngleClampsRot(
+                    ScoringConstants.aimMinAngleRotations, ScoringConstants.aimMaxAngleRotations);
         } else if (state != ScoringState.TUNING
                 && state != ScoringState.ENDGAME
                 && state != ScoringState.IDLE
                 // && Math.abs(elevatorPositionSupplier.getAsDouble()) < 0.2
                 && !overrideStageAvoidance) {
-            aimerIo.setAngleClampsRad(ScoringConstants.aimMinAngleRadians, 0);
+            aimerIo.setAngleClampsRot(ScoringConstants.aimMinAngleRotations, 0);
         }
 
-        aimerIo.controlAimAngleRad();
+        aimerIo.controlAimAngleRot();
 
         aimerIo.setOverrideMode(state == ScoringState.OVERRIDE);
         shooterIo.setOverrideMode(state == ScoringState.OVERRIDE);
@@ -469,7 +471,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         Logger.recordOutput(
                 "scoring/Aimer3d",
-                new Pose3d(-0.255, 0.2, 0.502, new Rotation3d(0, -aimerInputs.aimAngleRad, 0)));
+                new Pose3d(-0.255, 0.2, 0.502, new Rotation3d(0, -aimerInputs.aimAngleRot, 0)));
 
         Logger.recordOutput("scoring/readyToShoot", readyToShoot);
         Logger.recordOutput("scoring/overrideShoot", overrideShoot);
@@ -478,7 +480,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         Logger.recordOutput("scoring/distance", findDistanceToGoal());
 
         if (ModeConstants.currentMode == Mode.SIM) {
-            aimMechanism.setAngle(Units.radiansToDegrees(aimerInputs.aimAngleRad));
+            aimMechanism.setAngle(Units.radiansToDegrees(aimerInputs.aimAngleRot));
             Logger.recordOutput("scoring/mechanism2d", mechanism);
         }
 
@@ -524,7 +526,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         // If the robot is disabled, the pid should not be winding up
         if (DriverStation.isDisabled()) {
             aimerIo.resetPID();
-            aimerIo.setAimAngleRad(aimerInputs.aimAngleRad);
+            aimerIo.setAimAngleRot(aimerInputs.aimAngleRot);
         }
 
         shooterIo.updateInputs(shooterInputs);
@@ -573,7 +575,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         switch (slot) {
                 // Aimer
             case 0:
-                return aimerInputs.aimAngleRad;
+                return aimerInputs.aimAngleRot;
                 // Shooter
             case 1:
                 return shooterInputs.shooterLeftVelocityRPM;
@@ -587,7 +589,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         switch (slot) {
                 // Aimer
             case 0:
-                return aimerInputs.aimVelocityRadPerSec;
+                return aimerInputs.aimVelocityRotPerSec;
                 // Shooter
             case 1:
                 return shooterInputs.shooterLeftVelocityRPM;
@@ -680,7 +682,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         switch (slot) {
                 // Aimer
             case 0:
-                aimerIo.setAimAngleRad(temporarySetpointPosition);
+                aimerIo.setAimAngleRot(temporarySetpointPosition);
                 break;
                 // Shooter
             case 1:
