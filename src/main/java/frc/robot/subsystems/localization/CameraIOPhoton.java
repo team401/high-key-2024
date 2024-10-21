@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.VisionConstants.CameraParams;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -100,13 +99,14 @@ public class CameraIOPhoton implements CameraIO {
         List<PhotonTrackedTarget> filteredTargets = new ArrayList<PhotonTrackedTarget>();
 
         for (PhotonTrackedTarget target : targets) {
-            if (target.getPoseAmbiguity() < VisionConstants.maximumAmbiguity && target.getPitch() < VisionConstants.maximumPitch) {
+            if (target.getPoseAmbiguity() < VisionConstants.maximumAmbiguity
+                    && target.getPitch() < VisionConstants.maximumPitch) {
                 filteredTargets.add(target);
             }
         }
         return new PhotonPipelineResult(unfiltered.getLatencyMillis(), filteredTargets);
     }
-    
+
     private static boolean filterPhotonPose(EstimatedRobotPose photonPose) {
         if (photonPose.targetsUsed.size() < 2) {
             return false;
