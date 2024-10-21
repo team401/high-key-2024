@@ -304,8 +304,18 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     // for scoring subsystem in auto
     public boolean isDriveAligned() {
         if (alignTarget != AlignTarget.NONE && aligning) {
-            double desiredHeading =
-                    this.getAlignment().get().plus(new Rotation2d(Math.PI)).getRadians();
+            double desiredHeading;
+            // only addd Pi radians if alliance is red and align target is speaker
+            if (!DriverStation.getAlliance().isEmpty()
+                    && (DriverStation.getAlliance().get() == Alliance.Blue
+                            && alignTarget != AlignTarget.SPEAKER)) {
+                desiredHeading = this.getAlignment().get().getRadians();
+            } else if (alignTarget == AlignTarget.SPEAKER) {
+                desiredHeading =
+                        this.getAlignment().get().plus(new Rotation2d(Math.PI)).getRadians();
+            } else {
+                desiredHeading = this.getAlignment().get().getRadians();
+            }
             double currentHeading = this.getState().Pose.getRotation().getRadians();
 
             if (Math.abs(desiredHeading - currentHeading)
@@ -319,16 +329,17 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         }
     }
 
-    private Rotation2d getTargetHeading(Pose2d desiredTargetPose) {
+    private Rotation2d getTargetHeading(Pose2d desiredTargetPose, boolean inverted) {
         Pose2d currentPose = this.getState().Pose;
 
         double targetVectorX = desiredTargetPose.getX() - currentPose.getX();
         double targetVectorY = desiredTargetPose.getY() - currentPose.getY();
 
-        Rotation2d desiredRotation =
-                new Rotation2d(
-                        targetVectorX,
-                        targetVectorY); /*.minus(new Rotation2d(Math.PI)*/ /*TODO: Figure out if we actually need to invert align or not */
+        Rotation2d desiredRotation = new Rotation2d(targetVectorX, targetVectorY);
+
+        if (inverted) {
+            desiredRotation.minus(new Rotation2d(Math.PI));
+        }
         return desiredRotation;
     }
 
@@ -339,13 +350,13 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                         && DriverStation.getAlliance().get() == Alliance.Blue) {
                     return Optional.of(
                             getTargetHeading(
-                                    new Pose2d(
-                                            FieldConstants.fieldToBlueSpeaker, new Rotation2d())));
+                                    new Pose2d(FieldConstants.fieldToBlueSpeaker, new Rotation2d()),
+                                    false));
                 } else {
                     return Optional.of(
                             getTargetHeading(
-                                    new Pose2d(
-                                            FieldConstants.fieldToRedSpeaker, new Rotation2d())));
+                                    new Pose2d(FieldConstants.fieldToRedSpeaker, new Rotation2d()),
+                                    true));
                 }
             case AMP:
                 return Optional.of(FieldConstants.ampHeading);
