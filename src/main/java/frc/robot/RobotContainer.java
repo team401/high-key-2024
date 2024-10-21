@@ -21,6 +21,7 @@ import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -53,6 +54,7 @@ public class RobotContainer {
 
     ScoringSubsystem scoringSubsystem;
     IntakeSubsystem intakeSubsystem;
+    LED leds;
 
     CommandJoystick leftJoystick = new CommandJoystick(0);
     CommandJoystick rightJoystick = new CommandJoystick(1);
@@ -113,6 +115,12 @@ public class RobotContainer {
         }
         if (FeatureFlags.runIntake) {
             initIntake();
+        }
+        if (FeatureFlags.runScoring
+                && FeatureFlags.runIntake
+                && FeatureFlags.runVision
+                && FeatureFlags.runLEDS) {
+            initLEDs();
         }
     }
 
@@ -203,6 +211,10 @@ public class RobotContainer {
                 scoringSubsystem = new ScoringSubsystem(new ShooterIO() {}, new AimerIO() {});
                 break;
         }
+    }
+
+    private void initLEDs() {
+        leds = new LED(scoringSubsystem, intakeSubsystem);
     }
 
     private void configureSuppliers() {
