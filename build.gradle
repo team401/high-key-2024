@@ -193,4 +193,4 @@ task (commitOnDeploy, dependsOn: "spotlessApply") {
 	}
 }
 
-compileJava.dependsOn commitOnDeploy
+// compileJava.dependsOn commitOnDeploy
