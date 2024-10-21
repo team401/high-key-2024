@@ -1,0 +1,172 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3679858486729504,
+      "y": 5.551187918118234
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNoteAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitForAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAlignToSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "baseline-C3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNoteAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitForAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAlignToSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C3-C2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNoteAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitForAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAlignToSpeaker"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C2-C1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shootNoteAtSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitForAlignment"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stopAlignToSpeaker"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

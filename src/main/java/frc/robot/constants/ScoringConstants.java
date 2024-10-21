@@ -34,7 +34,8 @@ public class ScoringConstants {
     public static final double aimerCurrentLimit = 60;
 
     public static final int aimerEncoderId = 13;
-    public static final double aimerEncoderOffset = 0.156006; // Armencoder is zeroed
+    public static final double aimerEncoderOffset =
+            0.156006 + 0.049560546875; // Armencoder is zeroed
 
     public static final double aimerEncoderToMechanismRatio = 1.0;
     public static final double aimerRotorToSensorRatio = 90.0;
@@ -57,6 +58,7 @@ public class ScoringConstants {
 
     public static final double aimMaxAngleRotations = 0.361328 - 0.184570;
     public static final double aimMinAngleRotations = -0.195;
+
     public static final double aimAngleTolerance = 0.015;
 
     public static final double maxAimIntake = 0.0;

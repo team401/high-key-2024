@@ -99,7 +99,7 @@ public class IntakeSubsystem extends SubsystemBase {
                 !shooterHasNote.getAsBoolean() && shooterAtIntakePosition.getAsBoolean();
 
         if (noNotes || readyToPassNoteToShooter) {
-            io.setIntakeVoltage(IntakeConstants.intakePower);
+            io.setIntakeVoltage(-IntakeConstants.intakePower);
         } else {
             io.setIntakeVoltage(0.0);
         }
@@ -110,8 +110,8 @@ public class IntakeSubsystem extends SubsystemBase {
             state = State.IDLE;
         }
 
-        io.setIntakeVoltage(-IntakeConstants.intakePower);
-        io.setBeltVoltage(-IntakeConstants.beltPower);
+        io.setIntakeVoltage(IntakeConstants.intakePower);
+        io.setBeltVoltage(IntakeConstants.beltPower);
     }
 
     private void override() {
