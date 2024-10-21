@@ -6,6 +6,9 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.VisionConstants.CameraParams;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -71,7 +74,7 @@ public class CameraIOPhoton implements CameraIO {
         }
         inputs.isNewMeasurement = true;
         latestTimestampSeconds = result.getTimestampSeconds();
-        Optional<EstimatedRobotPose> photonPose = poseEstimator.update(result);
+        Optional<EstimatedRobotPose> photonPose = poseEstimator.update(filterTargets(result));
 
         photonPose.filter(CameraIOPhoton::filterPhotonPose);
 
@@ -92,6 +95,18 @@ public class CameraIOPhoton implements CameraIO {
                 });
     }
 
+    private static PhotonPipelineResult filterTargets(PhotonPipelineResult unfiltered) {
+        List<PhotonTrackedTarget> targets = unfiltered.getTargets();
+        List<PhotonTrackedTarget> filteredTargets = new ArrayList<PhotonTrackedTarget>();
+
+        for (PhotonTrackedTarget target : targets) {
+            if (target.getPoseAmbiguity() < VisionConstants.maximumAmbiguity && target.getPitch() < VisionConstants.maximumPitch) {
+                filteredTargets.add(target);
+            }
+        }
+        return new PhotonPipelineResult(unfiltered.getLatencyMillis(), filteredTargets);
+    }
+    
     private static boolean filterPhotonPose(EstimatedRobotPose photonPose) {
         if (photonPose.targetsUsed.size() < 2) {
             return false;

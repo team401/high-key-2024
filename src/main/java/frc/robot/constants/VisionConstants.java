@@ -81,6 +81,9 @@ public final class VisionConstants {
                                     new Rotation3d(0.0, -0.408546671, Math.PI)),
                             CameraTrustZone.MIDDLE));
 
+    public static final double maximumAmbiguity = 0.2;
+    public static double maximumPitch = 0.1;
+
     //     new CameraParams(
     //             "Front-Center",
     //             1280,
