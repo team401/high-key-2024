@@ -692,6 +692,18 @@ public class RobotContainer {
                         .onFalse(
                                 new InstantCommand(
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                masher.rightBumper()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setOverrideKickerVoltsDirectly(
+                                                        -12.0)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setOverrideKickerVoltsDirectly(
+                                                        -12.0)));
                 break;
         }
     }

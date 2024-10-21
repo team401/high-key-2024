@@ -773,4 +773,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     public void setAimerStatorCurrentLimit(double limit) {
         aimerIo.setStatorCurrentLimit(limit);
     }
+
+    public void setOverrideKickerVoltsDirectly(double volts) {
+        /* Immediately sets kicker voltage, fully ignoring scoring state */
+        shooterIo.setKickerVolts(volts);
+    }
 }
