@@ -4,6 +4,5 @@ public class LEDConstants {
 
     public static final int ledPort = 0;
 
-    public static final int ledLength = 17;
-
+    public static final int ledLength = 30;
 }
