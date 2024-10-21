@@ -306,9 +306,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         if (alignTarget != AlignTarget.NONE && aligning) {
             double desiredHeading;
             // only addd Pi radians if alliance is red and align target is speaker
-            if ((!DriverStation.getAlliance().isEmpty()
-                            && DriverStation.getAlliance().get() == Alliance.Blue)
-                    && alignTarget != AlignTarget.SPEAKER) {
+            if (!DriverStation.getAlliance().isEmpty()
+                    && DriverStation.getAlliance().get() == Alliance.Blue) {
                 desiredHeading = this.getAlignment().get().getRadians();
             } else if (alignTarget == AlignTarget.SPEAKER) {
                 desiredHeading =
