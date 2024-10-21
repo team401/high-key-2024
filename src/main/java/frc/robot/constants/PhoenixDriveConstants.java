@@ -20,7 +20,8 @@ public final class PhoenixDriveConstants {
         UP,
         DOWN,
         LEFT,
-        RIGHT
+        RIGHT,
+        PASS
     }
 
     // Both sets of gains need to be tuned to your individual robot.
