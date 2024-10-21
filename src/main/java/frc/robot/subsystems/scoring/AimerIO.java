@@ -5,15 +5,15 @@ import org.littletonrobotics.junction.AutoLog;
 public interface AimerIO {
     @AutoLog
     public static class AimerInputs {
-        public double aimAngleRad = 0.0;
-        public double aimGoalAngleRad = 0.0;
-        public double aimProfileGoalAngleRad = 0.0;
+        public double aimAngleRot = 0.0;
+        public double aimGoalAngleRot = 0.0;
+        public double aimProfileGoalAngleRot = 0.0;
 
         public double aimStatorCurrentAmps = 0.0;
         public double aimSupplyCurrentAmps = 0.0;
 
-        public double aimVelocityRadPerSec = 0.0;
-        public double aimVelocityErrorRadPerSec = 0.0;
+        public double aimVelocityRotPerSec = 0.0;
+        public double aimVelocityErrorRotPerSec = 0.0;
     }
 
     @AutoLog
@@ -25,11 +25,11 @@ public interface AimerIO {
 
     public default void applyOutputs(AimerOutputs outputs) {}
 
-    public default void setAimAngleRad(double angle) {}
+    public default void setAimAngleRot(double angle) {}
 
-    public default void controlAimAngleRad() {}
+    public default void controlAimAngleRot() {}
 
-    public default void setAngleClampsRad(double min, double max) {}
+    public default void setAngleClampsRot(double min, double max) {}
 
     public default void setOverrideMode(boolean override) {}
 
