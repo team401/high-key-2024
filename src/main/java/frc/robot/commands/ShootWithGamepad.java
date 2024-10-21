@@ -90,6 +90,8 @@ public class ShootWithGamepad extends Command {
             case ENDGAME:
                 scoring.setAction(ScoringAction.ENDGAME);
                 break;
+            case PASS:
+                scoring.setAction(ScoringAction.AIM);
             default:
                 scoring.setAction(ScoringAction.WAIT);
                 break;
