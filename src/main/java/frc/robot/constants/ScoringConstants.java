@@ -42,27 +42,23 @@ public class ScoringConstants {
 
     public static final double kickerIntakeVolts = 2.0;
 
-    public static final double aimPositionTolerance = 0.003;
+    // public static final double aimPositionTolerance = 0.003;
 
-    // These values have been reduced for tuning because we can't set a voltage limit on the motors
-    // anymore
-    // public static final double aimerAcceleration = 4.5; // TODO: 15.0
-    // public static final double aimerCruiseVelocity = 7.0; // TODO: 15.0
-    public static final double aimerAcceleration = 3.5; // 0.7;
-    public static final double aimerCruiseVelocity = 0.8; // 0.4;
+    public static final double aimerAcceleration = 3.5;
+    public static final double aimerCruiseVelocity = 0.8;
 
     public static final double shooterLowerVelocityMarginRPM = 50;
     public static final double shooterUpperVelocityMarginRPM = 150;
-    public static final double aimAngleMarginRadians = Units.degreesToRadians(1);
-    public static final double aimAngleVelocityMargin = 2.0; // Units.degreesToRadians(5);
+    public static final double aimAngleMarginRotations = Units.degreesToRotations(1);
+    public static final double aimAngleVelocityMargin = 2.0;
 
-    public static final double intakeAngleToleranceRadians = 0.05;
-    // Math.PI / 2 - Units.degreesToRadians(40);
+    public static final double intakeAngleToleranceRotations = 0.05; // Todo: tune this value
 
     public static final double shooterAmpVelocityRPM = 2000;
 
-    public static final double aimMaxAngleRadians = 0.361328 - 0.184570; // Math.PI / 2
-    public static final double aimMinAngleRadians = -0.26; // -0.037598 - 0.184570;
+    public static final double aimMaxAngleRotations = 0.361328 - 0.184570;
+    public static final double aimMinAngleRotations = -0.195;
+
     public static final double aimAngleTolerance = 0.015;
 
     public static final double maxAimIntake = 0.0;
@@ -75,7 +71,7 @@ public class ScoringConstants {
 
     // NOTE - This should be monotonically increasing
     // Key - Distance in meters
-    // Value - Aimer angle in radians
+    // Value - Aimer angle in rotations
     public static HashMap<Double, Double> getAimerMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
         map.put(0.0, -0.084);
@@ -116,10 +112,10 @@ public class ScoringConstants {
 
     // NOTE - This should be monotonically increasing
     // Key - Distance to goal in meters
-    // Value - Aimer angle tolerance in radians
+    // Value - Aimer angle tolerance in rotations
     public static HashMap<Double, Double> aimerToleranceTable() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, 0.003);
+        map.put(0.0, 0.003); // Todo: tune this value after conversion from radians to rotations
 
         return map;
     }

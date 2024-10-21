@@ -42,7 +42,7 @@ public class AimerIORoboRio implements AimerIO {
     double minAngleClamp = 0.0;
     double maxAngleClamp = 0.0;
 
-    double goalAngleRad = 0.0;
+    double goalAngleRot = 0.0;
     double appliedVolts = 0.0;
 
     double velocity = 0.0;
@@ -99,36 +99,36 @@ public class AimerIORoboRio implements AimerIO {
     public void resetPID() {}
 
     @Override
-    public void setAimAngleRad(double goalAngleRad) {
-        this.goalAngleRad = goalAngleRad;
+    public void setAimAngleRot(double goalAngleRot) {
+        this.goalAngleRot = goalAngleRot;
     }
 
     @Override
-    public void controlAimAngleRad() {
-        if (goalAngleRad != previousGoalAngle) {
+    public void controlAimAngleRot() {
+        if (goalAngleRot != previousGoalAngle) {
             timer.reset();
             timer.start();
 
-            previousGoalAngle = goalAngleRad;
+            previousGoalAngle = goalAngleRot;
         }
-        goalAngleRad = MathUtil.clamp(goalAngleRad, minAngleClamp, maxAngleClamp);
+        goalAngleRot = MathUtil.clamp(goalAngleRot, minAngleClamp, maxAngleClamp);
     }
 
     @Override
-    public void setAngleClampsRad(double minAngleClamp, double maxAngleClamp) {
+    public void setAngleClampsRot(double minAngleClamp, double maxAngleClamp) {
         if (minAngleClamp > maxAngleClamp) {
             return;
         }
         this.minAngleClamp =
                 MathUtil.clamp(
                         minAngleClamp,
-                        ScoringConstants.aimMinAngleRadians,
-                        ScoringConstants.aimMaxAngleRadians);
+                        ScoringConstants.aimMinAngleRotations,
+                        ScoringConstants.aimMaxAngleRotations);
         this.maxAngleClamp =
                 MathUtil.clamp(
                         maxAngleClamp,
-                        ScoringConstants.aimMinAngleRadians,
-                        ScoringConstants.aimMaxAngleRadians);
+                        ScoringConstants.aimMinAngleRotations,
+                        ScoringConstants.aimMaxAngleRotations);
     }
 
     @Override
@@ -207,19 +207,19 @@ public class AimerIORoboRio implements AimerIO {
 
         Logger.recordOutput("Scoring/motorDisabled", motorDisabled);
 
-        inputs.aimGoalAngleRad = goalAngleRad;
-        inputs.aimProfileGoalAngleRad = controlSetpoint;
-        inputs.aimAngleRad = getEncoderPosition();
+        inputs.aimGoalAngleRot = goalAngleRot;
+        inputs.aimProfileGoalAngleRot = controlSetpoint;
+        inputs.aimAngleRot = getEncoderPosition();
 
         double currentTime = Utils.getCurrentTimeSeconds();
         double diffTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        inputs.aimVelocityRadPerSec = (getEncoderPosition() - lastPosition) / diffTime;
+        inputs.aimVelocityRotPerSec = (getEncoderPosition() - lastPosition) / diffTime;
         velocity = (getEncoderPosition() - lastPosition) / diffTime;
         lastPosition = getEncoderPosition();
 
-        inputs.aimVelocityErrorRadPerSec =
+        inputs.aimVelocityErrorRotPerSec =
                 ((getEncoderPosition() - controlSetpoint) - lastError) / diffTime;
         lastError = getEncoderPosition() - controlSetpoint;
 
@@ -230,7 +230,7 @@ public class AimerIORoboRio implements AimerIO {
     @Override
     public void applyOutputs(AimerOutputs outputs) {
         MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0.0);
-        motionMagicVoltage.withPosition(goalAngleRad);
+        motionMagicVoltage.withPosition(goalAngleRot);
 
         request = motionMagicVoltage;
 
