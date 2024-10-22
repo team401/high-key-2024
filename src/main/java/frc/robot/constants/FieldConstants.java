@@ -34,9 +34,11 @@ public final class FieldConstants {
     public static final Translation2d fieldToBlueSpeaker =
             new Translation2d(Units.inchesToMeters(-1.5), Units.inchesToMeters(218.42));
 
-public static final Translation2d fieldToBluePass = new Translation2d(Units.inchesToMeters(25), Units.inchesToMeters(230));
+    public static final Translation2d fieldToBluePass =
+            new Translation2d(Units.inchesToMeters(25), Units.inchesToMeters(230));
 
-public static final Translation2d fieldToRedPass = new Translation2d(Units.inchesToMeters(625), Units.inchesToMeters(230));
+    public static final Translation2d fieldToRedPass =
+            new Translation2d(Units.inchesToMeters(625), Units.inchesToMeters(230));
 
     public static final Pose2d robotAgainstBlueSpeaker =
             new Pose2d(1.39, 5.56, Rotation2d.fromDegrees(180));

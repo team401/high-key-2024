@@ -84,6 +84,9 @@ public class ScoringConstants {
         return map;
     }
 
+    public static final double passLocationRotations = -0.08;
+    public static final double passAngleTolerance = 0.005;
+
     public static final double aimerStaticOffset = 0.0;
 
     // NOTE - This should be monotonically increasing

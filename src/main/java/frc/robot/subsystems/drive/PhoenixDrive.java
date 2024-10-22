@@ -369,17 +369,15 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                     return Optional.of(FieldConstants.redRightHeading);
                 }
             case PASS:
-                                if (!DriverStation.getAlliance().isEmpty()
+                if (!DriverStation.getAlliance().isEmpty()
                         && DriverStation.getAlliance().get() == Alliance.Blue) {
                     return Optional.of(
                             getTargetHeading(
-                                    new Pose2d(
-                                            FieldConstants.fieldToBluePass, new Rotation2d())));
+                                    new Pose2d(FieldConstants.fieldToBluePass, new Rotation2d())));
                 } else {
                     return Optional.of(
                             getTargetHeading(
-                                    new Pose2d(
-                                            FieldConstants.fieldToRedPass, new Rotation2d())));
+                                    new Pose2d(FieldConstants.fieldToRedPass, new Rotation2d())));
                 }
             default:
                 // no pose to align to so set target to none
