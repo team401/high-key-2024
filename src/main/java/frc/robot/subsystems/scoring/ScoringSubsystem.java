@@ -314,8 +314,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void passPrime() {
-        aimerIo.setAimAngleRot(ScoringConstants.passLocationRotations);
-        shooterIo.setShooterVelocityRPM(4000.0);
+        aimerIo.setAimAngleRot(ScoringConstants.passLocationRot);
+        shooterIo.setShooterVelocityRPM(ScoringConstants.passShooterRpm);
 
         boolean notePresent = overrideBeamBreak ? true : hasNote();
 
@@ -328,7 +328,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                         - ScoringConstants.shooterLowerVelocityMarginRPM);
         boolean aimReady =
                 Math.abs(aimerInputs.aimAngleRot - aimerInputs.aimGoalAngleRot)
-                                < ScoringConstants.passAngleTolerance
+                                < ScoringConstants.passAngleToleranceRot
                         && Math.abs(aimerInputs.aimVelocityErrorRotPerSec)
                                 < ScoringConstants.aimAngleVelocityMargin;
 
@@ -384,8 +384,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void passShoot() {
-        aimerIo.setAimAngleRot(ScoringConstants.passLocationRotations);
-        shooterIo.setShooterVelocityRPM(4000.0);
+        aimerIo.setAimAngleRot(ScoringConstants.passLocationRot);
+        shooterIo.setShooterVelocityRPM(ScoringConstants.passShooterRpm);
 
         shooterIo.setKickerVolts(12);
 
