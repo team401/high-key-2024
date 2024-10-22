@@ -341,7 +341,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     private void endgame() {
         aimerIo.setAimAngleRot(Math.PI / 2);
-        shooterIo.setShooterVelocityRPM(ScoringConstants.shooterAmpVelocityRPM);
+        // shooterIo.setShooterVelocityRPM(ScoringConstants.shooterAmpVelocityRPM);
         shooterIo.setKickerVolts(action == ScoringAction.TRAP_SCORE ? 10 : 0);
         if (action != ScoringAction.ENDGAME && action != ScoringAction.TRAP_SCORE) {
             state = ScoringState.IDLE;

@@ -65,7 +65,7 @@ public class AimerIORoboRio implements AimerIO {
                 AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
         cancoderConfiguration.MagnetSensor.SensorDirection =
                 SensorDirectionValue.CounterClockwise_Positive;
-        cancoderConfiguration.MagnetSensor.MagnetOffset = -ScoringConstants.aimerEncoderOffset;
+        cancoderConfiguration.MagnetSensor.MagnetOffset = ScoringConstants.aimerEncoderOffset;
 
         aimerEncoder.getConfigurator().apply(cancoderConfiguration);
 

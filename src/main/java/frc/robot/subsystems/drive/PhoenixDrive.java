@@ -129,6 +129,9 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             startSimThread();
         }
 
+        thetaController.enableContinuousInput(0.0, 2 * Math.PI);
+        thetaController.setTolerance(PhoenixDriveConstants.alignToleranceRadians);
+
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
@@ -139,8 +142,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-
-        thetaController.enableContinuousInput(0.0, 2 * Math.PI);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -303,32 +304,20 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     // for scoring subsystem in auto
     public boolean isDriveAligned() {
-        if (alignTarget != AlignTarget.NONE && aligning) {
-            double desiredHeading =
-                    this.getAlignment().get().plus(new Rotation2d(Math.PI)).getRadians();
-            double currentHeading = this.getState().Pose.getRotation().getRadians();
-
-            if (Math.abs(desiredHeading - currentHeading)
-                    < PhoenixDriveConstants.alignToleranceRadians) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return thetaController.atSetpoint();
     }
 
-    private Rotation2d getTargetHeading(Pose2d desiredTargetPose) {
+    private Rotation2d getTargetHeading(Pose2d desiredTargetPose, boolean inverted) {
         Pose2d currentPose = this.getState().Pose;
 
         double targetVectorX = desiredTargetPose.getX() - currentPose.getX();
         double targetVectorY = desiredTargetPose.getY() - currentPose.getY();
 
-        Rotation2d desiredRotation =
-                new Rotation2d(
-                        targetVectorX,
-                        targetVectorY); /*.minus(new Rotation2d(Math.PI)*/ /*TODO: Figure out if we actually need to invert align or not */
+        Rotation2d desiredRotation = new Rotation2d(targetVectorX, targetVectorY);
+
+        if (inverted) {
+            desiredRotation.minus(new Rotation2d(Math.PI));
+        }
         return desiredRotation;
     }
 
@@ -339,13 +328,13 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                         && DriverStation.getAlliance().get() == Alliance.Blue) {
                     return Optional.of(
                             getTargetHeading(
-                                    new Pose2d(
-                                            FieldConstants.fieldToBlueSpeaker, new Rotation2d())));
+                                    new Pose2d(FieldConstants.fieldToBlueSpeaker, new Rotation2d()),
+                                    false));
                 } else {
                     return Optional.of(
                             getTargetHeading(
-                                    new Pose2d(
-                                            FieldConstants.fieldToRedSpeaker, new Rotation2d())));
+                                    new Pose2d(FieldConstants.fieldToRedSpeaker, new Rotation2d()),
+                                    true));
                 }
             case AMP:
                 return Optional.of(FieldConstants.ampHeading);
