@@ -301,7 +301,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         // shooterIo.setShooterVelocityRPM(ScoringConstants.shooterAmpVelocityRPM);
         // TODO: Test this out
         aimerIo.setAimAngleRot(
-                0.25); // This is actually in rotations and not radians, I really need to rename all
+                ScoringConstants
+                        .ampAimerAngleRotations); // This is actually in rotations and not radians,
+        // I really need to rename all
         // of the aimer IO functions
         if (action != ScoringAction.SHOOT && action != ScoringAction.AMP_AIM) {
             state = ScoringState.IDLE;
@@ -373,6 +375,13 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     private void ampShoot() {
         shooterIo.setKickerVolts(-12); // TODO: Test if this kicks note forward or backward
+
+        // Revert to amp prime after we shoot the note
+        // This will keep the arm up and allow the driver to drive away from the amp before the arm
+        // comes down
+        if (!hasNote() && shootTimer.get() > 2.0) {
+            state = ScoringState.AMP_PRIME;
+        }
 
         // I see no reason why amp should not shoot within 1 second but if it takes longer than
         // that, we should probably let it

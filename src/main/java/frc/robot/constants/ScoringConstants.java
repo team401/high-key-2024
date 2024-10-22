@@ -61,7 +61,7 @@ public class ScoringConstants {
 
     public static final double aimAngleTolerance = 0.015;
 
-    public static final double ampAimerAngleRotations = 0.0; // TODO: Tune this value
+    public static final double ampAimerAngleRotations = 0.14;
 
     public static final double maxAimIntake = 0.0;
     public static final double minAimIntake = 0.0;
