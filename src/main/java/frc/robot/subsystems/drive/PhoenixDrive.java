@@ -129,6 +129,9 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
             startSimThread();
         }
 
+        thetaController.enableContinuousInput(0.0, 2 * Math.PI);
+        thetaController.setTolerance(PhoenixDriveConstants.alignToleranceRadians);
+
         CommandScheduler.getInstance().registerSubsystem(this);
     }
 
@@ -139,8 +142,6 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-
-        thetaController.enableContinuousInput(0.0, 2 * Math.PI);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -303,29 +304,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
     // for scoring subsystem in auto
     public boolean isDriveAligned() {
-        if (alignTarget != AlignTarget.NONE && aligning) {
-            double desiredHeading;
-            // only addd Pi radians if alliance is red and align target is speaker
-            if (!DriverStation.getAlliance().isEmpty()
-                    && DriverStation.getAlliance().get() == Alliance.Blue) {
-                desiredHeading = this.getAlignment().get().getRadians();
-            } else if (alignTarget == AlignTarget.SPEAKER) {
-                desiredHeading =
-                        this.getAlignment().get().plus(new Rotation2d(Math.PI)).getRadians();
-            } else {
-                desiredHeading = this.getAlignment().get().getRadians();
-            }
-            double currentHeading = this.getState().Pose.getRotation().getRadians();
-
-            if (Math.abs(desiredHeading - currentHeading)
-                    < PhoenixDriveConstants.alignToleranceRadians) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
+        return thetaController.atSetpoint();
     }
 
     private Rotation2d getTargetHeading(Pose2d desiredTargetPose, boolean inverted) {

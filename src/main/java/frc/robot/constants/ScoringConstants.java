@@ -34,8 +34,8 @@ public class ScoringConstants {
     public static final double aimerCurrentLimit = 60;
 
     public static final int aimerEncoderId = 13;
-    public static final double aimerEncoderOffset =
-            0.156006 + 0.049560546875; // Armencoder is zeroed
+    ;
+    public static final double aimerEncoderOffset = -0.087402; // Armencoder is zeroed
 
     public static final double aimerEncoderToMechanismRatio = 1.0;
     public static final double aimerRotorToSensorRatio = 90.0;
@@ -54,10 +54,10 @@ public class ScoringConstants {
 
     public static final double intakeAngleToleranceRotations = 0.05; // Todo: tune this value
 
-    public static final double shooterAmpVelocityRPM = 2000;
+    public static final double aimerAmpPositionRot = 0.14;
 
     public static final double aimMaxAngleRotations = 0.361328 - 0.184570;
-    public static final double aimMinAngleRotations = -0.195;
+    public static final double aimMinAngleRotations = -0.217285;
 
     public static final double aimAngleTolerance = 0.015;
 
@@ -74,12 +74,12 @@ public class ScoringConstants {
     // Value - Aimer angle in rotations
     public static HashMap<Double, Double> getAimerMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, -0.084);
-        map.put(1.6, -0.09);
-        map.put(1.8, -0.10);
-        map.put(2.5, -0.13);
-        map.put(3.7, -0.16);
-        map.put(7.0, -0.19);
+        map.put(1.284, -0.1);
+        map.put(1.7, -0.13);
+        map.put(2.30, -0.15);
+        map.put(3.32, -0.175);
+        map.put(4.23, -0.195);
+        map.put(5.811, -0.2);
 
         return map;
     }
@@ -91,8 +91,8 @@ public class ScoringConstants {
     // Value - Shooter RPM
     public static HashMap<Double, Double> getShooterMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(0.0, 3500.0);
-        map.put(1.0, 4000.0);
+        map.put(1.284, 3500.0);
+        map.put(1.7, 4000.0);
 
         return map;
     }

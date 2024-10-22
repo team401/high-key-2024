@@ -525,7 +525,9 @@ public class RobotContainer {
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
 
                 masher.leftBumper()
-                        .onTrue(new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(10)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setTuningKickerVolts(-12)))
                         .onFalse(
                                 new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(0)));
                 break;
