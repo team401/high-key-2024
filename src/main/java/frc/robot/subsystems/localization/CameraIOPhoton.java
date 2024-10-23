@@ -94,6 +94,8 @@ public class CameraIOPhoton implements CameraIO {
 
                     inputs.ambiguity = calculateAverageAmbiguity(pose);
 
+                    inputs.standardDeviationOfTags = calculateStandardDeviationBetweenTags(pose);
+
                     inputs.wasAccepted = true;
                 },
                 () -> {
@@ -179,5 +181,34 @@ public class CameraIOPhoton implements CameraIO {
         }
         ambiguity = Math.sqrt(ambiguity);
         return ambiguity;
+    }
+
+    private static double[] calculateStandardDeviationBetweenTags(EstimatedRobotPose pose) {
+        double x = 0;
+        double y = 0;
+        double heading = 0;
+
+        double[] distancesC = calculateAverageTagDistances(pose);
+        double headingC = calculateAverageTagYaw(pose).getRadians();
+
+        for (PhotonTrackedTarget target : pose.targetsUsed) {
+            Transform3d best = target.getBestCameraToTarget();
+            Transform3d worst = target.getAlternateCameraToTarget();
+
+            x +=
+                    (Math.pow(best.getTranslation().getX() - distancesC[1], 2)
+                                    + Math.pow(worst.getTranslation().getX() - distancesC[1], 2))
+                            / 2;
+            y +=
+                    (Math.pow(best.getTranslation().getY() - distancesC[1], 2)
+                                    + Math.pow(worst.getTranslation().getY() - distancesC[1], 2))
+                            / 2;
+            heading +=
+                    (Math.pow(best.getRotation().getAngle() - headingC, 2)
+                                    + Math.pow(worst.getRotation().getAngle() - headingC, 2))
+                            / 2;
+        }
+
+        return new double[] {Math.sqrt(x), Math.sqrt(y), Math.sqrt(heading)};
     }
 }

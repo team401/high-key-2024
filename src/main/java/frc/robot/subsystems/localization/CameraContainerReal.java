@@ -26,7 +26,7 @@ public class CameraContainerReal implements CameraContainer {
 
     public void updateWeightings(double[] weightings) {
         for (Camera camera : cameras) {
-            camera.getWeightings(weightings);
+            camera.updateWeightings(weightings);
         }
     }
 }

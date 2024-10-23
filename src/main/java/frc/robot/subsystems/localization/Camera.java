@@ -102,9 +102,9 @@ public class Camera {
 
     public Matrix<N3, N1> getLatestStandardDeviation() {
 
-        double xV = 0.0;
-        double yV = 0.0;
-        double headingV = 0.0;
+        double xV = inputs.standardDeviationOfTags[0];
+        double yV = inputs.standardDeviationOfTags[1];
+        double headingV = inputs.standardDeviationOfTags[2];
 
         // distance error
         double distance = inputs.averageTagDistanceM;
@@ -133,7 +133,7 @@ public class Camera {
         return VecBuilder.fill(Math.sqrt(xV), Math.sqrt(yV), Math.sqrt(headingV));
     }
 
-    public void getWeightings(double[] weightings) {
+    public void updateWeightings(double[] weightings) {
 
         distanceToXweighting = weightings[0];
         distanceToYweighting = weightings[1];

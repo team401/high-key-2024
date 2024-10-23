@@ -15,6 +15,7 @@ public interface CameraIO {
         public Rotation2d averageTagYaw = new Rotation2d();
 
         public double ambiguity = 0.0;
+        public double[] standardDeviationOfTags = {0, 0, 0};
 
         public int nTags = 0;
 
