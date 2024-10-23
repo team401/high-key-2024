@@ -698,12 +698,12 @@ public class RobotContainer {
                                 new InstantCommand(
                                         () ->
                                                 scoringSubsystem.setOverrideKickerVoltsDirectly(
-                                                        -12.0)))
+                                                        12.0)))
                         .onFalse(
                                 new InstantCommand(
                                         () ->
                                                 scoringSubsystem.setOverrideKickerVoltsDirectly(
-                                                        -12.0)));
+                                                        0.0)));
                 break;
         }
     }

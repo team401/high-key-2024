@@ -300,11 +300,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private void ampPrime() {
         // shooterIo.setShooterVelocityRPM(ScoringConstants.shooterAmpVelocityRPM);
         // TODO: Test this out
-        aimerIo.setAimAngleRot(
-                ScoringConstants
-                        .ampAimerAngleRotations); // This is actually in rotations and not radians,
-        // I really need to rename all
-        // of the aimer IO functions
+        aimerIo.setAimAngleRot(ScoringConstants.ampAimerAngleRotations);
         if (action != ScoringAction.SHOOT && action != ScoringAction.AMP_AIM) {
             state = ScoringState.IDLE;
         } else if (action == ScoringAction.SHOOT) {
