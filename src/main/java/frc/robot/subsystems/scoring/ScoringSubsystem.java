@@ -327,7 +327,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                 > (shooterOutputs.shooterLeftGoalVelocityRPM
                                         - ScoringConstants.shooterLowerVelocityMarginRPM);
         boolean aimReady =
-                Math.abs(aimerInputs.aimAngleRot - aimerInputs.aimGoalAngleRot)
+                Math.abs(aimerInputs.aimAngleRot - ScoringConstants.passLocationRot)
                                 < ScoringConstants.passAngleToleranceRot
                         && Math.abs(aimerInputs.aimVelocityErrorRotPerSec)
                                 < ScoringConstants.aimAngleVelocityMargin;
@@ -342,6 +342,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
             shootTimer.reset();
             shootTimer.start();
+        } else if (action == ScoringAction.WAIT) {
+            state = ScoringState.IDLE;
         }
 
         Logger.recordOutput("scoring/shooterReady", shooterReady);
