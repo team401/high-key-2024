@@ -371,11 +371,12 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     private void ampShoot() {
         shooterIo.setKickerVolts(-12); // TODO: Test if this kicks note forward or backward
+        aimerIo.setAimAngleRot(ScoringConstants.ampAimerAngleRotations);
 
         // Revert to amp prime after we shoot the note
         // This will keep the arm up and allow the driver to drive away from the amp before the arm
         // comes down
-        if (!hasNote() && shootTimer.get() > 2.0) {
+        if (action == ScoringAction.WAIT || (!hasNote() && shootTimer.get() > 1.0)) {
             state = ScoringState.AMP_PRIME;
         }
 
