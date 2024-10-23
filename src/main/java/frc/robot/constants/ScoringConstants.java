@@ -52,6 +52,8 @@ public class ScoringConstants {
     public static final double aimAngleMarginRotations = Units.degreesToRotations(1);
     public static final double aimAngleVelocityMargin = 2.0;
 
+    public static final double minDistanceAlignmentNeeded = 1.3; // TODO: Tune this value
+
     public static final double intakeAngleToleranceRotations = 0.05; // Todo: tune this value
 
     public static final double aimerAmpPositionRot = 0.14;
