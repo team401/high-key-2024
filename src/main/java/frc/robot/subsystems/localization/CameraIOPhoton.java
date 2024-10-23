@@ -91,7 +91,7 @@ public class CameraIOPhoton implements CameraIO {
                     inputs.averageTagDistanceY = distances[2];
 
                     inputs.averageTagYaw = calculateAverageTagYaw(pose);
-                    
+
                     inputs.ambiguity = calculateAverageAmbiguity(pose);
 
                     inputs.wasAccepted = true;
@@ -109,8 +109,15 @@ public class CameraIOPhoton implements CameraIO {
             if (target.getPoseAmbiguity() < VisionConstants.maximumAmbiguity
                     && Math.abs(target.getPitch()) < VisionConstants.maximumPitch
                     && Math.abs(target.getSkew()) < VisionConstants.maximumRoll) {
-            //TODO: make sure that skew == roll (I think it is but I'm not sure)
-                if (Math.abs(target.getBestCameraToTarget().getTranslation().getDistance(new Translation3d()) - target.getAlternateCameraToTarget().getTranslation().getDistance(new Translation3d())) < VisionConstants.maximumDistanceAlternative) {
+                // TODO: make sure that skew == roll (I think it is but I'm not sure)
+                if (Math.abs(
+                                target.getBestCameraToTarget()
+                                                .getTranslation()
+                                                .getDistance(new Translation3d())
+                                        - target.getAlternateCameraToTarget()
+                                                .getTranslation()
+                                                .getDistance(new Translation3d()))
+                        < VisionConstants.maximumDistanceAlternative) {
                     filteredTargets.add(target);
                 }
             }
@@ -140,12 +147,11 @@ public class CameraIOPhoton implements CameraIO {
     private static double[] calculateAverageTagDistances(EstimatedRobotPose pose) {
         double distanceM = 0.0, distanceX = 0.0, distanceY = 0.0;
         for (PhotonTrackedTarget target : pose.targetsUsed) {
-            Translation3d targetMeasure = target.getBestCameraToTarget()
-                            .getTranslation();
+            Translation3d targetMeasure = target.getBestCameraToTarget().getTranslation();
 
             distanceM += targetMeasure.getDistance(new Translation3d());
             distanceX += targetMeasure.getX();
-            distanceY += targetMeasure.getY();            
+            distanceY += targetMeasure.getY();
         }
         double divider = pose.targetsUsed.size();
         distanceM /= divider;

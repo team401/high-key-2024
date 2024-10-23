@@ -125,15 +125,15 @@ public final class VisionConstants {
         return layout;
     }
 
-        public static double distanceToXweighting = 5;
-        public static double distanceToYweighting = 5;
-        public static double distanceToHeadingweighting = 30;
+    public static double distanceToXweighting = 5;
+    public static double distanceToYweighting = 5;
+    public static double distanceToHeadingweighting = 30;
 
-        public static double headingToXweighting = 60;
-        public static double headingToYweighting = 60;
-        public static double headingToHeadingweighting = 60;
+    public static double headingToXweighting = 60;
+    public static double headingToYweighting = 60;
+    public static double headingToHeadingweighting = 60;
 
-        public static double ambiguityweighting = 2;
+    public static double ambiguityweighting = 2;
 
-        public static double ntagsweighting = 1;
+    public static double ntagsweighting = 1;
 }

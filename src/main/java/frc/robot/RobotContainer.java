@@ -706,33 +706,63 @@ public class RobotContainer {
                                                         0.0)));
                 break;
             case "tuning-vision":
-                SmartDashboard.putNumber("distanceToXweighting", VisionConstants.distanceToXweighting);
-                SmartDashboard.putNumber("distanceToYweighting", VisionConstants.distanceToYweighting);
-                SmartDashboard.putNumber("distanceToHeadingweighting", VisionConstants.distanceToHeadingweighting);
+                SmartDashboard.putNumber(
+                        "distanceToXweighting", VisionConstants.distanceToXweighting);
+                SmartDashboard.putNumber(
+                        "distanceToYweighting", VisionConstants.distanceToYweighting);
+                SmartDashboard.putNumber(
+                        "distanceToHeadingweighting", VisionConstants.distanceToHeadingweighting);
 
-                SmartDashboard.putNumber("headingToXweighting", VisionConstants.headingToXweighting);
-                SmartDashboard.putNumber("headingToYweighting", VisionConstants.headingToYweighting);
-                SmartDashboard.putNumber("headingToHeadingweighting", VisionConstants.headingToHeadingweighting);
+                SmartDashboard.putNumber(
+                        "headingToXweighting", VisionConstants.headingToXweighting);
+                SmartDashboard.putNumber(
+                        "headingToYweighting", VisionConstants.headingToYweighting);
+                SmartDashboard.putNumber(
+                        "headingToHeadingweighting", VisionConstants.headingToHeadingweighting);
 
                 SmartDashboard.putNumber("ambiguityweighting", VisionConstants.ambiguityweighting);
 
                 SmartDashboard.putNumber("ntagsweighting", VisionConstants.ntagsweighting);
 
                 masher.leftBumper()
-                        .onTrue(new InstantCommand(() -> tagVision.updateWeightings(
-                               new double[] {SmartDashboard.getNumber("distanceToXweighting", VisionConstants.distanceToXweighting),
-                SmartDashboard.getNumber("distanceToYweighting", VisionConstants.distanceToYweighting),
-                SmartDashboard.getNumber("distanceToHeadingweighting", VisionConstants.distanceToHeadingweighting),
-                SmartDashboard.getNumber("headingToXweighting", VisionConstants.headingToXweighting),
-                SmartDashboard.getNumber("headingToYweighting", VisionConstants.headingToYweighting),
-                SmartDashboard.getNumber("headingToHeadingweighting", VisionConstants.headingToHeadingweighting),
-                SmartDashboard.getNumber("ambiguityweighting", VisionConstants.ambiguityweighting),
-                SmartDashboard.getNumber("ntagsweighting", VisionConstants.ntagsweighting)}
-                        )));
-
-
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                tagVision.updateWeightings(
+                                                        new double[] {
+                                                            SmartDashboard.getNumber(
+                                                                    "distanceToXweighting",
+                                                                    VisionConstants
+                                                                            .distanceToXweighting),
+                                                            SmartDashboard.getNumber(
+                                                                    "distanceToYweighting",
+                                                                    VisionConstants
+                                                                            .distanceToYweighting),
+                                                            SmartDashboard.getNumber(
+                                                                    "distanceToHeadingweighting",
+                                                                    VisionConstants
+                                                                            .distanceToHeadingweighting),
+                                                            SmartDashboard.getNumber(
+                                                                    "headingToXweighting",
+                                                                    VisionConstants
+                                                                            .headingToXweighting),
+                                                            SmartDashboard.getNumber(
+                                                                    "headingToYweighting",
+                                                                    VisionConstants
+                                                                            .headingToYweighting),
+                                                            SmartDashboard.getNumber(
+                                                                    "headingToHeadingweighting",
+                                                                    VisionConstants
+                                                                            .headingToHeadingweighting),
+                                                            SmartDashboard.getNumber(
+                                                                    "ambiguityweighting",
+                                                                    VisionConstants
+                                                                            .ambiguityweighting),
+                                                            SmartDashboard.getNumber(
+                                                                    "ntagsweighting",
+                                                                    VisionConstants.ntagsweighting)
+                                                        })));
         }
-
     }
 
     private void setUpDriveWithJoysticks() {

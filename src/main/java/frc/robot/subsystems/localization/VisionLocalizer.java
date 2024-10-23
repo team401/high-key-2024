@@ -43,9 +43,7 @@ public class VisionLocalizer extends SubsystemBase {
     public static record CameraMeasurement(
             Pose2d pose, double timestamp, Matrix<N3, N1> variance) {}
 
-
     public void updateWeightings(double[] weightings) {
         container.updateWeightings();
     }
-    
 }

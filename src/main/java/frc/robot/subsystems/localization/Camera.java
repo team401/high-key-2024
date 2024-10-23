@@ -4,11 +4,9 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.VisionConstants.CameraParams;
 import frc.robot.subsystems.localization.VisionLocalizer.CameraMeasurement;
-import frc.robot.utils.AllianceUtil;
 import org.littletonrobotics.junction.Logger;
 
 public class Camera {
@@ -60,7 +58,9 @@ public class Camera {
 
     public CameraMeasurement getLatestMeasurement() {
         return new CameraMeasurement(
-                inputs.latestFieldToRobot, inputs.latestTimestampSeconds, getLatestStandardDeviation());
+                inputs.latestFieldToRobot,
+                inputs.latestTimestampSeconds,
+                getLatestStandardDeviation());
     }
 
     /* original variance class: keeping for comparison
@@ -105,44 +105,44 @@ public class Camera {
         double xV = 0.0;
         double yV = 0.0;
         double headingV = 0.0;
-        
-        //distance error
+
+        // distance error
         double distance = inputs.averageTagDistanceM;
         xV += Math.pow((distance / distanceToXweighting), 2);
         yV += Math.pow((distance / distanceToYweighting), 2);
         headingV += Math.pow((distance / distanceToHeadingweighting), 2);
 
-        //distance error
+        // distance error
         double heading = inputs.averageTagYaw.getDegrees();
         xV += Math.pow((heading / headingToXweighting), 2);
         yV += Math.pow((heading / headingToYweighting), 2);
         headingV += Math.pow((heading / headingToHeadingweighting), 2);
 
-        //ambiguity error 
+        // ambiguity error
         double ambiguity = inputs.ambiguity;
         xV += Math.pow(ambiguity * ambiguityweighting, 2);
         yV += Math.pow(ambiguity * ambiguityweighting, 2);
         heading += Math.pow(ambiguity * ambiguityweighting, 2);
 
-        //ntags error
+        // ntags error
         double nTags = inputs.nTags;
         xV += Math.pow(nTags / ntagsweighting, 2);
         yV += Math.pow(nTags / ntagsweighting, 2);
         heading += Math.pow(nTags / ntagsweighting, 2);
-        
+
         return VecBuilder.fill(Math.sqrt(xV), Math.sqrt(yV), Math.sqrt(headingV));
     }
 
     public void getWeightings(double[] weightings) {
-        
+
         distanceToXweighting = weightings[0];
         distanceToYweighting = weightings[1];
-       distanceToHeadingweighting = weightings[2];
+        distanceToHeadingweighting = weightings[2];
 
         headingToXweighting = weightings[3];
         headingToYweighting = weightings[4];
         headingToHeadingweighting = weightings[5];
-        
+
         ambiguityweighting = weightings[6];
         ntagsweighting = weightings[7];
     }
