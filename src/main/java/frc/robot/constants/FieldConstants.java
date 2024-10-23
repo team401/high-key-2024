@@ -12,7 +12,7 @@ public final class FieldConstants {
     public static final double midfieldLowThresholdM = 5.87;
     public static final double midfieldHighThresholdM = 10.72;
 
-    public static final Rotation2d ampHeading = new Rotation2d(-Math.PI / 2);
+    public static final Rotation2d ampHeading = new Rotation2d(Math.PI / 2);
 
     public static final Rotation2d blueUpHeading = Rotation2d.fromRadians(0.0);
     public static final Rotation2d blueDownHeading = Rotation2d.fromRadians(Math.PI);

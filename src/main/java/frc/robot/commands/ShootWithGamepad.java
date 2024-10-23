@@ -59,7 +59,8 @@ public class ShootWithGamepad extends Command {
             // ScoringAction.SHOOT will shoot when ready.
             // Therefore, when shoot is pressed, check if we've transitioned to aim and then
             // transition to shoot.
-            if (scoring.getCurrentAction() == ScoringAction.AIM) {
+            if (scoring.getCurrentAction() == ScoringAction.AIM
+                    || scoring.getCurrentAction() == ScoringAction.AMP_AIM) {
                 scoring.setAction(ScoringAction.SHOOT);
             }
 

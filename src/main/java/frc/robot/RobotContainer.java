@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -427,6 +428,7 @@ public class RobotContainer {
         testModeChooser.addOption("Shooter Tuning", "tuning-shooter");
         testModeChooser.addOption("Aimer Tuning", "tuning-aimer");
         testModeChooser.addOption("Shot Tuning", "tuning-shot");
+        testModeChooser.addOption("Amp Tuning", "tuning-amp");
 
         SmartDashboard.putData("Test Mode Chooser", testModeChooser);
     }
@@ -650,6 +652,58 @@ public class RobotContainer {
                                                                 "Test-Mode/aimer/volts", 2.0),
                                                         0)))
                         .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
+                break;
+            case "tuning-amp":
+                SmartDashboard.putNumber(
+                        "Test-Mode/amp/aimerSetpointPosition",
+                        ScoringConstants.ampAimerAngleRotations);
+
+                // Let us drive
+                CommandScheduler.getInstance().cancelAll();
+                setUpDriveWithJoysticks();
+
+                // Reset bindings
+                masher = new CommandXboxController(2);
+
+                // Let us intake
+                masher.b()
+                        .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.INTAKE)))
+                        .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
+
+                // Let us reverse intake (in case a note gets jammed during amp tuning)
+                masher.a()
+                        .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.REVERSE)))
+                        .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
+
+                masher.rightTrigger()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/amp/aimerSetpointPosition",
+                                                                0.0),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                masher.rightBumper()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setOverrideKickerVoltsDirectly(
+                                                        12.0)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setOverrideKickerVoltsDirectly(
+                                                        0.0)));
                 break;
         }
     }
