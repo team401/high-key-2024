@@ -23,6 +23,7 @@ public class IntakeNEOVortex implements IntakeIO {
         intakeMotor.setInverted(true);
 
         centeringMotor.setSmartCurrentLimit(60);
+        centeringMotor.setInverted(true);
     }
 
     @Override

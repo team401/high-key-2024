@@ -375,7 +375,7 @@ public class RobotContainer {
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SOURCE)));
 
             masher.povDown()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.PASS)));
 
             leftJoystick
                     .trigger()
@@ -404,7 +404,7 @@ public class RobotContainer {
 
             rightJoystick
                     .povRight()
-                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.ENDGAME)));
+                    .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.PASS)));
         }
     } // spotless:on
 
@@ -525,9 +525,7 @@ public class RobotContainer {
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
 
                 masher.leftBumper()
-                        .onTrue(
-                                new InstantCommand(
-                                        () -> scoringSubsystem.setTuningKickerVolts(-12)))
+                        .onTrue(new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(12)))
                         .onFalse(
                                 new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(0)));
                 break;

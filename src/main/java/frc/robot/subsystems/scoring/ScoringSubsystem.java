@@ -75,7 +75,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         ENDGAME,
         TUNING,
         OVERRIDE,
-        TEMPORARY_SETPOINT
+        TEMPORARY_SETPOINT,
+        PASS_PRIME,
+        PASS
     }
 
     public enum ScoringAction {
@@ -90,7 +92,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         TUNING,
         OVERRIDE,
         TEMPORARY_SETPOINT,
-        TRAP_SCORE
+        TRAP_SCORE,
+        PASS
     }
 
     private ScoringState state = ScoringState.IDLE;
@@ -163,6 +166,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
             state = ScoringState.PRIME;
             // aimerIo.setAimAngleRad(aimerInputs.aimAngleRad + 0.001);
             shooterIo.setShooterVelocityRPM(2000);
+        } else if (action == ScoringAction.PASS) {
+            state = ScoringState.PASS_PRIME;
         } else if (action == ScoringAction.AMP_AIM) {
             state = ScoringState.AMP_PRIME;
         } else if (action == ScoringAction.ENDGAME || action == ScoringAction.TRAP_SCORE) {
@@ -308,6 +313,47 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         }
     }
 
+    private void passPrime() {
+        aimerIo.setAimAngleRot(ScoringConstants.passLocationRot);
+        shooterIo.setShooterVelocityRPM(ScoringConstants.passShooterRpm);
+
+        boolean notePresent = overrideBeamBreak ? true : hasNote();
+
+        boolean shooterReady =
+                shooterInputs.shooterLeftVelocityRPM
+                                < (shooterOutputs.shooterLeftGoalVelocityRPM
+                                        + ScoringConstants.shooterUpperVelocityMarginRPM)
+                        && shooterInputs.shooterLeftVelocityRPM
+                                > (shooterOutputs.shooterLeftGoalVelocityRPM
+                                        - ScoringConstants.shooterLowerVelocityMarginRPM);
+        boolean aimReady =
+                Math.abs(aimerInputs.aimAngleRot - ScoringConstants.passLocationRot)
+                                < ScoringConstants.passAngleToleranceRot
+                        && Math.abs(aimerInputs.aimVelocityErrorRotPerSec)
+                                < ScoringConstants.aimAngleVelocityMargin;
+
+        boolean driveReady = driveAlignedSupplier.get();
+
+        boolean primeReady = shooterReady && aimReady && driveReady /*&& fieldLocationReady*/;
+        readyToShoot = primeReady && notePresent;
+
+        if (action == ScoringAction.PASS && (readyToShoot || overrideShoot)) {
+            state = ScoringState.PASS;
+
+            shootTimer.reset();
+            shootTimer.start();
+        } else if (action == ScoringAction.WAIT) {
+            state = ScoringState.IDLE;
+        }
+
+        Logger.recordOutput("scoring/shooterReady", shooterReady);
+        Logger.recordOutput("scoring/aimReady", aimReady);
+        Logger.recordOutput("scoring/driverReady", driveReady);
+        Logger.recordOutput("scoring/notePresent", notePresent);
+        Logger.recordOutput("scoring/primeReady", primeReady);
+        Logger.recordOutput("scoring/readyToShoot", readyToShoot);
+    }
+
     private void shoot() {
         double distancetoGoal = findDistanceToGoal();
 
@@ -337,6 +383,19 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
             shootTimer.stop();
         } */
+    }
+
+    private void passShoot() {
+        aimerIo.setAimAngleRot(ScoringConstants.passLocationRot);
+        shooterIo.setShooterVelocityRPM(ScoringConstants.passShooterRpm);
+
+        shooterIo.setKickerVolts(12);
+
+        if (shootTimer.get() > 0.5) { // TODO: Tune time
+            state = ScoringState.PASS_PRIME;
+
+            shootTimer.stop();
+        }
     }
 
     private void endgame() {
@@ -517,6 +576,12 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                 break;
             case OVERRIDE:
                 override();
+                break;
+            case PASS_PRIME:
+                passPrime();
+                break;
+            case PASS:
+                passShoot();
                 break;
             case TEMPORARY_SETPOINT:
                 temporarySetpoint();
