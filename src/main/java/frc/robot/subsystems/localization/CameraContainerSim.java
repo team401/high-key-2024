@@ -93,4 +93,6 @@ public class CameraContainerSim implements CameraContainer {
 
         Logger.recordOutput("Vision/GroundTruth", latestOdometryPose);
     }
+
+    public void updateWeightings(double[] weightings) {};
 }

@@ -10,7 +10,12 @@ public interface CameraIO {
     public static class CameraIOInputs {
         public Pose2d latestFieldToRobot = new Pose2d();
         public double averageTagDistanceM = 0.0;
+        public double averageTagDistanceX = 0.0;
+        public double averageTagDistanceY = 0.0;
         public Rotation2d averageTagYaw = new Rotation2d();
+
+        public double ambiguity = 0.0;
+        
         public int nTags = 0;
 
         public double latestTimestampSeconds = 0.0;

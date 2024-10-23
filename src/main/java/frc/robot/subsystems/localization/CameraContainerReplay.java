@@ -22,4 +22,7 @@ public class CameraContainerReplay implements CameraContainer {
             camera.update();
         }
     }
+
+    public void updateWeightings(double[] weightings) {};
+
 }

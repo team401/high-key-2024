@@ -84,8 +84,15 @@ public class CameraIOPhoton implements CameraIO {
 
                     inputs.latestTimestampSeconds = this.latestTimestampSeconds;
                     inputs.latencySeconds = result.getLatencyMillis() / 1000.0;
-                    inputs.averageTagDistanceM = calculateAverageTagDistance(pose);
+
+                    double[] distances = calculateAverageTagDistances(pose);
+                    inputs.averageTagDistanceM = distances[0];
+                    inputs.averageTagDistanceX = distances[1];
+                    inputs.averageTagDistanceY = distances[2];
+
                     inputs.averageTagYaw = calculateAverageTagYaw(pose);
+                    
+                    inputs.ambiguity = calculateAverageAmbiguity(pose);
 
                     inputs.wasAccepted = true;
                 },
@@ -100,8 +107,12 @@ public class CameraIOPhoton implements CameraIO {
 
         for (PhotonTrackedTarget target : targets) {
             if (target.getPoseAmbiguity() < VisionConstants.maximumAmbiguity
-                    && target.getPitch() < VisionConstants.maximumPitch) {
-                filteredTargets.add(target);
+                    && Math.abs(target.getPitch()) < VisionConstants.maximumPitch
+                    && Math.abs(target.getSkew()) < VisionConstants.maximumRoll) {
+            //TODO: make sure that skew == roll (I think it is but I'm not sure)
+                if (Math.abs(target.getBestCameraToTarget().getTranslation().getDistance(new Translation3d()) - target.getAlternateCameraToTarget().getTranslation().getDistance(new Translation3d())) < VisionConstants.maximumDistanceAlternative) {
+                    filteredTargets.add(target);
+                }
             }
         }
         return new PhotonPipelineResult(unfiltered.getLatencyMillis(), filteredTargets);
@@ -119,24 +130,29 @@ public class CameraIOPhoton implements CameraIO {
         }
 
         // TODO: Figure out if a max distance cap is good or necessary
-        if (calculateAverageTagDistance(photonPose) > VisionConstants.maxTagDistance) {
+        if (calculateAverageTagDistances(photonPose)[0] > VisionConstants.maxTagDistance) {
             return false;
         }
 
         return true;
     }
 
-    private static double calculateAverageTagDistance(EstimatedRobotPose pose) {
-        double distance = 0.0;
+    private static double[] calculateAverageTagDistances(EstimatedRobotPose pose) {
+        double distanceM = 0.0, distanceX = 0.0, distanceY = 0.0;
         for (PhotonTrackedTarget target : pose.targetsUsed) {
-            distance +=
-                    target.getBestCameraToTarget()
-                            .getTranslation()
-                            .getDistance(new Translation3d());
-        }
-        distance /= pose.targetsUsed.size();
+            Translation3d targetMeasure = target.getBestCameraToTarget()
+                            .getTranslation();
 
-        return distance;
+            distanceM += targetMeasure.getDistance(new Translation3d());
+            distanceX += targetMeasure.getX();
+            distanceY += targetMeasure.getY();            
+        }
+        double divider = pose.targetsUsed.size();
+        distanceM /= divider;
+        distanceX /= divider;
+        distanceY /= divider;
+
+        return new double[] {distanceM, distanceX, distanceY};
     }
 
     private static Rotation2d calculateAverageTagYaw(EstimatedRobotPose pose) {
@@ -148,5 +164,14 @@ public class CameraIOPhoton implements CameraIO {
         yawRad -= Math.PI * Math.signum(yawRad);
 
         return Rotation2d.fromRadians(yawRad);
+    }
+
+    private static double calculateAverageAmbiguity(EstimatedRobotPose pose) {
+        double ambiguity = 0.0;
+        for (PhotonTrackedTarget target : pose.targetsUsed) {
+            ambiguity += Math.pow(target.getPoseAmbiguity(), 2);
+        }
+        ambiguity = Math.sqrt(ambiguity);
+        return ambiguity;
     }
 }

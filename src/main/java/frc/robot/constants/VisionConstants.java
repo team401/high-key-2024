@@ -82,7 +82,9 @@ public final class VisionConstants {
                             CameraTrustZone.MIDDLE));
 
     public static final double maximumAmbiguity = 0.2;
-    public static double maximumPitch = 0.1;
+    public static final double maximumPitch = 0.1;
+    public static final double maximumRoll = 0.1;
+    public static final double maximumDistanceAlternative = 0.07;
 
     //     new CameraParams(
     //             "Front-Center",
@@ -122,4 +124,16 @@ public final class VisionConstants {
         }
         return layout;
     }
+
+        public static double distanceToXweighting = 5;
+        public static double distanceToYweighting = 5;
+        public static double distanceToHeadingweighting = 30;
+
+        public static double headingToXweighting = 60;
+        public static double headingToYweighting = 60;
+        public static double headingToHeadingweighting = 60;
+
+        public static double ambiguityweighting = 2;
+
+        public static double ntagsweighting = 1;
 }
