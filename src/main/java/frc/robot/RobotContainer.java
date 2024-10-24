@@ -22,6 +22,7 @@ import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.OrchestraSubsystem;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -55,6 +56,8 @@ public class RobotContainer {
     ScoringSubsystem scoringSubsystem;
     IntakeSubsystem intakeSubsystem;
     LED leds;
+
+    OrchestraSubsystem orchestraSubsystem;
 
     CommandJoystick leftJoystick = new CommandJoystick(0);
     CommandJoystick rightJoystick = new CommandJoystick(1);
@@ -122,6 +125,9 @@ public class RobotContainer {
                 && FeatureFlags.runVision
                 && FeatureFlags.runLEDS) {
             initLEDs();
+        }
+        if (FeatureFlags.runOrchestra) {
+            initOrchestra();
         }
     }
 
@@ -216,6 +222,29 @@ public class RobotContainer {
 
     private void initLEDs() {
         leds = new LED(scoringSubsystem, intakeSubsystem);
+    }
+
+    private void initOrchestra() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                orchestraSubsystem =
+                        new OrchestraSubsystem("wii_shop.chrp"); // TODO: Add music files to deploy!
+                orchestraSubsystem.addInstruments(
+                        scoringSubsystem.getAimerIO().getOrchestraMotors());
+                orchestraSubsystem.addInstruments(
+                        scoringSubsystem.getShooterIO().getOrchestraMotors());
+
+                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.FrontRight.DriveMotorId);
+                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.FrontRight.SteerMotorId);
+                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.FrontLeft.DriveMotorId);
+                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.FrontLeft.SteerMotorId);
+                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.BackRight.DriveMotorId);
+                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.BackRight.SteerMotorId);
+                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.BackLeft.DriveMotorId);
+                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.BackLeft.SteerMotorId);
+            default:
+                break;
+        }
     }
 
     private void configureSuppliers() {
