@@ -4,8 +4,8 @@ import edu.wpi.first.math.util.Units;
 import java.util.HashMap;
 
 public class ScoringConstants {
-    public static final double aimerkP = 85.0;
-    public static final double aimerkI = 0.0; // 5.0
+    public static final double aimerkP = 100.0;
+    public static final double aimerkI = 2.0; // 5.0
     public static final double aimerkD = 0.0;
 
     public static final double aimerkS = 0.3; // 0.25;

@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.7071301441350655,
+      "y": 6.711356821640298
+    },
+    "rotation": -118.17859010995917
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -18,15 +24,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "waitForAlignment"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAlignToSpeaker"
+            "waitTime": 1.0
           }
         },
         {
@@ -40,18 +40,31 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "intakeNote"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeNote"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    }
+                  ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "alignToSpeaker"
           }
         },
         {
@@ -61,15 +74,53 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "waitForAlignment"
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "C1-W1"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeNote"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "W1-Wing"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "stopAlignToSpeaker"
+            "name": "shootNoteAtSpeaker"
           }
         }
       ]
