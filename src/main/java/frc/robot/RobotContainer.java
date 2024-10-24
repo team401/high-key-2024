@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -86,12 +85,13 @@ public class RobotContainer {
         NamedCommands.registerCommand(
                 "intakeNote",
                 // intakes to start, ends by setting action to NONE when intake subsystem has note
-                new FunctionalCommand(
-                        () -> intakeSubsystem.run(IntakeAction.INTAKE),
-                        () -> {},
-                        interrupted -> intakeSubsystem.run(IntakeAction.NONE),
-                        () -> scoringSubsystem.hasNote(),
-                        intakeSubsystem));
+                new InstantCommand(
+                        () -> {
+                            intakeSubsystem.run(IntakeAction.INTAKE);
+                            scoringSubsystem.setAction(ScoringAction.INTAKE);
+                        },
+                        intakeSubsystem,
+                        scoringSubsystem));
 
         NamedCommands.registerCommand(
                 "waitForAlignment",

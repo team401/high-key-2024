@@ -161,8 +161,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                     this.setGoalSpeeds(speeds, false);
                 },
                 new HolonomicPathFollowerConfig(
-                        new PIDConstants(1),
-                        new PIDConstants(1, 0, 0),
+                        new PIDConstants(0.1),
+                        new PIDConstants(0.1, 0, 0),
                         PhoenixDriveConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig(false, false)),
