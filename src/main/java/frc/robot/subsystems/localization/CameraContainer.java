@@ -8,4 +8,6 @@ public interface CameraContainer {
     public List<Camera> getCameras();
 
     public void update();
+
+    public void updateWeightings(double[] weightings);
 }
