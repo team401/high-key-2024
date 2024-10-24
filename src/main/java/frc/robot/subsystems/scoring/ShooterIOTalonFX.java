@@ -11,6 +11,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch;
 import frc.robot.constants.ConversionConstants;
 import frc.robot.constants.ScoringConstants;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShooterIOTalonFX implements ShooterIO {
     private final CANSparkFlex kicker =
@@ -154,5 +156,14 @@ public class ShooterIOTalonFX implements ShooterIO {
         }
 
         kicker.setVoltage(outputs.kickerGoalVolts);
+    }
+
+    @Override
+    public List<TalonFX> getOrchestraMotors() {
+        ArrayList<TalonFX> motors = new ArrayList<TalonFX>();
+        motors.add(shooterLeft);
+        motors.add(shooterRight);
+
+        return motors;
     }
 }
