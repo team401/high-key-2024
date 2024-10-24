@@ -250,7 +250,9 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
                                 < aimerAngleTolerance.getValue(distanceToGoal)
                         && Math.abs(aimerInputs.aimVelocityErrorRotPerSec)
                                 < ScoringConstants.aimAngleVelocityMargin;
-        boolean driveReady = driveAlignedSupplier.get();
+        boolean driveReady =
+                (driveAlignedSupplier.get()
+                        || distanceToGoal < ScoringConstants.minDistanceAlignmentNeeded);
         boolean fieldLocationReady = true;
 
         if (!DriverStation.getAlliance().isPresent()) {

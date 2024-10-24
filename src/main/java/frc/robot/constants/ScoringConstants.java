@@ -4,8 +4,8 @@ import edu.wpi.first.math.util.Units;
 import java.util.HashMap;
 
 public class ScoringConstants {
-    public static final double aimerkP = 85.0;
-    public static final double aimerkI = 0.0; // 5.0
+    public static final double aimerkP = 100.0;
+    public static final double aimerkI = 2.0; // 5.0
     public static final double aimerkD = 0.0;
 
     public static final double aimerkS = 0.3; // 0.25;
@@ -51,6 +51,8 @@ public class ScoringConstants {
     public static final double shooterUpperVelocityMarginRPM = 150;
     public static final double aimAngleMarginRotations = Units.degreesToRotations(1);
     public static final double aimAngleVelocityMargin = 2.0;
+
+    public static final double minDistanceAlignmentNeeded = 1.3; // TODO: Tune this value
 
     public static final double intakeAngleToleranceRotations = 0.05; // Todo: tune this value
 

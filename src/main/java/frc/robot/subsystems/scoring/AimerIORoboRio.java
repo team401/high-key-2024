@@ -76,6 +76,7 @@ public class AimerIORoboRio implements AimerIO {
         talonFXConfigs.Feedback.SensorToMechanismRatio =
                 ScoringConstants.aimerEncoderToMechanismRatio;
         talonFXConfigs.Feedback.RotorToSensorRatio = ScoringConstants.aimerRotorToSensorRatio;
+        talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
         Slot0Configs slot0Configs = talonFXConfigs.Slot0;
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
