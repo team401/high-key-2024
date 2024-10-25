@@ -55,6 +55,8 @@ public class AimerIORoboRio implements AimerIO {
 
     boolean motorDisabled = false;
 
+    TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
+
     public AimerIORoboRio() {
         aimerMotor.setNeutralMode(NeutralModeValue.Brake);
 
@@ -70,14 +72,14 @@ public class AimerIORoboRio implements AimerIO {
 
         aimerEncoder.getConfigurator().apply(cancoderConfiguration);
 
-        TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
-
         talonFXConfigs.Feedback.FeedbackRemoteSensorID = aimerEncoder.getDeviceID();
         talonFXConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         talonFXConfigs.Feedback.SensorToMechanismRatio =
                 ScoringConstants.aimerEncoderToMechanismRatio;
         talonFXConfigs.Feedback.RotorToSensorRatio = ScoringConstants.aimerRotorToSensorRatio;
         talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit;
 
         Slot0Configs slot0Configs = talonFXConfigs.Slot0;
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
@@ -238,8 +240,12 @@ public class AimerIORoboRio implements AimerIO {
 
         if (goalAngleRad
                 < ScoringConstants.aimMinAngleRadians + ScoringConstants.aimAngleTolerance) {
-            request = new VoltageOut(0.0);
+            talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit/5;
+            aimerMotor.getConfigurator().apply(talonFXConfigs);
+            request = new VoltageOut(-0.05);
         } else {
+            talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit;
+            aimerMotor.getConfigurator().apply(talonFXConfigs);
             motionMagicVoltage.withPosition(goalAngleRad);
             request = motionMagicVoltage;
         }
