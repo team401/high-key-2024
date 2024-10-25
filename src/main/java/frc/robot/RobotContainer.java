@@ -228,20 +228,25 @@ public class RobotContainer {
         switch (ModeConstants.currentMode) {
             case REAL:
                 orchestraSubsystem =
-                        new OrchestraSubsystem("wii_shop.chrp"); // TODO: Add music files to deploy!
-                orchestraSubsystem.addInstruments(
-                        scoringSubsystem.getAimerIO().getOrchestraMotors());
-                orchestraSubsystem.addInstruments(
-                        scoringSubsystem.getShooterIO().getOrchestraMotors());
+                        new OrchestraSubsystem(
+                                "music/mii_channel.chrp"); // TODO: Add music files to deploy!
+                if (FeatureFlags.runScoring) {
+                    orchestraSubsystem.addInstruments(
+                            scoringSubsystem.getAimerIO().getOrchestraMotors());
+                    orchestraSubsystem.addInstruments(
+                            scoringSubsystem.getShooterIO().getOrchestraMotors());
+                }
 
-                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.FrontRight.DriveMotorId);
-                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.FrontRight.SteerMotorId);
-                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.FrontLeft.DriveMotorId);
-                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.FrontLeft.SteerMotorId);
-                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.BackRight.DriveMotorId);
-                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.BackRight.SteerMotorId);
-                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.BackLeft.DriveMotorId);
-                orchestraSubsystem.addInstrumentById(PhoenixDriveConstants.BackLeft.SteerMotorId);
+                if (FeatureFlags.runDrive) {
+                    orchestraSubsystem.addInstrument(drive.getModule(0).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(0).getSteerMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(1).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(1).getSteerMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(2).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(2).getSteerMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(3).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(3).getSteerMotor());
+                }
             default:
                 break;
         }
