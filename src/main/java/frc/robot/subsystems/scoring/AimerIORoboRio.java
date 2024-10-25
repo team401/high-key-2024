@@ -238,15 +238,16 @@ public class AimerIORoboRio implements AimerIO {
 
         request = motionMagicVoltage;
 
-        if (goalAngleRad
-                < ScoringConstants.aimMinAngleRadians + ScoringConstants.aimAngleTolerance) {
-            talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit/5;
+        if (goalAngleRot
+                < ScoringConstants.aimMinAngleRotations + ScoringConstants.aimAngleTolerance) {
+            talonFXConfigs.CurrentLimits.StatorCurrentLimit =
+                    ScoringConstants.aimerCurrentLimit / 5;
             aimerMotor.getConfigurator().apply(talonFXConfigs);
             request = new VoltageOut(-0.05);
         } else {
             talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit;
             aimerMotor.getConfigurator().apply(talonFXConfigs);
-            motionMagicVoltage.withPosition(goalAngleRad);
+            motionMagicVoltage.withPosition(goalAngleRot);
             request = motionMagicVoltage;
         }
 
