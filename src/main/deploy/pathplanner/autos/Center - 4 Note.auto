@@ -24,15 +24,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "waitForAlignment"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAlignToSpeaker"
+            "waitTime": 0.5
           }
         },
         {
@@ -46,18 +40,25 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "intakeNote"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.75
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeNote"
+                      }
+                    }
+                  ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "alignToSpeaker"
           }
         },
         {
@@ -67,15 +68,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "waitForAlignment"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAlignToSpeaker"
+            "waitTime": 0.5
           }
         },
         {
@@ -89,18 +84,25 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "intakeNote"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.75
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeNote"
+                      }
+                    }
+                  ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "alignToSpeaker"
           }
         },
         {
@@ -110,15 +112,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "waitForAlignment"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAlignToSpeaker"
+            "waitTime": 0.5
           }
         },
         {
@@ -132,9 +128,22 @@
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "intakeNote"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.75
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "intakeNote"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -143,25 +152,7 @@
         {
           "type": "named",
           "data": {
-            "name": "alignToSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "shootNoteAtSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "waitForAlignment"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "stopAlignToSpeaker"
           }
         }
       ]

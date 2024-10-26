@@ -169,7 +169,10 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 () -> DriverStation.getAlliance().get() == Alliance.Red,
                 this);
 
-        autoChooser.setDefaultOption("Default (nothing)", Commands.none());
+        autoChooser.addOption("Nothing", Commands.none());
+        autoChooser.setDefaultOption("Center Preload", new PathPlannerAuto("Center Preload"));
+        autoChooser.addOption("Amp Side Preload", new PathPlannerAuto("Amp Side Preload"));
+        autoChooser.addOption("Source Side Preload", new PathPlannerAuto("Source Side Preload"));
         autoChooser.addOption("Amp Side - 2 Note", new PathPlannerAuto("Amp Side - 2 Note"));
         autoChooser.addOption("Center - 4 Note", new PathPlannerAuto("Center - 4 Note"));
         SmartDashboard.putData("Auto Chooser", autoChooser);
