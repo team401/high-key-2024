@@ -175,6 +175,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         autoChooser.addOption("Source Side Preload", new PathPlannerAuto("Source Side Preload"));
         autoChooser.addOption("Amp Side - 2 Note", new PathPlannerAuto("Amp Side - 2 Note"));
         autoChooser.addOption("Center - 4 Note", new PathPlannerAuto("Center - 4 Note"));
+        autoChooser.addOption("Source Side - 3 Note", new PathPlannerAuto("Source Side - 3 Note"));
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
