@@ -59,7 +59,7 @@ public class ScoringConstants {
     public static final double aimerAmpPositionRot = 0.14;
 
     public static final double aimMaxAngleRotations = 0.361328 - 0.184570;
-    public static final double aimMinAngleRotations = -0.217285;
+    public static final double aimMinAngleRotations = -0.212285;
     public static final double aimLockVoltage = -0.5;
 
     public static final double aimAngleTolerance = 0.015;
@@ -91,7 +91,7 @@ public class ScoringConstants {
 
     public static final double passLocationRot = -0.14;
     public static final double passAngleToleranceRot = 0.005;
-    public static final double passShooterRpm = 3250.0;
+    public static final double passShooterRpm = 3000.0;
 
     public static final double aimerStaticOffset = 0.0;
 
