@@ -399,6 +399,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     }
 
     public void logDrivetrainData() {
+        Logger.recordOutput("drive/pose", getState().Pose);
+
         SwerveDriveState state = getState();
         if (state.ModuleStates != null && state.ModuleTargets != null) {
             for (int i = 0; i < 4; i++) {
