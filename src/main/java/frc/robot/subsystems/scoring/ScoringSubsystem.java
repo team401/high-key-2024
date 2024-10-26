@@ -58,6 +58,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private boolean overrideShoot = false;
     private boolean overrideStageAvoidance = false;
     private boolean overrideBeamBreak = false;
+    private boolean lockNegativeAtHome = false;
 
     private Mechanism2d mechanism;
     private MechanismRoot2d rootMechanism;
@@ -184,6 +185,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private void intake() {
         if (!aimerAtIntakePosition()) {
             aimerIo.setAimAngleRot(ScoringConstants.aimMinAngleRotations);
+        } else {
+            aimerIo.setNegativeHomeLockMode(true);
         }
 
         if (!hasNote()) {

@@ -54,6 +54,7 @@ public class AimerIORoboRio implements AimerIO {
     double controlSetpoint = 0.0;
 
     boolean motorDisabled = false;
+    boolean lockNegativeAtHome = false;
 
     TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
@@ -104,6 +105,7 @@ public class AimerIORoboRio implements AimerIO {
 
     @Override
     public void setAimAngleRot(double goalAngleRot) {
+        setNegativeHomeLockMode(false);
         this.goalAngleRot = goalAngleRot;
     }
 
@@ -143,6 +145,11 @@ public class AimerIORoboRio implements AimerIO {
     @Override
     public void setOverrideVolts(double volts) {
         overrideVolts = volts;
+    }
+
+    @Override
+    public void setNegativeHomeLockMode(boolean lock) {
+        lockNegativeAtHome = lock;
     }
 
     @Override
@@ -238,8 +245,7 @@ public class AimerIORoboRio implements AimerIO {
 
         request = motionMagicVoltage;
 
-        if (goalAngleRot
-                < ScoringConstants.aimMinAngleRotations + ScoringConstants.aimAngleTolerance) {
+        if (lockNegativeAtHome && !override) {
             talonFXConfigs.CurrentLimits.StatorCurrentLimit =
                     ScoringConstants.aimerCurrentLimit / 5;
             aimerMotor.getConfigurator().apply(talonFXConfigs);
