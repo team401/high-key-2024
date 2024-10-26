@@ -259,6 +259,14 @@ public class RobotContainer {
                 tagVision.setCameraConsumer((m) -> {});
             }
         }
+
+        if (FeatureFlags.runLEDS) {
+                if (FeatureFlags.runVision) {
+                        leds.setVisionWorkingSupplier(() -> tagVision.coprocessorConnected());
+                } else {
+                        leds.setVisionWorkingSupplier(() -> false);
+                }
+        }
     }
 
     private void configureBindings() {
