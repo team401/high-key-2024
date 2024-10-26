@@ -183,11 +183,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void intake() {
-        if (!aimerAtIntakePosition()) {
-            aimerIo.setAimAngleRot(ScoringConstants.aimMinAngleRotations);
-        } else {
-            aimerIo.setNegativeHomeLockMode(true);
-        }
+        aimerIo.setAimAngleRot(ScoringConstants.aimMinAngleRotations);
+        aimerIo.setNegativeHomeLockMode(true);
 
         if (!hasNote()) {
             shooterIo.setKickerVolts(ScoringConstants.kickerIntakeVolts);
@@ -509,6 +506,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     @Override
     public void periodic() {
+        aimerIo.setNegativeHomeLockMode(false); // This should be false in all states but intake
+        // Intake will set it to true later in the loop.
 
         if (!SmartDashboard.containsKey("Aimer Offset")) {
             SmartDashboard.putNumber("Aimer Offset", ScoringConstants.aimerStaticOffset);

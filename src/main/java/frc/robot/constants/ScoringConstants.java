@@ -60,6 +60,7 @@ public class ScoringConstants {
 
     public static final double aimMaxAngleRotations = 0.361328 - 0.184570;
     public static final double aimMinAngleRotations = -0.217285;
+    public static final double aimLockVoltage = -0.5;
 
     public static final double aimAngleTolerance = 0.015;
 
