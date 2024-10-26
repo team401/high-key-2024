@@ -98,6 +98,8 @@ public class AimerIOSim implements AimerIO {
         appliedVolts = volts;
     }
 
+    public void setNegativeHomeLockMode(boolean lock) {}
+
     @Override
     public void setPID(double p, double i, double d) {
         controller.setP(p);
