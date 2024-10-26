@@ -261,11 +261,11 @@ public class RobotContainer {
         }
 
         if (FeatureFlags.runLEDS) {
-                if (FeatureFlags.runVision) {
-                        leds.setVisionWorkingSupplier(() -> tagVision.coprocessorConnected());
-                } else {
-                        leds.setVisionWorkingSupplier(() -> false);
-                }
+            if (FeatureFlags.runVision) {
+                leds.setVisionWorkingSupplier(() -> tagVision.coprocessorConnected());
+            } else {
+                leds.setVisionWorkingSupplier(() -> false);
+            }
         }
     }
 
