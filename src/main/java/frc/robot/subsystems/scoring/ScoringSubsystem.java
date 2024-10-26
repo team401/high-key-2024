@@ -788,4 +788,12 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         /* Immediately sets kicker voltage, fully ignoring scoring state */
         shooterIo.setKickerVolts(volts);
     }
+
+    public ShooterIO getShooterIO() {
+        return shooterIo;
+    }
+
+    public AimerIO getAimerIO() {
+        return aimerIo;
+    }
 }

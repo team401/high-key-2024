@@ -23,6 +23,8 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.ScoringConstants;
+import java.util.ArrayList;
+import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 public class AimerIORoboRio implements AimerIO {
@@ -274,5 +276,13 @@ public class AimerIORoboRio implements AimerIO {
         } else {
             aimerMotor.setVoltage(0.0);
         }
+    }
+
+    @Override
+    public List<TalonFX> getOrchestraMotors() {
+        ArrayList<TalonFX> motors = new ArrayList<TalonFX>();
+        motors.add(aimerMotor);
+
+        return motors;
     }
 }

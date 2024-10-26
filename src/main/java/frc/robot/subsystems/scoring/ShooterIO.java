@@ -1,5 +1,8 @@
 package frc.robot.subsystems.scoring;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import java.util.ArrayList;
+import java.util.List;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterIO {
@@ -49,4 +52,8 @@ public interface ShooterIO {
     public default void setMaxJerk(double maxJerk) {}
 
     public default void setFF(double kS, double kV, double kA) {}
+
+    public default List<TalonFX> getOrchestraMotors() {
+        return new ArrayList<TalonFX>();
+    }
 }

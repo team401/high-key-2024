@@ -22,6 +22,7 @@ import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.LED;
+import frc.robot.subsystems.OrchestraSubsystem;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -55,6 +56,8 @@ public class RobotContainer {
     ScoringSubsystem scoringSubsystem;
     IntakeSubsystem intakeSubsystem;
     LED leds;
+
+    OrchestraSubsystem orchestraSubsystem;
 
     CommandJoystick leftJoystick = new CommandJoystick(0);
     CommandJoystick rightJoystick = new CommandJoystick(1);
@@ -122,6 +125,9 @@ public class RobotContainer {
                 && FeatureFlags.runVision
                 && FeatureFlags.runLEDS) {
             initLEDs();
+        }
+        if (FeatureFlags.runOrchestra) {
+            initOrchestra();
         }
     }
 
@@ -216,6 +222,34 @@ public class RobotContainer {
 
     private void initLEDs() {
         leds = new LED(scoringSubsystem, intakeSubsystem);
+    }
+
+    private void initOrchestra() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                orchestraSubsystem =
+                        new OrchestraSubsystem(
+                                "music/mii_channel.chrp"); // TODO: Add music files to deploy!
+                if (FeatureFlags.runScoring) {
+                    orchestraSubsystem.addInstruments(
+                            scoringSubsystem.getAimerIO().getOrchestraMotors());
+                    orchestraSubsystem.addInstruments(
+                            scoringSubsystem.getShooterIO().getOrchestraMotors());
+                }
+
+                if (FeatureFlags.runDrive) {
+                    orchestraSubsystem.addInstrument(drive.getModule(0).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(0).getSteerMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(1).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(1).getSteerMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(2).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(2).getSteerMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(3).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(3).getSteerMotor());
+                }
+            default:
+                break;
+        }
     }
 
     private void configureSuppliers() {

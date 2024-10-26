@@ -9,4 +9,5 @@ public final class FeatureFlags {
     public static final boolean runIntake = true;
     public static final boolean runScoring = true;
     public static final boolean runLEDS = true;
+    public static final boolean runOrchestra = true;
 }
