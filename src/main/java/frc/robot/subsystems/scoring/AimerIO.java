@@ -35,6 +35,8 @@ public interface AimerIO {
 
     public default void setOverrideVolts(double volts) {}
 
+    public default void setNegativeHomeLockMode(boolean lock) {}
+
     public default void setPID(double p, double i, double d) {}
 
     public default void resetPID() {}
