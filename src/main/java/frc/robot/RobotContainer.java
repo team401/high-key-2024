@@ -100,6 +100,18 @@ public class RobotContainer {
         NamedCommands.registerCommand(
                 "shootNoteAtSpeaker",
                 new InstantCommand(() -> scoringSubsystem.setAction(ScoringAction.SHOOT)));
+
+        NamedCommands.registerCommand(
+                "forceShootNoteAtSpeaker",
+                new InstantCommand(
+                        () -> {
+                            scoringSubsystem.setAction(ScoringAction.SHOOT);
+                            scoringSubsystem.setOverrideShoot(true);
+                        }));
+
+        NamedCommands.registerCommand(
+                "stopForceShoot",
+                new InstantCommand(() -> scoringSubsystem.setOverrideShoot(false)));
     }
 
     private void configureSubsystems() {
