@@ -91,7 +91,7 @@ public class ScoringConstants {
 
     public static final double passLocationRot = -0.14;
     public static final double passAngleToleranceRot = 0.005;
-    public static final double passShooterRpm = 3000.0;
+    public static final double passShooterRpm = 3250.0;
 
     public static final double aimerStaticOffset = 0.0;
 
