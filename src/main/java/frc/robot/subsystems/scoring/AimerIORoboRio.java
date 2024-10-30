@@ -61,7 +61,7 @@ public class AimerIORoboRio implements AimerIO {
     TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
     public AimerIORoboRio() {
-        aimerMotor.setNeutralMode(NeutralModeValue.Brake);
+        aimerMotor.setNeutralMode(NeutralModeValue.Coast);
 
         setStatorCurrentLimit(ScoringConstants.aimerCurrentLimit);
 
@@ -80,7 +80,7 @@ public class AimerIORoboRio implements AimerIO {
         talonFXConfigs.Feedback.SensorToMechanismRatio =
                 ScoringConstants.aimerEncoderToMechanismRatio;
         talonFXConfigs.Feedback.RotorToSensorRatio = ScoringConstants.aimerRotorToSensorRatio;
-        talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
         talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit;
 

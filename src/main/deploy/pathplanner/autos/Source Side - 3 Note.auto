@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3679858486729504,
-      "y": 5.551187918118234
+      "x": 0.6387107357548051,
+      "y": 4.413268821908015
     },
-    "rotation": 180.0
+    "rotation": -63.78888841592257
   },
   "command": {
     "type": "sequential",
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "baseline-C3"
+                  "pathName": "baseline - m1"
                 }
               },
               {
@@ -46,7 +46,19 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.75
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopAlignToSpeaker"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.5
                       }
                     },
                     {
@@ -59,6 +71,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "m1-Wing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "alignToSpeaker"
           }
         },
         {
@@ -70,7 +94,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 1.0
           }
         },
         {
@@ -80,7 +104,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "C3-C2"
+                  "pathName": "Wing-M2"
                 }
               },
               {
@@ -90,7 +114,19 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.75
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "stopAlignToSpeaker"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.5
                       }
                     },
                     {
@@ -103,50 +139,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "m2-Wing"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shootNoteAtSpeaker"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "C2-C1"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.75
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "intakeNote"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "name": "alignToSpeaker"
           }
         },
         {

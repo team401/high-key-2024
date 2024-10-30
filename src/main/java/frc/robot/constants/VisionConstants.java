@@ -4,9 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -38,48 +36,50 @@ public final class VisionConstants {
 
     public static final Matrix<N3, N1> driveUncertainty = VecBuilder.fill(0.1, 0.1, 0.1);
 
-    public static final List<CameraParams> cameras =
-            List.of(
-                    new CameraParams(
-                            "Front-Left", // Front Right
-                            1280,
-                            960,
-                            50,
-                            Rotation2d.fromDegrees(70),
-                            new Transform3d(
-                                    new Translation3d(0.0328422, -0.3103626, 0.430911),
-                                    new Rotation3d(0, -0.261799, 0.0)),
-                            CameraTrustZone.MIDDLE),
-                    //     new CameraParams(
-                    //             "Back-Right", // Back Right
-                    //             1280,
-                    //             960,
-                    //             50,
-                    //             Rotation2d.fromDegrees(70),
-                    //             new Transform3d(
-                    //                     new Translation3d(-0.3160014, -0.2327402, 0.3163316),
-                    //                     new Rotation3d(0.0, -0.408546671, Math.PI)),
-                    //             CameraTrustZone.MIDDLE),
-                    new CameraParams(
-                            "Front-Right", // Front Left
-                            1280,
-                            960,
-                            50,
-                            Rotation2d.fromDegrees(70),
-                            new Transform3d(
-                                    new Translation3d(0.0328422, 0.3103626, 0.430911),
-                                    new Rotation3d(Math.PI, -0.261799, 0.0)),
-                            CameraTrustZone.MIDDLE),
-                    new CameraParams(
-                            "Front-Center", // Back Left
-                            1280,
-                            960,
-                            50,
-                            Rotation2d.fromDegrees(70),
-                            new Transform3d(
-                                    new Translation3d(-0.3160014, 0.2327402, 0.3163316),
-                                    new Rotation3d(0.0, -0.408546671, Math.PI)),
-                            CameraTrustZone.MIDDLE));
+    public static final List<CameraParams> cameras = List.of();
+
+    //     new CameraParams(
+    //             "Front-Left", // Front Right
+    //             1280,
+    //             960,
+    //             50,
+    //             Rotation2d.fromDegrees(70),
+    //             new Transform3d(
+    //                     new Translation3d(0.0328422, -0.3103626, 0.430911),
+    //                     new Rotation3d(0, -0.261799, 0.0)),
+    //             CameraTrustZone.MIDDLE));
+
+    //     new CameraParams(
+    //             "Back-Right", // Back Right
+    //             1280,
+    //             960,
+    //             50,
+    //             Rotation2d.fromDegrees(70),
+    //             new Transform3d(
+    //                     new Translation3d(-0.3160014, -0.2327402, 0.3163316),
+    //                     new Rotation3d(0.0, -0.408546671, Math.PI)),
+    //             CameraTrustZone.MIDDLE),
+    //     new CameraParams(
+    //             "Front-Right", // Front Left
+    //             1280,
+    //             960,
+    //             50,
+    //             Rotation2d.fromDegrees(70),
+    //             new Transform3d(
+    //                     new Translation3d(0.0328422, 0.3103626, 0.430911),
+    //                     new Rotation3d(Math.PI, -0.261799, 0.0)),
+    //             CameraTrustZone.MIDDLE));
+
+    //     new CameraParams(
+    //             "Front-Center", // Back Left
+    //             1280,
+    //             960,
+    //             50,
+    //             Rotation2d.fromDegrees(70),
+    //             new Transform3d(
+    //                     new Translation3d(-0.3160014, 0.2327402, 0.3163316),
+    //                     new Rotation3d(0.0, -0.408546671, Math.PI)),
+    //             CameraTrustZone.MIDDLE));
 
     //     new CameraParams(
     //             "Front-Center",
