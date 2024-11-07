@@ -1,13 +1,12 @@
 package frc.robot.subsystems.localization;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.constants.VisionConstants;
 import frc.robot.constants.VisionConstants.CameraParams;
 import frc.robot.subsystems.localization.VisionLocalizer.CameraMeasurement;
-import frc.robot.utils.AllianceUtil;
 import org.littletonrobotics.junction.Logger;
 
 public class Camera {
@@ -23,6 +22,18 @@ public class Camera {
 
     private final CameraIO io;
     private final CameraIOInputsAutoLogged inputs;
+
+    private double distanceToXweighting = VisionConstants.distanceToXweighting;
+    private double distanceToYweighting = VisionConstants.distanceToYweighting;
+    private double distanceToHeadingweighting = VisionConstants.distanceToHeadingweighting;
+
+    private double headingToXweighting = VisionConstants.headingToXweighting;
+    private double headingToYweighting = VisionConstants.headingToYweighting;
+    private double headingToHeadingweighting = VisionConstants.headingToHeadingweighting;
+
+    private double ambiguityweighting = VisionConstants.ambiguityweighting;
+
+    private double ntagsweighting = VisionConstants.ntagsweighting;
 
     public Camera(CameraParams params, CameraIO io) {
         name = params.name();
@@ -47,9 +58,12 @@ public class Camera {
 
     public CameraMeasurement getLatestMeasurement() {
         return new CameraMeasurement(
-                inputs.latestFieldToRobot, inputs.latestTimestampSeconds, getLatestVariance());
+                inputs.latestFieldToRobot,
+                inputs.latestTimestampSeconds,
+                getLatestStandardDeviation());
     }
 
+    /* original variance class: keeping for comparison
     public Matrix<N3, N1> getLatestVariance() {
         // If the robot is not in teleop, trust cameras based on their location relative to the tags
         if (!DriverStation.isTeleop()) {
@@ -84,5 +98,52 @@ public class Camera {
         } else {
             return VisionConstants.highCameraUncertainty;
         }
+    }*/
+
+    public Matrix<N3, N1> getLatestStandardDeviation() {
+
+        double xV = inputs.standardDeviationOfTags[0];
+        double yV = inputs.standardDeviationOfTags[1];
+        double headingV = inputs.standardDeviationOfTags[2];
+
+        // distance error
+        double distance = inputs.averageTagDistanceM;
+        xV += Math.pow((distance / distanceToXweighting), 2);
+        yV += Math.pow((distance / distanceToYweighting), 2);
+        headingV += Math.pow((distance / distanceToHeadingweighting), 2);
+
+        // distance error
+        double heading = inputs.averageTagYaw.getDegrees();
+        xV += Math.pow((heading / headingToXweighting), 2);
+        yV += Math.pow((heading / headingToYweighting), 2);
+        headingV += Math.pow((heading / headingToHeadingweighting), 2);
+
+        // ambiguity error
+        double ambiguity = inputs.ambiguity;
+        xV += Math.pow(ambiguity * ambiguityweighting, 2);
+        yV += Math.pow(ambiguity * ambiguityweighting, 2);
+        heading += Math.pow(ambiguity * ambiguityweighting, 2);
+
+        // ntags error
+        double nTags = inputs.nTags;
+        xV += Math.pow(nTags / ntagsweighting, 2);
+        yV += Math.pow(nTags / ntagsweighting, 2);
+        heading += Math.pow(nTags / ntagsweighting, 2);
+
+        return VecBuilder.fill(Math.sqrt(xV), Math.sqrt(yV), Math.sqrt(headingV));
+    }
+
+    public void updateWeightings(double[] weightings) {
+
+        distanceToXweighting = weightings[0];
+        distanceToYweighting = weightings[1];
+        distanceToHeadingweighting = weightings[2];
+
+        headingToXweighting = weightings[3];
+        headingToYweighting = weightings[4];
+        headingToHeadingweighting = weightings[5];
+
+        ambiguityweighting = weightings[6];
+        ntagsweighting = weightings[7];
     }
 }
