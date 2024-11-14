@@ -23,6 +23,8 @@ import frc.robot.constants.ScoringConstants;
 import frc.robot.utils.AllianceUtil;
 import frc.robot.utils.FieldFinder;
 import frc.robot.utils.FieldFinder.FieldLocations;
+import frc.robot.utils.LoggedTunableNumber;
+
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -105,6 +107,17 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private double temporarySetpointPosition = 0.0;
 
     private boolean readyToShoot = false;
+
+    private LoggedTunableNumber shooterkP = new LoggedTunableNumber("tunables/shooterkP", ScoringConstants.shooterkP);
+    private LoggedTunableNumber shooterkI = new LoggedTunableNumber ("tunables/shooterkI", ScoringConstants.shooterkI);
+    private LoggedTunableNumber shooterkD = new LoggedTunableNumber("tunables/shooterkD", ScoringConstants.shooterkD);
+
+    private LoggedTunableNumber shooterkS = new LoggedTunableNumber("tunables/shooterkS", ScoringConstants.shooterkS);
+    private LoggedTunableNumber shooterkV = new LoggedTunableNumber ("tunables/shooterkV", ScoringConstants.shooterkV);
+    private LoggedTunableNumber shooterkA = new LoggedTunableNumber("tunables/shooterkA", ScoringConstants.shooterkA);
+
+    private LoggedTunableNumber tunableShooterPosition = new LoggedTunableNumber("tunables/shooterTunablePosition");
+    private LoggedTunableNumber tunableShooterVolts = new LoggedTunableNumber("tunable/shooterTunableVolts");
 
     public ScoringSubsystem(ShooterIO shooterIo, AimerIO aimerIo) {
 
@@ -614,6 +627,13 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         Logger.processInputs("scoring/shooterOutputs", shooterOutputs);
         Logger.processInputs("scoring/aimerInputs", aimerInputs);
         Logger.processInputs("scoring/aimerOutputs", aimerOutputs);
+
+        LoggedTunableNumber.ifChanged(hashCode(), (pid) -> setPID(pid[0], pid[1], pid[2], 1), shooterkP, shooterkI, shooterkD);
+        LoggedTunableNumber.ifChanged(hashCode(), (FF) -> setFF(FF[0], FF[1], FF[2], 0, 1), shooterkS, shooterkV, shooterkA);
+
+        LoggedTunableNumber.ifChanged(hashCode(), (position) -> runToPosition(position[0], 1), tunableShooterPosition);
+        LoggedTunableNumber.ifChanged(hashCode(), (volts) -> setVolts(volts[0], 1), tunableShooterVolts);
+
     }
 
     public void setTuningKickerVolts(double kickerVoltsTuning) {
