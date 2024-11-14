@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import coppercore.wpilib_interface.DriveWithJoysticks;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.ShootWithGamepad;
 import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.ModeConstants;
@@ -251,7 +251,7 @@ public class RobotContainer {
     private void configureBindings() {
         if (drive != null) {
             drive.registerTelemetry(logger::telemeterize);
-            drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
+            setUpDriveWithJoysticks();
         }
         if (DriverStation.isTest()) {
             // SYS ID
@@ -658,7 +658,13 @@ public class RobotContainer {
 
     private void setUpDriveWithJoysticks() {
         if (FeatureFlags.runDrive) {
-            drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
+            drive.setDefaultCommand(
+                    new DriveWithJoysticks(
+                            drive,
+                            leftJoystick,
+                            rightJoystick,
+                            PhoenixDriveConstants.maxSpeedMetPerSec,
+                            PhoenixDriveConstants.MaxAngularRateRadPerSec));
         }
     }
 }
