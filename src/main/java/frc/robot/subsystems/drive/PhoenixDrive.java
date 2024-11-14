@@ -198,6 +198,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
+    @Override
     public void setGoalSpeeds(ChassisSpeeds goalSpeeds, boolean fieldCentric) {
         this.goalSpeeds = goalSpeeds;
         this.fieldCentric = fieldCentric;
