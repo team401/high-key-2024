@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.ShootWithGamepad;
+import frc.robot.constants.DriverConstants;
 import frc.robot.constants.FeatureFlags;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.PhoenixDriveConstants;
@@ -664,7 +665,9 @@ public class RobotContainer {
                             leftJoystick,
                             rightJoystick,
                             PhoenixDriveConstants.maxSpeedMetPerSec,
-                            PhoenixDriveConstants.MaxAngularRateRadPerSec));
+                            PhoenixDriveConstants.MaxAngularRateRadPerSec,
+                            DriverConstants.leftJoystickDeadband
+                            ));
         }
     }
 }
