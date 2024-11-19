@@ -666,8 +666,7 @@ public class RobotContainer {
                             rightJoystick,
                             PhoenixDriveConstants.maxSpeedMetPerSec,
                             PhoenixDriveConstants.MaxAngularRateRadPerSec,
-                            DriverConstants.leftJoystickDeadband
-                            ));
+                            DriverConstants.leftJoystickDeadband));
         }
     }
 }
