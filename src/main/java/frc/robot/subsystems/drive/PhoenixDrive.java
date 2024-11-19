@@ -16,6 +16,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
+import coppercore.wpilib_interface.DriveTemplate;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -29,7 +30,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.PhoenixDriveConstants;
@@ -37,7 +37,7 @@ import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
-public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
+public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
     public enum SysIdRoutineType {
         Translation,
         Rotation,
@@ -205,6 +205,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
+    @Override
     public void setGoalSpeeds(ChassisSpeeds goalSpeeds, boolean fieldCentric) {
         this.goalSpeeds = goalSpeeds;
         this.fieldCentric = fieldCentric;
