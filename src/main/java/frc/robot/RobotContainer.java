@@ -1,6 +1,10 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import coppercore.vision.CameraContainerReal;
+import coppercore.vision.CameraContainerReplay;
+import coppercore.vision.CameraContainerSim;
+import coppercore.vision.VisionLocalizer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -30,10 +34,6 @@ import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeNEOVortex;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem.IntakeAction;
-import frc.robot.subsystems.localization.CameraContainerReal;
-import frc.robot.subsystems.localization.CameraContainerReplay;
-import frc.robot.subsystems.localization.CameraContainerSim;
-import frc.robot.subsystems.localization.VisionLocalizer;
 import frc.robot.subsystems.scoring.AimerIO;
 import frc.robot.subsystems.scoring.AimerIORoboRio;
 import frc.robot.subsystems.scoring.AimerIOSim;
@@ -175,7 +175,10 @@ public class RobotContainer {
                     tagVision =
                             new VisionLocalizer(
                                     new CameraContainerSim(
-                                            VisionConstants.cameras, logger::getModuleStates));
+                                            VisionConstants.cameras,
+                                            new Pose2d(),
+                                            PhoenixDriveConstants.kinematics,
+                                            logger::getModuleStates));
                 } else {
                     /* TODO: Maybe try to spoof vision sim without drive telemetry by giving it
                     all zeros */

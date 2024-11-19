@@ -1,17 +1,15 @@
 package frc.robot.constants;
 
+import coppercore.vision.CoreVisionConstants.CameraParams;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 // import frc.robot.subsystems.drive.CommandSwerveDrivetrain;
-import frc.robot.subsystems.localization.Camera.CameraTrustZone;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -91,15 +89,6 @@ public final class VisionConstants {
     //                     new Translation3d(0.312, -0.237, 0.233),
     //                     new Rotation3d(0.0, -0.349, 0.524)),
     //             CameraTrustZone.MIDDLE));
-
-    public static record CameraParams(
-            String name,
-            int xResolution,
-            int yResolution,
-            int fps,
-            Rotation2d fov,
-            Transform3d robotToCamera,
-            CameraTrustZone zone) {}
 
     private static AprilTagFieldLayout initLayout(String name) {
         AprilTagFieldLayout layout;
