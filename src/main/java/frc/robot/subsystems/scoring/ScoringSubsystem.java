@@ -107,46 +107,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     private boolean readyToShoot = false;
 
-    private LoggedTunableNumber shooterkP =
-            new LoggedTunableNumber("Shooter-Tunables/PID/shooterkP", ScoringConstants.shooterkP);
-    private LoggedTunableNumber shooterkI =
-            new LoggedTunableNumber("Shooter-Tunables/PID/shooterkI", ScoringConstants.shooterkI);
-    private LoggedTunableNumber shooterkD =
-            new LoggedTunableNumber("Shooter-Tunables/PID/shooterkD", ScoringConstants.shooterkD);
-
-    private LoggedTunableNumber shooterkS =
-            new LoggedTunableNumber("Shooter-Tunables/FF/shooterkS", ScoringConstants.shooterkS);
-    private LoggedTunableNumber shooterkV =
-            new LoggedTunableNumber("Shooter-Tunables/FF/shooterkV", ScoringConstants.shooterkV);
-    private LoggedTunableNumber shooterkA =
-            new LoggedTunableNumber("Shooter-Tunables/FF/shooterkA", ScoringConstants.shooterkA);
-
-    private LoggedTunableNumber tunableShooterRPM =
-            new LoggedTunableNumber("Shooter-Tunables/shooterTunableRPM", 0.0);
-    private LoggedTunableNumber tunableShooterVolts =
-            new LoggedTunableNumber("Shooter-Tunables/shooterTunableVolts", 0.0);
-
-    private LoggedTunableNumber aimerkP =
-            new LoggedTunableNumber("Aimer-Tunables/PID/aimerkP", ScoringConstants.aimerkP);
-    private LoggedTunableNumber aimerkI =
-            new LoggedTunableNumber("Aimer-Tunables/PID/aimerkI", ScoringConstants.aimerkI);
-    private LoggedTunableNumber aimerkD =
-            new LoggedTunableNumber("Aimer-Tunables/PID/aimerkD", ScoringConstants.aimerkD);
-
-    private LoggedTunableNumber aimerkS =
-            new LoggedTunableNumber("Aimer-Tunables/FF/aimerkS", ScoringConstants.aimerkS);
-    private LoggedTunableNumber aimerkV =
-            new LoggedTunableNumber("Aimer-Tunables/FF/aimerkV", ScoringConstants.aimerkV);
-    private LoggedTunableNumber aimerkA =
-            new LoggedTunableNumber("Aimer-Tunables/FF/aimerkA", ScoringConstants.aimerkA);
-    private LoggedTunableNumber aimerkG =
-            new LoggedTunableNumber("Aimer-Tunables/FF/aimerkG", ScoringConstants.aimerkG);
-
-    private LoggedTunableNumber tunableAimerPosition =
-            new LoggedTunableNumber("Aimer-Tunables/aimerTunablePosition", 0.0);
-    private LoggedTunableNumber tunableAimerVolts =
-            new LoggedTunableNumber("Aimer-Tunables/aimerTunableVolts", 0.0);
-
     public ScoringSubsystem(ShooterIO shooterIo, AimerIO aimerIo) {
 
         this.shooterIo = shooterIo;
@@ -656,38 +616,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         Logger.processInputs("scoring/aimerInputs", aimerInputs);
         Logger.processInputs("scoring/aimerOutputs", aimerOutputs);
 
-        LoggedTunableNumber.ifChanged(
-                hashCode(),
-                (pid) -> setPID(pid[0], pid[1], pid[2], 1),
-                shooterkP,
-                shooterkI,
-                shooterkD);
-        LoggedTunableNumber.ifChanged(
-                hashCode(),
-                (FF) -> setFF(FF[0], FF[1], FF[2], 0, 1),
-                shooterkS,
-                shooterkV,
-                shooterkA);
-
-        LoggedTunableNumber.ifChanged(
-                hashCode(), (position) -> runToPosition(position[0], 1), tunableShooterRPM);
-        LoggedTunableNumber.ifChanged(
-                hashCode(), (volts) -> setVolts(volts[0], 1), tunableShooterVolts);
-
-        LoggedTunableNumber.ifChanged(
-                hashCode(), (pid) -> setPID(pid[0], pid[1], pid[2], 0), aimerkP, aimerkI, aimerkD);
-        LoggedTunableNumber.ifChanged(
-                hashCode(),
-                (FF) -> setFF(FF[0], FF[1], FF[2], FF[3], 0),
-                aimerkS,
-                aimerkV,
-                aimerkA,
-                aimerkG);
-
-        LoggedTunableNumber.ifChanged(
-                hashCode(), (position) -> runToPosition(position[0], 0), tunableAimerPosition);
-        LoggedTunableNumber.ifChanged(
-                hashCode(), (volts) -> setVolts(volts[0], 0), tunableAimerVolts);
     }
 
     public void setTuningKickerVolts(double kickerVoltsTuning) {
