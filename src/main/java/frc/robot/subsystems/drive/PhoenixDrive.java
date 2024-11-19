@@ -129,7 +129,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
             startSimThread();
         }
 
-        thetaController.enableContinuousInput(0.0, 2 * Math.PI);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
         thetaController.setTolerance(PhoenixDriveConstants.alignToleranceRadians);
 
         CommandScheduler.getInstance().registerSubsystem(this);
@@ -142,6 +142,9 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.setTolerance(PhoenixDriveConstants.alignToleranceRadians);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -161,17 +164,21 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
                     this.setGoalSpeeds(speeds, false);
                 },
                 new HolonomicPathFollowerConfig(
-                        new PIDConstants(1),
-                        new PIDConstants(1, 0, 0),
+                        new PIDConstants(0.1),
+                        new PIDConstants(0.1, 0, 0),
                         PhoenixDriveConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig(false, false)),
                 () -> DriverStation.getAlliance().get() == Alliance.Red,
                 this);
 
-        autoChooser.setDefaultOption("Default (nothing)", Commands.none());
+        autoChooser.addOption("Nothing", Commands.none());
+        autoChooser.setDefaultOption("Center Preload", new PathPlannerAuto("Center Preload"));
+        autoChooser.addOption("Amp Side Preload", new PathPlannerAuto("Amp Side Preload"));
+        autoChooser.addOption("Source Side Preload", new PathPlannerAuto("Source Side Preload"));
         autoChooser.addOption("Amp Side - 2 Note", new PathPlannerAuto("Amp Side - 2 Note"));
         autoChooser.addOption("Center - 4 Note", new PathPlannerAuto("Center - 4 Note"));
+        autoChooser.addOption("Source Side - 3 Note", new PathPlannerAuto("Source Side - 3 Note"));
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
@@ -209,10 +216,12 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
         double omega = goalSpeeds.omegaRadiansPerSecond;
         if (aligning) {
             Rotation2d goalRotation = this.getAlignment().get();
+            Logger.recordOutput("Drive/goalRotation", goalRotation);
             omega =
                     thetaController.calculate(
-                            this.getState().Pose.getRotation().getRadians() % (Math.PI * 2),
-                            goalRotation.getRadians() % (Math.PI * 2));
+                            this.getState().Pose.getRotation().getRadians(),
+                            goalRotation.getRadians());
+            Logger.recordOutput("Drive/rotationError", thetaController.getPositionError());
         }
 
         SwerveRequest request;
@@ -391,6 +400,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
     }
 
     public void logDrivetrainData() {
+        Logger.recordOutput("drive/pose", getState().Pose);
+
         SwerveDriveState state = getState();
         if (state.ModuleStates != null && state.ModuleTargets != null) {
             for (int i = 0; i < 4; i++) {

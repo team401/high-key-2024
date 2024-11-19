@@ -1,5 +1,8 @@
 package frc.robot.subsystems.scoring;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import java.util.ArrayList;
+import java.util.List;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface AimerIO {
@@ -35,6 +38,8 @@ public interface AimerIO {
 
     public default void setOverrideVolts(double volts) {}
 
+    public default void setNegativeHomeLockMode(boolean lock) {}
+
     public default void setPID(double p, double i, double d) {}
 
     public default void resetPID() {}
@@ -48,4 +53,8 @@ public interface AimerIO {
     public default void setStatorCurrentLimit(double limit) {}
 
     public default void setMotorDisabled(boolean disabled) {}
+
+    public default List<TalonFX> getOrchestraMotors() {
+        return new ArrayList<TalonFX>();
+    }
 }

@@ -23,11 +23,14 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.ScoringConstants;
+import java.util.ArrayList;
+import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 public class AimerIORoboRio implements AimerIO {
     private final TalonFX aimerMotor = new TalonFX(ScoringConstants.aimerMotorId);
 
+    MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0.0);
     private ControlRequest request;
 
     private final CANcoder aimerEncoder = new CANcoder(ScoringConstants.aimerEncoderId);
@@ -53,9 +56,12 @@ public class AimerIORoboRio implements AimerIO {
     double controlSetpoint = 0.0;
 
     boolean motorDisabled = false;
+    boolean lockNegativeAtHome = false;
+
+    TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
     public AimerIORoboRio() {
-        aimerMotor.setNeutralMode(NeutralModeValue.Brake);
+        aimerMotor.setNeutralMode(NeutralModeValue.Coast);
 
         setStatorCurrentLimit(ScoringConstants.aimerCurrentLimit);
 
@@ -69,13 +75,14 @@ public class AimerIORoboRio implements AimerIO {
 
         aimerEncoder.getConfigurator().apply(cancoderConfiguration);
 
-        TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
-
         talonFXConfigs.Feedback.FeedbackRemoteSensorID = aimerEncoder.getDeviceID();
         talonFXConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         talonFXConfigs.Feedback.SensorToMechanismRatio =
                 ScoringConstants.aimerEncoderToMechanismRatio;
         talonFXConfigs.Feedback.RotorToSensorRatio = ScoringConstants.aimerRotorToSensorRatio;
+        talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
+        talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit;
 
         Slot0Configs slot0Configs = talonFXConfigs.Slot0;
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
@@ -100,6 +107,7 @@ public class AimerIORoboRio implements AimerIO {
 
     @Override
     public void setAimAngleRot(double goalAngleRot) {
+        setNegativeHomeLockMode(false);
         this.goalAngleRot = goalAngleRot;
     }
 
@@ -139,6 +147,11 @@ public class AimerIORoboRio implements AimerIO {
     @Override
     public void setOverrideVolts(double volts) {
         overrideVolts = volts;
+    }
+
+    @Override
+    public void setNegativeHomeLockMode(boolean lock) {
+        lockNegativeAtHome = lock;
     }
 
     @Override
@@ -234,6 +247,22 @@ public class AimerIORoboRio implements AimerIO {
 
         request = motionMagicVoltage;
 
+        if (lockNegativeAtHome
+                && getEncoderPosition()
+                        < ScoringConstants.aimMinAngleRotations
+                                + ScoringConstants.intakeAngleToleranceRotations
+                && !override) {
+            // talonFXConfigs.CurrentLimits.StatorCurrentLimit =
+            //        ScoringConstants.aimerCurrentLimit / 5;
+            // aimerMotor.getConfigurator().apply(talonFXConfigs);
+            request = new VoltageOut(ScoringConstants.aimLockVoltage);
+        } else {
+            talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit;
+            // aimerMotor.getConfigurator().apply(talonFXConfigs);
+            motionMagicVoltage.withPosition(goalAngleRot);
+            request = motionMagicVoltage;
+        }
+
         controlSetpoint = aimerMotor.getClosedLoopReference().getValueAsDouble();
         if (override) {
             appliedVolts = overrideVolts;
@@ -247,5 +276,13 @@ public class AimerIORoboRio implements AimerIO {
         } else {
             aimerMotor.setVoltage(0.0);
         }
+    }
+
+    @Override
+    public List<TalonFX> getOrchestraMotors() {
+        ArrayList<TalonFX> motors = new ArrayList<TalonFX>();
+        motors.add(aimerMotor);
+
+        return motors;
     }
 }

@@ -7,8 +7,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -22,6 +22,8 @@ import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
+import frc.robot.subsystems.LED;
+import frc.robot.subsystems.OrchestraSubsystem;
 import frc.robot.subsystems.drive.PhoenixDrive;
 import frc.robot.subsystems.drive.PhoenixDrive.SysIdRoutineType;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -54,6 +56,9 @@ public class RobotContainer {
 
     ScoringSubsystem scoringSubsystem;
     IntakeSubsystem intakeSubsystem;
+    LED leds;
+
+    OrchestraSubsystem orchestraSubsystem;
 
     CommandJoystick leftJoystick = new CommandJoystick(0);
     CommandJoystick rightJoystick = new CommandJoystick(1);
@@ -86,12 +91,13 @@ public class RobotContainer {
         NamedCommands.registerCommand(
                 "intakeNote",
                 // intakes to start, ends by setting action to NONE when intake subsystem has note
-                new FunctionalCommand(
-                        () -> intakeSubsystem.run(IntakeAction.INTAKE),
-                        () -> {},
-                        interrupted -> intakeSubsystem.run(IntakeAction.NONE),
-                        () -> scoringSubsystem.hasNote(),
-                        intakeSubsystem));
+                new InstantCommand(
+                        () -> {
+                            intakeSubsystem.run(IntakeAction.INTAKE);
+                            scoringSubsystem.setAction(ScoringAction.INTAKE);
+                        },
+                        intakeSubsystem,
+                        scoringSubsystem));
 
         NamedCommands.registerCommand(
                 "waitForAlignment",
@@ -114,6 +120,12 @@ public class RobotContainer {
         }
         if (FeatureFlags.runIntake) {
             initIntake();
+        }
+        if (FeatureFlags.runScoring && FeatureFlags.runIntake && FeatureFlags.runLEDS) {
+            initLEDs();
+        }
+        if (FeatureFlags.runOrchestra) {
+            initOrchestra();
         }
     }
 
@@ -206,6 +218,38 @@ public class RobotContainer {
         }
     }
 
+    private void initLEDs() {
+        leds = new LED(scoringSubsystem, intakeSubsystem);
+    }
+
+    private void initOrchestra() {
+        switch (ModeConstants.currentMode) {
+            case REAL:
+                orchestraSubsystem =
+                        new OrchestraSubsystem(
+                                "music/mii_channel.chrp"); // TODO: Add music files to deploy!
+                if (FeatureFlags.runScoring) {
+                    orchestraSubsystem.addInstruments(
+                            scoringSubsystem.getAimerIO().getOrchestraMotors());
+                    orchestraSubsystem.addInstruments(
+                            scoringSubsystem.getShooterIO().getOrchestraMotors());
+                }
+
+                if (FeatureFlags.runDrive) {
+                    orchestraSubsystem.addInstrument(drive.getModule(0).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(0).getSteerMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(1).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(1).getSteerMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(2).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(2).getSteerMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(3).getDriveMotor());
+                    orchestraSubsystem.addInstrument(drive.getModule(3).getSteerMotor());
+                }
+            default:
+                break;
+        }
+    }
+
     private void configureSuppliers() {
         if (FeatureFlags.runScoring) {
             Supplier<Pose2d> poseSupplier;
@@ -245,6 +289,14 @@ public class RobotContainer {
                         (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
             } else {
                 tagVision.setCameraConsumer((m) -> {});
+            }
+        }
+
+        if (FeatureFlags.runLEDS) {
+            if (FeatureFlags.runVision) {
+                // leds.setVisionWorkingSupplier(() -> tagVision.coprocessorConnected());
+            } else {
+                leds.setVisionWorkingSupplier(() -> false);
             }
         }
     }
@@ -428,6 +480,7 @@ public class RobotContainer {
         testModeChooser.addOption("Shooter Tuning", "tuning-shooter");
         testModeChooser.addOption("Aimer Tuning", "tuning-aimer");
         testModeChooser.addOption("Shot Tuning", "tuning-shot");
+        testModeChooser.addOption("Amp Tuning", "tuning-amp");
 
         SmartDashboard.putData("Test Mode Chooser", testModeChooser);
     }
@@ -526,9 +579,7 @@ public class RobotContainer {
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
 
                 masher.leftBumper()
-                        .onTrue(
-                                new InstantCommand(
-                                        () -> scoringSubsystem.setTuningKickerVolts(-12)))
+                        .onTrue(new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(12)))
                         .onFalse(
                                 new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(0)));
                 break;
@@ -653,6 +704,58 @@ public class RobotContainer {
                                                                 "Test-Mode/aimer/volts", 2.0),
                                                         0)))
                         .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
+                break;
+            case "tuning-amp":
+                SmartDashboard.putNumber(
+                        "Test-Mode/amp/aimerSetpointPosition",
+                        ScoringConstants.ampAimerAngleRotations);
+
+                // Let us drive
+                CommandScheduler.getInstance().cancelAll();
+                setUpDriveWithJoysticks();
+
+                // Reset bindings
+                masher = new CommandXboxController(2);
+
+                // Let us intake
+                masher.b()
+                        .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.INTAKE)))
+                        .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
+
+                // Let us reverse intake (in case a note gets jammed during amp tuning)
+                masher.a()
+                        .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.REVERSE)))
+                        .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
+
+                masher.rightTrigger()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        SmartDashboard.getNumber(
+                                                                "Test-Mode/amp/aimerSetpointPosition",
+                                                                0.0),
+                                                        0)))
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+
+                masher.rightBumper()
+                        .onTrue(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setOverrideKickerVoltsDirectly(
+                                                        12.0)))
+                        .onFalse(
+                                new InstantCommand(
+                                        () ->
+                                                scoringSubsystem.setOverrideKickerVoltsDirectly(
+                                                        0.0)));
                 break;
         }
     }

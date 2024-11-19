@@ -4,8 +4,8 @@ import edu.wpi.first.math.util.Units;
 import java.util.HashMap;
 
 public class ScoringConstants {
-    public static final double aimerkP = 85.0;
-    public static final double aimerkI = 0.0; // 5.0
+    public static final double aimerkP = 100.0;
+    public static final double aimerkI = 2.0; // 5.0
     public static final double aimerkD = 0.0;
 
     public static final double aimerkS = 0.3; // 0.25;
@@ -34,7 +34,7 @@ public class ScoringConstants {
     public static final double aimerCurrentLimit = 60;
 
     public static final int aimerEncoderId = 13;
-    ;
+
     public static final double aimerEncoderOffset = -0.087402; // Armencoder is zeroed
 
     public static final double aimerEncoderToMechanismRatio = 1.0;
@@ -52,14 +52,19 @@ public class ScoringConstants {
     public static final double aimAngleMarginRotations = Units.degreesToRotations(1);
     public static final double aimAngleVelocityMargin = 2.0;
 
+    public static final double minDistanceAlignmentNeeded = 1.3; // TODO: Tune this value
+
     public static final double intakeAngleToleranceRotations = 0.05; // Todo: tune this value
 
-    public static final double aimerAmpPositionRot = 0.14;
+    public static final double aimerAmpPositionRot = 0.145;
 
     public static final double aimMaxAngleRotations = 0.361328 - 0.184570;
-    public static final double aimMinAngleRotations = -0.217285;
+    public static final double aimMinAngleRotations = -0.212285;
+    public static final double aimLockVoltage = -0.5;
 
     public static final double aimAngleTolerance = 0.015;
+
+    public static final double ampAimerAngleRotations = 0.14;
 
     public static final double maxAimIntake = 0.0;
     public static final double minAimIntake = 0.0;
@@ -74,19 +79,22 @@ public class ScoringConstants {
     // Value - Aimer angle in rotations
     public static HashMap<Double, Double> getAimerMap() {
         HashMap<Double, Double> map = new HashMap<Double, Double>();
-        map.put(1.284, -0.1);
-        map.put(1.7, -0.13);
-        map.put(2.30, -0.15);
-        map.put(3.32, -0.175);
-        map.put(4.23, -0.195);
-        map.put(5.811, -0.2);
+        // map.put(1.284, -0.1);
+        map.put(1.428, -0.1);
+        // map.put(1.7, -0.13);
+        // map.put(2.30, -0.15);
+        // map.put(3.32, -0.175);
+        // map.put(4.23, -0.195);
+        // map.put(5.811, -0.2);
 
         return map;
     }
 
-    public static final double passLocationRot = -0.08;
+
+    public static final double passLocationRot = -0.14;
     public static final double passAngleToleranceRot = 0.005;
-    public static final double passShooterRpm = 4000.0;
+    public static final double passShooterRpm = 2800.0;
+
 
     public static final double aimerStaticOffset = 0.0;
 

@@ -54,14 +54,20 @@ public class ShootWithGamepad extends Command {
 
         if (driverShoot.getAsBoolean() || masherShoot.getAsBoolean()) {
             warmupSwitch();
+
+            // ScoringAction.AIM will never transition automatically to shoot
+            // ScoringAction.SHOOT will shoot when ready.
+            // Therefore, when shoot is pressed, check if we've transitioned to aim and then
+            // transition to shoot.
+            if (scoring.getCurrentAction() == ScoringAction.AIM
+                    || scoring.getCurrentAction() == ScoringAction.AMP_AIM) {
+                scoring.setAction(ScoringAction.SHOOT);
+            }
+
             if (getDriveMode.get() != AlignTarget.SOURCE
                     && getDriveMode.get() != AlignTarget.NONE) {
                 boolean force = masherForceShoot.getAsBoolean();
                 scoring.setOverrideShoot(force);
-
-                if (driverShoot.getAsBoolean() || masherShoot.getAsBoolean() || force) {
-                    scoring.setAction(ScoringAction.SHOOT);
-                }
             }
         } else if (masherForceShoot.getAsBoolean()) {
             scoring.setAction(ScoringAction.SHOOT);
@@ -92,6 +98,7 @@ public class ShootWithGamepad extends Command {
                 break;
             case PASS:
                 scoring.setAction(ScoringAction.PASS);
+                break;
             default:
                 scoring.setAction(ScoringAction.WAIT);
                 break;
