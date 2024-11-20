@@ -67,29 +67,31 @@ public class RobotContainer {
     VisionLocalizer tagVision;
 
     SendableChooser<String> testModeChooser = new SendableChooser<String>();
-        private LoggedTunableNumber shooterkP;
-        private LoggedTunableNumber shooterkI;
-        private LoggedTunableNumber shooterkD;
+    private LoggedTunableNumber shooterkP;
+    private LoggedTunableNumber shooterkI;
+    private LoggedTunableNumber shooterkD;
 
-        private LoggedTunableNumber shooterkS;
-        private LoggedTunableNumber shooterkV;
-        private LoggedTunableNumber shooterkA;
+    private LoggedTunableNumber shooterkS;
+    private LoggedTunableNumber shooterkV;
+    private LoggedTunableNumber shooterkA;
 
-        private LoggedTunableNumber tunableShooterRPM;
-        private LoggedTunableNumber tunableShooterVolts;
+    private LoggedTunableNumber tunableShooterRPM;
+    private LoggedTunableNumber tunableShooterVolts;
 
-        private LoggedTunableNumber aimerkP;
-        private LoggedTunableNumber aimerkI;
-        private LoggedTunableNumber aimerkD;
+    private LoggedTunableNumber aimerkP;
+    private LoggedTunableNumber aimerkI;
+    private LoggedTunableNumber aimerkD;
 
-        private LoggedTunableNumber aimerkS;
-        private LoggedTunableNumber aimerkV;
-        private LoggedTunableNumber aimerkA;
-        private LoggedTunableNumber aimerkG;
+    private LoggedTunableNumber aimerkS;
+    private LoggedTunableNumber aimerkV;
+    private LoggedTunableNumber aimerkA;
+    private LoggedTunableNumber aimerkG;
 
-        private LoggedTunableNumber tunableAimerPosition;
-        private LoggedTunableNumber tunableAimerVolts;
+    private LoggedTunableNumber aimerProfileMaxVelocity;
+    private LoggedTunableNumber aimerProfileMaxAcceleration;
 
+    private LoggedTunableNumber tunableAimerPosition;
+    private LoggedTunableNumber tunableAimerVolts;
 
     public RobotContainer() {
         configureSubsystems();
@@ -519,45 +521,48 @@ public class RobotContainer {
         masher = new CommandXboxController(2);
 
         shooterkP =
-                new LoggedTunableNumber("Shooter-Tunables/PID/shooterkP", ScoringConstants.shooterkP);
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/PID/shooterkP", ScoringConstants.shooterkP);
         shooterkI =
-                new LoggedTunableNumber("Shooter-Tunables/PID/shooterkI", ScoringConstants.shooterkI);
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/PID/shooterkI", ScoringConstants.shooterkI);
         shooterkD =
-                new LoggedTunableNumber("Shooter-Tunables/PID/shooterkD", ScoringConstants.shooterkD);
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/PID/shooterkD", ScoringConstants.shooterkD);
 
         shooterkS =
-                new LoggedTunableNumber("Shooter-Tunables/FF/shooterkS", ScoringConstants.shooterkS);
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/FF/shooterkS", ScoringConstants.shooterkS);
         shooterkV =
-                new LoggedTunableNumber("Shooter-Tunables/FF/shooterkV", ScoringConstants.shooterkV);
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/FF/shooterkV", ScoringConstants.shooterkV);
         shooterkA =
-                new LoggedTunableNumber("Shooter-Tunables/FF/shooterkA", ScoringConstants.shooterkA);
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/FF/shooterkA", ScoringConstants.shooterkA);
 
-        tunableShooterRPM =
-                new LoggedTunableNumber("Shooter-Tunables/shooterTunableRPM", 0.0);
-        tunableShooterVolts =
-                new LoggedTunableNumber("Shooter-Tunables/shooterTunableVolts", 0.0);
+        tunableShooterRPM = new LoggedTunableNumber("Shooter-Tunables/shooterTunableRPM", 0.0);
+        tunableShooterVolts = new LoggedTunableNumber("Shooter-Tunables/shooterTunableVolts", 0.0);
 
-        aimerkP =
-                new LoggedTunableNumber("Aimer-Tunables/PID/aimerkP", ScoringConstants.aimerkP);
-        aimerkI =
-                new LoggedTunableNumber("Aimer-Tunables/PID/aimerkI", ScoringConstants.aimerkI);
-        aimerkD =
-                new LoggedTunableNumber("Aimer-Tunables/PID/aimerkD", ScoringConstants.aimerkD);
+        aimerkP = new LoggedTunableNumber("Aimer-Tunables/PID/aimerkP", ScoringConstants.aimerkP);
+        aimerkI = new LoggedTunableNumber("Aimer-Tunables/PID/aimerkI", ScoringConstants.aimerkI);
+        aimerkD = new LoggedTunableNumber("Aimer-Tunables/PID/aimerkD", ScoringConstants.aimerkD);
 
-        aimerkS =
-                new LoggedTunableNumber("Aimer-Tunables/FF/aimerkS", ScoringConstants.aimerkS);
-        aimerkV =
-                new LoggedTunableNumber("Aimer-Tunables/FF/aimerkV", ScoringConstants.aimerkV);
-        aimerkA =
-                new LoggedTunableNumber("Aimer-Tunables/FF/aimerkA", ScoringConstants.aimerkA);
-        aimerkG =
-                new LoggedTunableNumber("Aimer-Tunables/FF/aimerkG", ScoringConstants.aimerkG);
+        aimerkS = new LoggedTunableNumber("Aimer-Tunables/FF/aimerkS", ScoringConstants.aimerkS);
+        aimerkV = new LoggedTunableNumber("Aimer-Tunables/FF/aimerkV", ScoringConstants.aimerkV);
+        aimerkA = new LoggedTunableNumber("Aimer-Tunables/FF/aimerkA", ScoringConstants.aimerkA);
+        aimerkG = new LoggedTunableNumber("Aimer-Tunables/FF/aimerkG", ScoringConstants.aimerkG);
 
-        tunableAimerPosition =
-                new LoggedTunableNumber("Aimer-Tunables/aimerTunablePosition", 0.0);
-        tunableAimerVolts =
-                new LoggedTunableNumber("Aimer-Tunables/aimerTunableVolts", 0.0);
+        aimerProfileMaxVelocity =
+                new LoggedTunableNumber(
+                        "Aimer-Tunables/ProfileTuning/MaxVelocity",
+                        ScoringConstants.aimerCruiseVelocity);
+        aimerProfileMaxAcceleration =
+                new LoggedTunableNumber(
+                        "Aimer-Tunables/ProfileTuning/MaxAcceleration",
+                        ScoringConstants.aimerAcceleration);
 
+        tunableAimerPosition = new LoggedTunableNumber("Aimer-Tunables/aimerTunablePosition", 0.0);
+        tunableAimerVolts = new LoggedTunableNumber("Aimer-Tunables/aimerTunableVolts", 0.0);
 
         switch (testModeChooser.getSelected()) {
             case "tuning":
@@ -569,12 +574,17 @@ public class RobotContainer {
                 masher.y()
                         .onTrue(
                                 new InstantCommand(
-                                        () -> scoringSubsystem.runToPosition(tunableShooterRPM.get(),1)))
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        tunableShooterRPM.getAsDouble(), 1)))
                         .onTrue(
                                 new InstantCommand(
-                                        () -> scoringSubsystem.setAction(ScoringAction.TEMPORARY_SETPOINT)))
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
                         .onFalse(
-                                new InstantCommand(() -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
+                                new InstantCommand(
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
                 break;
             case "tuning-shot":
                 scoringSubsystem.setAction(ScoringAction.OVERRIDE);
@@ -582,17 +592,22 @@ public class RobotContainer {
                 masher.y()
                         .onTrue(
                                 new InstantCommand(
-                                        () -> scoringSubsystem.runToPosition(tunableAimerPosition.get(), 0)))
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        tunableAimerPosition.getAsDouble(), 0)))
                         .onTrue(
                                 new InstantCommand(
-                                        () -> scoringSubsystem.runToPosition(tunableShooterRPM.get(), 2)))
+                                        () ->
+                                                scoringSubsystem.runToPosition(
+                                                        tunableShooterRPM.getAsDouble(), 1)))
                         .onTrue(
                                 new InstantCommand(
-                                        () -> scoringSubsystem.setAction(
+                                        () ->
+                                                scoringSubsystem.setAction(
                                                         ScoringAction.TEMPORARY_SETPOINT)))
                         .onFalse(
                                 new InstantCommand(
-                                        () -> scoringSubsystem.setAction(ScoringAction.TUNING)));
+                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
 
                 masher.leftBumper()
                         .onTrue(new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(12)))
@@ -600,12 +615,6 @@ public class RobotContainer {
                                 new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(0)));
                 break;
             case "tuning-aimer":
-                SmartDashboard.putNumber(
-                        "Test-Mode/aimer/profileMaxVelocity", ScoringConstants.aimerCruiseVelocity);
-                SmartDashboard.putNumber(
-                        "Test-Mode/aimer/profileMaxAcceleration",
-                        ScoringConstants.aimerAcceleration);
-
                 scoringSubsystem.setAction(ScoringAction.OVERRIDE);
 
                 masher.a().onTrue(new TuneS(scoringSubsystem, 0));
@@ -616,21 +625,13 @@ public class RobotContainer {
                         .onTrue(
                                 new InstantCommand(
                                         () ->
-                                                scoringSubsystem.setMaxProfileProperties(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/profileMaxVelocity",
-                                                                ScoringConstants
-                                                                        .aimerCruiseVelocity),
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/profileMaxAcceleration",
-                                                                ScoringConstants.aimerAcceleration),
-                                                        0)))
+                                                scoringSubsystem.runToPosition(
+                                                        tunableAimerPosition.getAsDouble(), 0)))
                         .onTrue(
                                 new InstantCommand(
-                                        () -> scoringSubsystem.runToPosition(tunableAimerPosition.get(),0)))
-                        .onTrue(
-                                new InstantCommand(
-                                        () -> scoringSubsystem.setAction(ScoringAction.TEMPORARY_SETPOINT)))
+                                        () ->
+                                                scoringSubsystem.setAction(
+                                                        ScoringAction.TEMPORARY_SETPOINT)))
                         .onFalse(
                                 new InstantCommand(
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
@@ -639,8 +640,8 @@ public class RobotContainer {
                         .onTrue(
                                 new InstantCommand(
                                         () ->
-                                                scoringSubsystem.setVolts(tunableAimerVolts.get(),
-                                                        0)))
+                                                scoringSubsystem.setVolts(
+                                                        tunableAimerVolts.getAsDouble(), 0)))
                         .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
 
                 break;
@@ -663,8 +664,8 @@ public class RobotContainer {
                         .onTrue(
                                 new InstantCommand(
                                         () ->
-                                                scoringSubsystem.runToPosition(tunableAimerPosition.get(),
-                                                        0)))
+                                                scoringSubsystem.runToPosition(
+                                                        tunableAimerPosition.getAsDouble(), 0)))
                         .onTrue(
                                 new InstantCommand(
                                         () ->
@@ -689,7 +690,6 @@ public class RobotContainer {
         }
     }
 
-
     public void testPeriodic() {
         LoggedTunableNumber.ifChanged(
                 hashCode(),
@@ -705,12 +705,11 @@ public class RobotContainer {
                 shooterkA);
 
         LoggedTunableNumber.ifChanged(
-                hashCode(), (position) -> scoringSubsystem.runToPosition(position[0], 1), tunableShooterRPM);
-        LoggedTunableNumber.ifChanged(
-                hashCode(), (volts) -> scoringSubsystem.setVolts(volts[0], 1), tunableShooterVolts);
-
-        LoggedTunableNumber.ifChanged(
-                hashCode(), (pid) -> scoringSubsystem.setPID(pid[0], pid[1], pid[2], 0), aimerkP, aimerkI, aimerkD);
+                hashCode(),
+                (pid) -> scoringSubsystem.setPID(pid[0], pid[1], pid[2], 0),
+                aimerkP,
+                aimerkI,
+                aimerkD);
         LoggedTunableNumber.ifChanged(
                 hashCode(),
                 (FF) -> scoringSubsystem.setFF(FF[0], FF[1], FF[2], FF[3], 0),
@@ -718,11 +717,12 @@ public class RobotContainer {
                 aimerkV,
                 aimerkA,
                 aimerkG);
-
         LoggedTunableNumber.ifChanged(
-                hashCode(), (position) -> scoringSubsystem.runToPosition(position[0], 0), tunableAimerPosition);
-        LoggedTunableNumber.ifChanged(
-                hashCode(), (volts) -> scoringSubsystem.setVolts(volts[0], 0), tunableAimerVolts);
+                hashCode(),
+                (MaxProfile) ->
+                        scoringSubsystem.setMaxProfileProperties(MaxProfile[0], MaxProfile[1], 0),
+                aimerProfileMaxVelocity,
+                aimerProfileMaxAcceleration);
     }
 
     private void setUpDriveWithJoysticks() {

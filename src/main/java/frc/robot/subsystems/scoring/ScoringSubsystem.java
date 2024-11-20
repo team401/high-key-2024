@@ -23,7 +23,6 @@ import frc.robot.constants.ScoringConstants;
 import frc.robot.utils.AllianceUtil;
 import frc.robot.utils.FieldFinder;
 import frc.robot.utils.FieldFinder.FieldLocations;
-import frc.robot.utils.LoggedTunableNumber;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -75,7 +74,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         SHOOT,
         AMP_SHOOT,
         ENDGAME,
-        TUNING,
         OVERRIDE,
         TEMPORARY_SETPOINT,
         PASS_PRIME,
@@ -91,7 +89,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         AMP_AIM,
         SHOOT,
         ENDGAME,
-        TUNING,
         OVERRIDE,
         TEMPORARY_SETPOINT,
         TRAP_SCORE,
@@ -174,10 +171,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
             state = ScoringState.AMP_PRIME;
         } else if (action == ScoringAction.ENDGAME || action == ScoringAction.TRAP_SCORE) {
             state = ScoringState.ENDGAME;
-        } else if (action == ScoringAction.TUNING) {
-            state = ScoringState.TUNING;
-            SmartDashboard.putNumber("Test-Mode/AimerGoal", aimerGoalAngleRadTuning);
-            SmartDashboard.putNumber("Test-Mode/ShooterGoal", shooterGoalVelocityRPMTuning);
         } else if (action == ScoringAction.OVERRIDE) {
             state = ScoringState.OVERRIDE;
         }
@@ -416,18 +409,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         }
     }
 
-    private void tuning() {
-        shooterGoalVelocityRPMTuning = SmartDashboard.getNumber("Test-Mode/ShooterGoal", 0.0);
-        aimerGoalAngleRadTuning = SmartDashboard.getNumber("Test-Mode/AimerGoal", 0.0);
-        shooterIo.setShooterVelocityRPM(shooterGoalVelocityRPMTuning);
-        aimerIo.setAimAngleRot(aimerGoalAngleRadTuning);
-        shooterIo.setKickerVolts(kickerVoltsTuning);
-
-        if (action != ScoringAction.TUNING) {
-            state = ScoringState.IDLE;
-        }
-    }
-
     private void override() {
         shooterIo.setKickerVolts(kickerVoltsTuning);
 
@@ -523,8 +504,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         if (state == ScoringState.TEMPORARY_SETPOINT) {
             aimerIo.setAngleClampsRot(
                     ScoringConstants.aimMinAngleRotations, ScoringConstants.aimMaxAngleRotations);
-        } else if (state != ScoringState.TUNING
-                && state != ScoringState.ENDGAME
+        } else if (state != ScoringState.ENDGAME
                 && state != ScoringState.IDLE
                 // && Math.abs(elevatorPositionSupplier.getAsDouble()) < 0.2
                 && !overrideStageAvoidance) {
@@ -582,9 +562,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
             case ENDGAME:
                 endgame(); // TODO: Later
                 break;
-            case TUNING:
-                tuning();
-                break;
             case OVERRIDE:
                 override();
                 break;
@@ -615,7 +592,6 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         Logger.processInputs("scoring/shooterOutputs", shooterOutputs);
         Logger.processInputs("scoring/aimerInputs", aimerInputs);
         Logger.processInputs("scoring/aimerOutputs", aimerOutputs);
-
     }
 
     public void setTuningKickerVolts(double kickerVoltsTuning) {

@@ -30,22 +30,13 @@ public class LoggedTunableNumber implements DoubleSupplier {
     private BooleanSupplier condition = () -> true;
 
     /**
-     * Create a new LoggedTunableNumber
-     *
-     * @param dashboardKey Key on dashboard
-     */
-    public LoggedTunableNumber(String dashboardKey) {
-        this.key = tableKey + "/" + dashboardKey;
-    }
-
-    /**
      * Create a new LoggedTunableNumber with the default value
      *
      * @param dashboardKey Key on dashboard
      * @param defaultValue Default value
      */
     public LoggedTunableNumber(String dashboardKey, double defaultValue) {
-        this(dashboardKey);
+        this.key = tableKey + "/" + dashboardKey;
         initDefault(defaultValue);
     }
 
@@ -54,7 +45,7 @@ public class LoggedTunableNumber implements DoubleSupplier {
      *
      * @param defaultValue The default value
      */
-    public void initDefault(double defaultValue) {
+    private void initDefault(double defaultValue) {
         if (!hasDefault) {
             hasDefault = true;
             this.defaultValue = defaultValue;
@@ -64,12 +55,17 @@ public class LoggedTunableNumber implements DoubleSupplier {
         }
     }
 
+    public void setInitCondition(BooleanSupplier condition) {
+        this.condition = condition;
+    }
+
     /**
      * Get the current value, from dashboard if available and in tuning mode.
      *
      * @return The current value
      */
-    public double get() {
+    @Override
+    public double getAsDouble() {
         if (!hasDefault) {
             return 0.0;
         } else {
@@ -88,7 +84,7 @@ public class LoggedTunableNumber implements DoubleSupplier {
      *     otherwise.
      */
     public boolean hasChanged(int id) {
-        double currentValue = get();
+        double currentValue = getAsDouble();
         Double lastValue = lastHasChangedValues.get(id);
         if (lastValue == null || currentValue != lastValue) {
             lastHasChangedValues.put(id, currentValue);
@@ -111,17 +107,14 @@ public class LoggedTunableNumber implements DoubleSupplier {
             int id, Consumer<double[]> action, LoggedTunableNumber... tunableNumbers) {
         if (Arrays.stream(tunableNumbers).anyMatch(tunableNumber -> tunableNumber.hasChanged(id))) {
             action.accept(
-                    Arrays.stream(tunableNumbers).mapToDouble(LoggedTunableNumber::get).toArray());
+                    Arrays.stream(tunableNumbers)
+                            .mapToDouble(LoggedTunableNumber::getAsDouble)
+                            .toArray());
         }
     }
 
     /** Runs action if any of the tunableNumbers have changed */
     public static void ifChanged(int id, Runnable action, LoggedTunableNumber... tunableNumbers) {
         ifChanged(id, values -> action.run(), tunableNumbers);
-    }
-
-    @Override
-    public double getAsDouble() {
-        return get();
     }
 }
