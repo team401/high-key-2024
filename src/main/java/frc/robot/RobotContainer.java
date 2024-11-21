@@ -288,7 +288,9 @@ public class RobotContainer {
         if (FeatureFlags.runVision) {
             if (drive != null) {
                 tagVision.setCameraConsumer(
-                        (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
+                        (m) ->
+                                drive.addVisionMeasurement(
+                                        m.pose().toPose2d(), m.timestamp(), m.variance()));
             } else {
                 tagVision.setCameraConsumer((m) -> {});
             }
