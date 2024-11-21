@@ -19,7 +19,6 @@ import frc.robot.constants.ConstantsLoader;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
-import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.OrchestraSubsystem;
@@ -500,9 +499,9 @@ public class RobotContainer {
             case "tuning":
                 break;
             case "tuning-shooter":
-                SmartDashboard.putNumber("Test-Mode/shooter/kP", ScoringConstants.shooterkP);
-                SmartDashboard.putNumber("Test-Mode/shooter/kI", ScoringConstants.shooterkI);
-                SmartDashboard.putNumber("Test-Mode/shooter/kD", ScoringConstants.shooterkD);
+                SmartDashboard.putNumber("Test-Mode/shooter/kP", ConstantsLoader.ScoringConstants.shooterkP);
+                SmartDashboard.putNumber("Test-Mode/shooter/kI", ConstantsLoader.ScoringConstants.shooterkI);
+                SmartDashboard.putNumber("Test-Mode/shooter/kD", ConstantsLoader.ScoringConstants.shooterkD);
 
                 SmartDashboard.putNumber("Test-Mode/shooter/setpointPosition", 0.25);
                 SmartDashboard.putNumber("Test-Mode/shooter/volts", 2.0);
@@ -521,13 +520,13 @@ public class RobotContainer {
                                                 scoringSubsystem.setPID(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/shooter/kP",
-                                                                ScoringConstants.shooterkP),
+                                                                ConstantsLoader.ScoringConstants.shooterkP),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/shooter/kI",
-                                                                ScoringConstants.shooterkI),
+                                                                ConstantsLoader.ScoringConstants.shooterkI),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/shooter/kD",
-                                                                ScoringConstants.shooterkD),
+                                                                ConstantsLoader.ScoringConstants.shooterkD),
                                                         1)))
                         .onTrue(
                                 new InstantCommand(
@@ -585,18 +584,18 @@ public class RobotContainer {
                                 new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(0)));
                 break;
             case "tuning-aimer":
-                SmartDashboard.putNumber("Test-Mode/aimer/kP", ScoringConstants.aimerkP);
-                SmartDashboard.putNumber("Test-Mode/aimer/kI", ScoringConstants.aimerkI);
-                SmartDashboard.putNumber("Test-Mode/aimer/kD", ScoringConstants.aimerkD);
+                SmartDashboard.putNumber("Test-Mode/aimer/kP", ConstantsLoader.ScoringConstants.aimerkP);
+                SmartDashboard.putNumber("Test-Mode/aimer/kI", ConstantsLoader.ScoringConstants.aimerkI);
+                SmartDashboard.putNumber("Test-Mode/aimer/kD", ConstantsLoader.ScoringConstants.aimerkD);
 
-                SmartDashboard.putNumber("Test-Mode/aimer/kG", ScoringConstants.aimerkG);
-                SmartDashboard.putNumber("Test-Mode/aimer/kS", ScoringConstants.aimerkS);
+                SmartDashboard.putNumber("Test-Mode/aimer/kG", ConstantsLoader.ScoringConstants.aimerkG);
+                SmartDashboard.putNumber("Test-Mode/aimer/kS", ConstantsLoader.ScoringConstants.aimerkS);
 
                 SmartDashboard.putNumber(
-                        "Test-Mode/aimer/profileMaxVelocity", ScoringConstants.aimerCruiseVelocity);
+                        "Test-Mode/aimer/profileMaxVelocity", ConstantsLoader.ScoringConstants.aimerCruiseVelocity);
                 SmartDashboard.putNumber(
                         "Test-Mode/aimer/profileMaxAcceleration",
-                        ScoringConstants.aimerAcceleration);
+                        ConstantsLoader.ScoringConstants.aimerAcceleration);
 
                 SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.25);
                 SmartDashboard.putNumber("Test-Mode/aimer/volts", 2.0);
@@ -614,13 +613,13 @@ public class RobotContainer {
                                                 scoringSubsystem.setPID(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kP",
-                                                                ScoringConstants.aimerkP),
+                                                                ConstantsLoader.ScoringConstants.aimerkP),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kI",
-                                                                ScoringConstants.aimerkI),
+                                                                ConstantsLoader.ScoringConstants.aimerkI),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kD",
-                                                                ScoringConstants.aimerkD),
+                                                                ConstantsLoader.ScoringConstants.aimerkD),
                                                         0)))
                         .onTrue(
                                 new InstantCommand(
@@ -628,11 +627,11 @@ public class RobotContainer {
                                                 scoringSubsystem.setMaxProfileProperties(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/profileMaxVelocity",
-                                                                ScoringConstants
+                                                                ConstantsLoader.ScoringConstants
                                                                         .aimerCruiseVelocity),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/profileMaxAcceleration",
-                                                                ScoringConstants.aimerAcceleration),
+                                                                ConstantsLoader.ScoringConstants.aimerAcceleration),
                                                         0)))
                         .onTrue(
                                 new InstantCommand(
@@ -640,12 +639,12 @@ public class RobotContainer {
                                                 scoringSubsystem.setFF(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kS",
-                                                                ScoringConstants.aimerkS),
+                                                                ConstantsLoader.ScoringConstants.aimerkS),
                                                         0.0,
                                                         0.0,
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kG",
-                                                                ScoringConstants.aimerkG),
+                                                                ConstantsLoader.ScoringConstants.aimerkG),
                                                         0)))
                         .onTrue(
                                 new InstantCommand(
@@ -709,7 +708,7 @@ public class RobotContainer {
             case "tuning-amp":
                 SmartDashboard.putNumber(
                         "Test-Mode/amp/aimerSetpointPosition",
-                        ScoringConstants.ampAimerAngleRotations);
+                        ConstantsLoader.ScoringConstants.ampAimerAngleRotations);
 
                 // Let us drive
                 CommandScheduler.getInstance().cancelAll();

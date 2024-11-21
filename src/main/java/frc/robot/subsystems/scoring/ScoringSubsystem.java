@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.ModeConstants.Mode;
-import frc.robot.constants.ScoringConstants;
+import frc.robot.constants.ConstantsLoader;
 import frc.robot.utils.AllianceUtil;
 import frc.robot.utils.FieldFinder;
 import frc.robot.utils.FieldFinder.FieldLocations;
@@ -111,15 +111,15 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         this.shooterIo = shooterIo;
         this.aimerIo = aimerIo;
 
-        shooterInterpolated = new InterpolateDouble(ScoringConstants.getShooterMap());
+        shooterInterpolated = new InterpolateDouble(ConstantsLoader.ScoringConstants.getShooterMap());
 
         aimerInterpolated =
                 new InterpolateDouble(
-                        ScoringConstants.getAimerMap(),
-                        ScoringConstants.aimMinAngleRotations,
-                        ScoringConstants.aimMaxAngleRotations);
+                        ConstantsLoader.ScoringConstants.getAimerMap(),
+                        ConstantsLoader.ScoringConstants.aimMinAngleRotations,
+                        ConstantsLoader.ScoringConstants.aimMaxAngleRotations);
 
-        aimerAngleTolerance = new InterpolateDouble(ScoringConstants.aimerToleranceTable());
+        aimerAngleTolerance = new InterpolateDouble(ConstantsLoader.ScoringConstants.aimerToleranceTable());
 
         if (ModeConstants.currentMode == Mode.SIM) {
             mechanism = new Mechanism2d(2.2, 2.0);
@@ -143,7 +143,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private void idle() {
         // aimerIo.setAimAngleRad(ScoringConstants.aimMinAngleRotations + 0.001);
         // Todo: if we can trust aimer, figure out if we really need to add 0.001 to the min angle
-        aimerIo.setAimAngleRot(ScoringConstants.aimMinAngleRotations);
+        aimerIo.setAimAngleRot(ConstantsLoader.ScoringConstants.aimMinAngleRotations);
         shooterIo.setShooterVelocityRPM(0);
         shooterIo.setKickerVolts(0);
 
@@ -183,11 +183,11 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void intake() {
-        aimerIo.setAimAngleRot(ScoringConstants.aimMinAngleRotations);
+        aimerIo.setAimAngleRot(ConstantsLoader.ScoringConstants.aimMinAngleRotations);
         aimerIo.setNegativeHomeLockMode(true);
 
         if (!hasNote()) {
-            shooterIo.setKickerVolts(ScoringConstants.kickerIntakeVolts);
+            shooterIo.setKickerVolts(ConstantsLoader.ScoringConstants.kickerIntakeVolts);
         } else {
             shooterIo.setKickerVolts(0.0);
         }
@@ -235,24 +235,24 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         shooterIo.setShooterVelocityRPM(shooterInterpolated.getValue(distanceToGoal));
         aimerIo.setAimAngleRot(getAimerAngle(distanceToGoal));
         if (!overrideBeamBreak) {
-            shooterIo.setKickerVolts(hasNote() ? 0.0 : ScoringConstants.kickerIntakeVolts);
+            shooterIo.setKickerVolts(hasNote() ? 0.0 : ConstantsLoader.ScoringConstants.kickerIntakeVolts);
         }
 
         boolean shooterReady =
                 shooterInputs.shooterLeftVelocityRPM
                                 < (shooterOutputs.shooterLeftGoalVelocityRPM
-                                        + ScoringConstants.shooterUpperVelocityMarginRPM)
+                                        + ConstantsLoader.ScoringConstants.shooterUpperVelocityMarginRPM)
                         && shooterInputs.shooterLeftVelocityRPM
                                 > (shooterOutputs.shooterLeftGoalVelocityRPM
-                                        - ScoringConstants.shooterLowerVelocityMarginRPM);
+                                        - ConstantsLoader.ScoringConstants.shooterLowerVelocityMarginRPM);
         boolean aimReady =
                 Math.abs(aimerInputs.aimAngleRot - aimerInputs.aimGoalAngleRot)
                                 < aimerAngleTolerance.getValue(distanceToGoal)
                         && Math.abs(aimerInputs.aimVelocityErrorRotPerSec)
-                                < ScoringConstants.aimAngleVelocityMargin;
+                                < ConstantsLoader.ScoringConstants.aimAngleVelocityMargin;
         boolean driveReady =
                 (driveAlignedSupplier.get()
-                        || distanceToGoal < ScoringConstants.minDistanceAlignmentNeeded);
+                        || distanceToGoal < ConstantsLoader.ScoringConstants.minDistanceAlignmentNeeded);
         boolean fieldLocationReady = true;
 
         if (!DriverStation.getAlliance().isPresent()) {
@@ -302,7 +302,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private void ampPrime() {
         // shooterIo.setShooterVelocityRPM(ScoringConstants.shooterAmpVelocityRPM);
         // TODO: Test this out
-        aimerIo.setAimAngleRot(ScoringConstants.ampAimerAngleRotations);
+        aimerIo.setAimAngleRot(ConstantsLoader.ScoringConstants.ampAimerAngleRotations);
         if (action != ScoringAction.SHOOT && action != ScoringAction.AMP_AIM) {
             state = ScoringState.IDLE;
         } else if (action == ScoringAction.SHOOT) {
@@ -314,23 +314,23 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void passPrime() {
-        aimerIo.setAimAngleRot(ScoringConstants.passLocationRot);
-        shooterIo.setShooterVelocityRPM(ScoringConstants.passShooterRpm);
+        aimerIo.setAimAngleRot(ConstantsLoader.ScoringConstants.passLocationRot);
+        shooterIo.setShooterVelocityRPM(ConstantsLoader.ScoringConstants.passShooterRpm);
 
         boolean notePresent = overrideBeamBreak ? true : hasNote();
 
         boolean shooterReady =
                 shooterInputs.shooterLeftVelocityRPM
                                 < (shooterOutputs.shooterLeftGoalVelocityRPM
-                                        + ScoringConstants.shooterUpperVelocityMarginRPM)
+                                        + ConstantsLoader.ScoringConstants.shooterUpperVelocityMarginRPM)
                         && shooterInputs.shooterLeftVelocityRPM
                                 > (shooterOutputs.shooterLeftGoalVelocityRPM
-                                        - ScoringConstants.shooterLowerVelocityMarginRPM);
+                                        - ConstantsLoader.ScoringConstants.shooterLowerVelocityMarginRPM);
         boolean aimReady =
-                Math.abs(aimerInputs.aimAngleRot - ScoringConstants.passLocationRot)
-                                < ScoringConstants.passAngleToleranceRot
+                Math.abs(aimerInputs.aimAngleRot - ConstantsLoader.ScoringConstants.passLocationRot)
+                                < ConstantsLoader.ScoringConstants.passAngleToleranceRot
                         && Math.abs(aimerInputs.aimVelocityErrorRotPerSec)
-                                < ScoringConstants.aimAngleVelocityMargin;
+                                < ConstantsLoader.ScoringConstants.aimAngleVelocityMargin;
 
         boolean driveReady = driveAlignedSupplier.get();
 
@@ -373,7 +373,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     private void ampShoot() {
         shooterIo.setKickerVolts(-12); // TODO: Test if this kicks note forward or backward
-        aimerIo.setAimAngleRot(ScoringConstants.ampAimerAngleRotations);
+        aimerIo.setAimAngleRot(ConstantsLoader.ScoringConstants.ampAimerAngleRotations);
 
         // Revert to amp prime after we shoot the note
         // This will keep the arm up and allow the driver to drive away from the amp before the arm
@@ -394,8 +394,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
     }
 
     private void passShoot() {
-        aimerIo.setAimAngleRot(ScoringConstants.passLocationRot);
-        shooterIo.setShooterVelocityRPM(ScoringConstants.passShooterRpm);
+        aimerIo.setAimAngleRot(ConstantsLoader.ScoringConstants.passLocationRot);
+        shooterIo.setShooterVelocityRPM(ConstantsLoader.ScoringConstants.passShooterRpm);
 
         shooterIo.setKickerVolts(12);
 
@@ -471,8 +471,8 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     public boolean aimerAtIntakePosition() {
         return aimerInputs.aimAngleRot
-                < ScoringConstants.aimMinAngleRotations
-                        + ScoringConstants.intakeAngleToleranceRotations;
+                < ConstantsLoader.ScoringConstants.aimMinAngleRotations
+                        + ConstantsLoader.ScoringConstants.intakeAngleToleranceRotations;
         // return true;\][]
     }
 
@@ -510,7 +510,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         // Intake will set it to true later in the loop.
 
         if (!SmartDashboard.containsKey("Aimer Offset")) {
-            SmartDashboard.putNumber("Aimer Offset", ScoringConstants.aimerStaticOffset);
+            SmartDashboard.putNumber("Aimer Offset", ConstantsLoader.ScoringConstants.aimerStaticOffset);
         }
 
         if (!SmartDashboard.containsKey("Beam Break Overridden")) {
@@ -521,13 +521,13 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
         if (state == ScoringState.TEMPORARY_SETPOINT) {
             aimerIo.setAngleClampsRot(
-                    ScoringConstants.aimMinAngleRotations, ScoringConstants.aimMaxAngleRotations);
+                    ConstantsLoader.ScoringConstants.aimMinAngleRotations, ConstantsLoader.ScoringConstants.aimMaxAngleRotations);
         } else if (state != ScoringState.TUNING
                 && state != ScoringState.ENDGAME
                 && state != ScoringState.IDLE
                 // && Math.abs(elevatorPositionSupplier.getAsDouble()) < 0.2
                 && !overrideStageAvoidance) {
-            aimerIo.setAngleClampsRot(ScoringConstants.aimMinAngleRotations, 0);
+            aimerIo.setAngleClampsRot(ConstantsLoader.ScoringConstants.aimMinAngleRotations, 0);
         }
 
         aimerIo.controlAimAngleRot();
@@ -642,7 +642,7 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
 
     public double getAimerAngle(double distance) {
         return aimerInterpolated.getValue(distance)
-                + SmartDashboard.getNumber("Aimer Offset", ScoringConstants.aimerStaticOffset);
+                + SmartDashboard.getNumber("Aimer Offset", ConstantsLoader.ScoringConstants.aimerStaticOffset);
     }
 
     @Override
