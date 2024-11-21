@@ -14,7 +14,6 @@ public class ConstantsLoader {
      */
     public static DriverConstantsSchema DriverConstants;
     public static FeatureFlagsSchema FeatureFlags;
-    public static FieldConstantsSchema FieldConstants;
 
     public static void loadDriverConstants() {
         JSONSync<DriverConstantsSchema> synced =
@@ -34,15 +33,5 @@ public class ConstantsLoader {
                         new JSONSync.JSONSyncConfigBuilder().build());
         synced.loadData();
         FeatureFlags = synced.getObject();
-    }
-
-    public static void loadFieldConstants() {
-                JSONSync<FieldConstantsSchema> synced =
-                new JSONSync<FieldConstantsSchema>(
-                        new FieldConstantsSchema(),
-                        "./DriverConstants.json",
-                        new JSONSync.JSONSyncConfigBuilder().build());
-        synced.loadData();
-        FieldConstants = synced.getObject();
     }
 }
