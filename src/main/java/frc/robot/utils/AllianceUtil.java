@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.constants.FieldConstants;
+import frc.robot.constants.ConstantsLoader.FieldConstants;
 import org.littletonrobotics.junction.Logger;
 
 public class AllianceUtil {
@@ -13,93 +13,93 @@ public class AllianceUtil {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    Logger.recordOutput("Field/speaker", FieldConstants.fieldToBlueSpeaker);
-                    return FieldConstants.fieldToBlueSpeaker;
+                    Logger.recordOutput("Field/speaker", ConstantsLoader.FieldConstants.fieldToBlueSpeaker);
+                    return ConstantsLoader.FieldConstants.fieldToBlueSpeaker;
                 case Red:
-                    Logger.recordOutput("Field/speaker", FieldConstants.fieldToRedSpeaker);
-                    return FieldConstants.fieldToRedSpeaker;
+                    Logger.recordOutput("Field/speaker", ConstantsLoader.FieldConstants.fieldToRedSpeaker);
+                    return ConstantsLoader.FieldConstants.fieldToRedSpeaker;
             }
         }
-        return FieldConstants.fieldToRedSpeaker;
+        return ConstantsLoader.FieldConstants.fieldToRedSpeaker;
     }
 
     public static Rotation2d getAmpHeading() {
-        Logger.recordOutput("Field/amp", FieldConstants.ampHeading);
-        return FieldConstants.ampHeading;
+        Logger.recordOutput("Field/amp", ConstantsLoader.FieldConstants.ampHeading);
+        return ConstantsLoader.FieldConstants.ampHeading;
     }
 
     public static Pose2d getPoseAgainstSpeaker() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstBlueSpeaker;
+                    return ConstantsLoader.FieldConstants.robotAgainstBlueSpeaker;
                 case Red:
-                    return FieldConstants.robotAgainstRedSpeaker;
+                    return ConstantsLoader.FieldConstants.robotAgainstRedSpeaker;
             }
         }
-        return FieldConstants.robotAgainstRedSpeaker;
+        return ConstantsLoader.FieldConstants.robotAgainstRedSpeaker;
     }
 
     public static Pose2d getPoseAgainstSpeakerLeft() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstBlueSpeakerLeft;
+                    return ConstantsLoader.FieldConstants.robotAgainstBlueSpeakerLeft;
                 case Red:
-                    return FieldConstants.robotAgainstRedSpeakerLeft;
+                    return ConstantsLoader.FieldConstants.robotAgainstRedSpeakerLeft;
             }
         }
-        return FieldConstants.robotAgainstRedSpeakerLeft;
+        return ConstantsLoader.FieldConstants.robotAgainstRedSpeakerLeft;
     }
 
     public static Pose2d getPoseAgainstSpeakerRight() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstBlueSpeakerRight;
+                    return ConstantsLoader.FieldConstants.robotAgainstBlueSpeakerRight;
                 case Red:
-                    return FieldConstants.robotAgainstRedSpeakerRight;
+                    return ConstantsLoader.FieldConstants.robotAgainstRedSpeakerRight;
             }
         }
-        return FieldConstants.robotAgainstRedSpeakerRight;
+        return ConstantsLoader.FieldConstants.robotAgainstRedSpeakerRight;
     }
 
     public static Pose2d getPoseAgainstPodium() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstBluePodium;
+                    return ConstantsLoader.FieldConstants.robotAgainstBluePodium;
                 case Red:
-                    return FieldConstants.robotAgainstRedPodium;
+                    return ConstantsLoader.FieldConstants.robotAgainstRedPodium;
             }
         }
-        return FieldConstants.robotAgainstRedPodium;
+        return ConstantsLoader.FieldConstants.robotAgainstRedPodium;
     }
 
     public static Pose2d getPoseAgainstAmpZone() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return FieldConstants.robotAgainstRedAmpZone;
+                    return ConstantsLoader.FieldConstants.robotAgainstRedAmpZone;
                 case Red:
-                    return FieldConstants.robotAgainstBlueAmpZone;
+                    return ConstantsLoader.FieldConstants.robotAgainstBlueAmpZone;
             }
         }
-        return FieldConstants.robotAgainstRedAmpZone;
+        return ConstantsLoader.FieldConstants.robotAgainstRedAmpZone;
     }
 
     public static Rotation2d getSourceHeading() {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    Logger.recordOutput("Field/source", FieldConstants.blueSourceHeading);
-                    return FieldConstants.blueSourceHeading;
+                    Logger.recordOutput("Field/source", ConstantsLoader.FieldConstants.blueSourceHeading);
+                    return ConstantsLoader.FieldConstants.blueSourceHeading;
                 case Red:
-                    Logger.recordOutput("Field/source", FieldConstants.redSourceHeading);
-                    return FieldConstants.redSourceHeading;
+                    Logger.recordOutput("Field/source", ConstantsLoader.FieldConstants.redSourceHeading);
+                    return ConstantsLoader.FieldConstants.redSourceHeading;
             }
         }
-        return FieldConstants.redSourceHeading;
+        return ConstantsLoader.FieldConstants.redSourceHeading;
     }
 
     /** Returns whether the speaker is significantly to the robot's left */
@@ -107,12 +107,12 @@ public class AllianceUtil {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return robotY > FieldConstants.fieldToBlueSpeaker.getY() + tolerance;
+                    return robotY > ConstantsLoader.FieldConstants.fieldToBlueSpeaker.getY() + tolerance;
                 case Red:
-                    return robotY < FieldConstants.fieldToRedSpeaker.getY() - tolerance;
+                    return robotY < ConstantsLoader.FieldConstants.fieldToRedSpeaker.getY() - tolerance;
             }
         }
-        return robotY < FieldConstants.fieldToRedSpeaker.getY() - tolerance;
+        return robotY < ConstantsLoader.FieldConstants.fieldToRedSpeaker.getY() - tolerance;
     }
 
     /** Returns whether the speaker is significantly to the robot's right */
@@ -120,11 +120,11 @@ public class AllianceUtil {
         if (!DriverStation.getAlliance().isEmpty()) {
             switch (DriverStation.getAlliance().get()) {
                 case Blue:
-                    return robotY < FieldConstants.fieldToBlueSpeaker.getY() - tolerance;
+                    return robotY < ConstantsLoader.FieldConstants.fieldToBlueSpeaker.getY() - tolerance;
                 case Red:
-                    return robotY > FieldConstants.fieldToRedSpeaker.getY() + tolerance;
+                    return robotY > ConstantsLoader.FieldConstants.fieldToRedSpeaker.getY() + tolerance;
             }
         }
-        return robotY > FieldConstants.fieldToRedSpeaker.getY() + tolerance;
+        return robotY > ConstantsLoader.FieldConstants.fieldToRedSpeaker.getY() + tolerance;
     }
 }
