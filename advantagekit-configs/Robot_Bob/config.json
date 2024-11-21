@@ -1,6 +1,6 @@
 {
     "name": "Bob",
-    "sourceUrl": "https://cad.onshape.com/documents/6b455512eedb2cb04c66b696/w/bfa73f83165a18c7c9702a7f/e/5bb0500715c8bc5745cec3c8",
+    "sourceUrl": "https://cad.onshape.com/documents/b4f4b0ec75c0805972d6472c/w/391119eb1d4c6c3e4bb5abc8/e/01dc9e2cfecf88c5ca32652c",
     "rotations": [
         {
             "axis": "x",
@@ -22,48 +22,6 @@
     ],
     "cameras": [],
     "components": [
-        {
-            "zeroedRotations": [
-                {
-                    "axis": "x",
-                    "degrees": 90
-                },
-                {
-                    "axis": "y",
-                    "degrees": 0
-                },
-                {
-                    "axis": "z",
-                    "degrees": 90
-                }
-            ],
-            "zeroedPosition": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "zeroedRotations": [
-                {
-                    "axis": "x",
-                    "degrees": 90
-                },
-                {
-                    "axis": "y",
-                    "degrees": 0
-                },
-                {
-                    "axis": "z",
-                    "degrees": 270
-                }
-            ],
-            "zeroedPosition": [
-                0,
-                0,
-                0
-            ]
-        },
         {
             "zeroedRotations": [
                 {
