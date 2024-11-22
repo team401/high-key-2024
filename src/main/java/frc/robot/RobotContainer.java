@@ -17,9 +17,8 @@ import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.ShootWithGamepad;
 import frc.robot.constants.ConstantsLoader;
 import frc.robot.constants.ModeConstants;
-import frc.robot.constants.PhoenixDriveConstants;
-import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
 import frc.robot.constants.VisionConstants;
+import frc.robot.constants.PhoenixDriveConstantsSchema.AlignTarget;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.OrchestraSubsystem;
 import frc.robot.subsystems.drive.PhoenixDrive;
@@ -134,32 +133,32 @@ public class RobotContainer {
             case REAL:
                 drive =
                         new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
+                                ConstantsLoader.PhoenixDriveConstants.DrivetrainConstants,
+                                ConstantsLoader.PhoenixDriveConstants.FrontLeft,
+                                ConstantsLoader.PhoenixDriveConstants.FrontRight,
+                                ConstantsLoader.PhoenixDriveConstants.BackLeft,
+                                ConstantsLoader.PhoenixDriveConstants.BackRight);
                 logger = new Telemetry(6);
                 break;
             case SIM:
                 drive =
                         new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
+                                ConstantsLoader.PhoenixDriveConstants.DrivetrainConstants,
+                                ConstantsLoader.PhoenixDriveConstants.FrontLeft,
+                                ConstantsLoader.PhoenixDriveConstants.FrontRight,
+                                ConstantsLoader.PhoenixDriveConstants.BackLeft,
+                                ConstantsLoader.PhoenixDriveConstants.BackRight);
 
                 logger = new Telemetry(6);
                 break;
             case REPLAY:
                 drive =
                         new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
+                                ConstantsLoader.PhoenixDriveConstants.DrivetrainConstants,
+                                ConstantsLoader.PhoenixDriveConstants.FrontLeft,
+                                ConstantsLoader.PhoenixDriveConstants.FrontRight,
+                                ConstantsLoader.PhoenixDriveConstants.BackLeft,
+                                ConstantsLoader.PhoenixDriveConstants.BackRight);
 
                 logger = new Telemetry(6);
                 break;

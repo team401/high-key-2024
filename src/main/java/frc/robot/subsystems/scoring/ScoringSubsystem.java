@@ -111,15 +111,15 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         this.shooterIo = shooterIo;
         this.aimerIo = aimerIo;
 
-        shooterInterpolated = new InterpolateDouble(ConstantsLoader.ScoringConstants.getShooterMap());
+        shooterInterpolated = new InterpolateDouble(ConstantsLoader.ScoringConstants.shooterMap);
 
         aimerInterpolated =
                 new InterpolateDouble(
-                        ConstantsLoader.ScoringConstants.getAimerMap(),
+                        ConstantsLoader.ScoringConstants.aimerMap,
                         ConstantsLoader.ScoringConstants.aimMinAngleRotations,
                         ConstantsLoader.ScoringConstants.aimMaxAngleRotations);
 
-        aimerAngleTolerance = new InterpolateDouble(ConstantsLoader.ScoringConstants.aimerToleranceTable());
+        aimerAngleTolerance = new InterpolateDouble(ConstantsLoader.ScoringConstants.aimerToleranceMap);
 
         if (ModeConstants.currentMode == Mode.SIM) {
             mechanism = new Mechanism2d(2.2, 2.0);

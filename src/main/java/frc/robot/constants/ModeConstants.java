@@ -3,7 +3,7 @@ package frc.robot.constants;
 import frc.robot.Robot;
 
 public  class ModeConstants {
-    public  enum Mode {
+    public static enum Mode {
         REAL,
         SIM,
         REPLAY
@@ -11,7 +11,7 @@ public  class ModeConstants {
 
     // Whether sim should be treated as sim or replay mode.
     // Will automatically be overridden by Mode.REAL if running on real hardware.
-    public   Mode simMode = Mode.SIM; // Mode.SIM or Mode.REPLAY
+    public static  Mode simMode = Mode.SIM; // Mode.SIM or Mode.REPLAY
 
-    public   Mode currentMode = Robot.isReal() ? Mode.REAL : simMode;
+    public static  Mode currentMode = Robot.isReal() ? Mode.REAL : simMode;
 }

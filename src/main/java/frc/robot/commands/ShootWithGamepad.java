@@ -2,7 +2,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
+import frc.robot.constants.ConstantsLoader;
+import frc.robot.constants.PhoenixDriveConstantsSchema.AlignTarget;
 import frc.robot.subsystems.scoring.ScoringSubsystem;
 import frc.robot.subsystems.scoring.ScoringSubsystem.ScoringAction;
 import java.util.function.BooleanSupplier;

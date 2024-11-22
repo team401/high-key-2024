@@ -8,7 +8,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.constants.ConstantsLoader;
-import frc.robot.constants.PhoenixDriveConstants;
 import frc.robot.subsystems.drive.PhoenixDrive;
 
 public class DriveWithJoysticks extends Command {
@@ -52,14 +51,14 @@ public class DriveWithJoysticks extends Command {
                         leftJoystick.getX(),
                         leftJoystick.getY(),
                         ConstantsLoader.DriverConstants.joystickDeadband);
-        double filteredVY = -leftJoystickDeadbanded[1] * PhoenixDriveConstants.maxSpeedMetPerSec;
-        double filteredVX = -leftJoystickDeadbanded[0] * PhoenixDriveConstants.maxSpeedMetPerSec;
+        double filteredVY = -leftJoystickDeadbanded[1] * ConstantsLoader.PhoenixDriveConstants.maxSpeedMetPerSec;
+        double filteredVX = -leftJoystickDeadbanded[0] * ConstantsLoader.PhoenixDriveConstants.maxSpeedMetPerSec;
 
         double rightJoystickDeadbanded =
                 Deadband.oneAxisDeadband(
                         rightJoystick.getX(), ConstantsLoader.DriverConstants.joystickDeadband);
         double filteredOmega =
-                -rightJoystickDeadbanded * PhoenixDriveConstants.MaxAngularRateRadPerSec;
+                -rightJoystickDeadbanded * ConstantsLoader.PhoenixDriveConstants.MaxAngularRateRadPerSec;
 
         chassisSpeeds = new ChassisSpeeds(filteredVY, filteredVX, filteredOmega);
         drivetrain.setGoalSpeeds(chassisSpeeds, true);
