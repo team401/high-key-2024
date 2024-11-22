@@ -32,8 +32,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.FieldConstants;
-import frc.robot.constants.PhoenixDriveConstants;
-import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
+import frc.robot.constants.PhoenixDriveConstantsSchema.AlignTarget;
+import frc.robot.constants.ConstantsLoader;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
@@ -61,9 +61,9 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
     private Rotation2d goalRotation = new Rotation2d();
     private PIDController thetaController =
             new PIDController(
-                    PhoenixDriveConstants.alignmentkP,
-                    PhoenixDriveConstants.alignmentkI,
-                    PhoenixDriveConstants.alignmentkD);
+                    ConstantsLoader.PhoenixDriveConstants.alignmentkP,
+                    ConstantsLoader.PhoenixDriveConstants.alignmentkI,
+                    ConstantsLoader.PhoenixDriveConstants.alignmentkD);
 
     private final SwerveRequest.SysIdSwerveTranslation TranslationCharacterization =
             new SwerveRequest.SysIdSwerveTranslation();
@@ -130,7 +130,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         }
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-        thetaController.setTolerance(PhoenixDriveConstants.alignToleranceRadians);
+        thetaController.setTolerance(ConstantsLoader.PhoenixDriveConstants.alignToleranceRadians);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -144,7 +144,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
         }
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-        thetaController.setTolerance(PhoenixDriveConstants.alignToleranceRadians);
+        thetaController.setTolerance(ConstantsLoader.PhoenixDriveConstants.alignToleranceRadians);
 
         CommandScheduler.getInstance().registerSubsystem(this);
     }
@@ -166,7 +166,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                 new HolonomicPathFollowerConfig(
                         new PIDConstants(0.1),
                         new PIDConstants(0.1, 0, 0),
-                        PhoenixDriveConstants.kSpeedAt12VoltsMps,
+                        ConstantsLoader.PhoenixDriveConstants.kSpeedAt12VoltsMps,
                         driveBaseRadius,
                         new ReplanningConfig(false, false)),
                 () -> DriverStation.getAlliance().get() == Alliance.Red,
@@ -198,7 +198,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
                             updateSimState(deltaTime, RobotController.getBatteryVoltage());
                         });
 
-        simNotifier.startPeriodic(PhoenixDriveConstants.kSimLoopPeriod);
+        simNotifier.startPeriodic(ConstantsLoader.PhoenixDriveConstants.kSimLoopPeriod);
     }
 
     public ChassisSpeeds getCurrentSpeeds() {

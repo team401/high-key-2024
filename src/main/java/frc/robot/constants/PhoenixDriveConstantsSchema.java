@@ -5,13 +5,16 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants.SteerFeedbackType;
+
+import coppercore.parameter_tools.JSONExclude;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
-public final class PhoenixDriveConstants {
-    public enum AlignTarget {
+public  class PhoenixDriveConstantsSchema {
+   public enum AlignTarget {
         NONE,
         AMP,
         SPEAKER,
@@ -26,9 +29,24 @@ public final class PhoenixDriveConstants {
 
     // Both sets of gains need to be tuned to your individual robot.
 
+    public double steerKP = 150;
+    public double steerKI = 50;
+    public double steerKD = 0.2;
+    public double steerKS = 0.25;
+    public double steerKV = 1.5;
+    public double steerKA = 0;
+
+    public double driveKP = 0.1;
+    public double driveKI = 12.0;
+    public double driveKD = 0.0;
+    public double driveKS = 0.1;
+    public double driveKV = 0.12;
+    public double driveKA = 0.01;
+
+
     // The steer motor uses any SwerveModule.SteerRequestType control request with the
     // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
-    public static final Slot0Configs steerGains =
+    @JSONExclude public   Slot0Configs steerGains =
             new Slot0Configs()
                     .withKP(150)
                     .withKI(50)
@@ -38,7 +56,7 @@ public final class PhoenixDriveConstants {
                     .withKA(0);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
-    public static final Slot0Configs driveGains =
+    @JSONExclude public   Slot0Configs driveGains =
             new Slot0Configs()
                     .withKP(0.1)
                     .withKI(12.0)
@@ -47,53 +65,53 @@ public final class PhoenixDriveConstants {
                     .withKV(0.12)
                     .withKA(0.01);
 
-    public static final double alignmentkP = 4.0;
-    public static final double alignmentkI = 0.0;
-    public static final double alignmentkD = 0.0;
-    public static final double alignToleranceRadians = 0.1;
+    public   double alignmentkP = 4.0;
+    public   double alignmentkI = 0.0;
+    public   double alignmentkD = 0.0;
+    public   double alignToleranceRadians = 0.1;
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
-    private static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    @JSONExclude public   ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     // The closed-loop output type to use for the drive motors;
     // This affects the PID/FF gains for the drive motors
-    private static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
+    @JSONExclude public   ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
-    private static final double kSlipCurrentA = 80;
+    public   double kSlipCurrentA = 80;
 
-    public static final double kSpeedAt12VoltsMps = 5.02; // 5.21 OR 5.02
-    public static final double maxSpeedMetPerSec = 6;
-    public static final double MaxAngularRateRadPerSec = Math.PI * 2;
+    public   double kSpeedAt12VoltsMps = 5.02; // 5.21 OR 5.02
+    public   double maxSpeedMetPerSec = 6;
+    public   double MaxAngularRateRadPerSec = Math.PI * 2;
 
-    public static final double autoAlignmentkP = 5.0;
-    public static final double autoAlignmentkI = 5.5;
-    public static final double autoAlignmentkD = 0.0;
+    public   double autoAlignmentkP = 5.0;
+    public   double autoAlignmentkI = 5.5;
+    public   double autoAlignmentkD = 0.0;
 
     // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
     // This may need to be tuned to your individual robot
-    private static final double kCoupleRatio = 3.5714285714285716;
+    public   double kCoupleRatio = 3.5714285714285716;
 
-    private static final double kDriveGearRatio = 5.142857;
-    private static final double kSteerGearRatio = 25;
-    private static final double kWheelRadiusInches = 2;
+    public   double kDriveGearRatio = 5.142857;
+    public   double kSteerGearRatio = 25;
+    public   double kWheelRadiusInches = 2;
 
-    private static final boolean kInvertLeftSide = false;
-    private static final boolean kInvertRightSide = true;
+    public   boolean kInvertLeftSide = false;
+    public   boolean kInvertRightSide = true;
 
-    private static final String kCANbusName = "Canivore";
-    private static final int kPigeonId = 20;
+    public   String kCANbusName = "Canivore";
+    public   int kPigeonId = 20;
 
     // These are only used for simulation
-    private static final double kSteerInertia = 0.00001;
-    private static final double kDriveInertia = 0.001;
+    public   double kSteerInertia = 0.00001;
+    public   double kDriveInertia = 0.001;
     // Simulated voltage necessary to overcome friction
-    private static final double kSteerFrictionVoltage = 0.25;
-    private static final double kDriveFrictionVoltage = 0.25;
+    public   double kSteerFrictionVoltage = 0.25;
+    public   double kDriveFrictionVoltage = 0.25;
 
-    public static final SwerveDrivetrainConstants DrivetrainConstants =
+    @JSONExclude public   SwerveDrivetrainConstants DrivetrainConstants =
             new SwerveDrivetrainConstants().withPigeon2Id(kPigeonId).withCANbusName(kCANbusName);
 
-    private static final SwerveModuleConstantsFactory ConstantCreator =
+    @JSONExclude public   SwerveModuleConstantsFactory ConstantCreator =
             new SwerveModuleConstantsFactory()
                     .withDriveMotorGearRatio(kDriveGearRatio)
                     .withSteerMotorGearRatio(kSteerGearRatio)
@@ -112,53 +130,53 @@ public final class PhoenixDriveConstants {
                     .withCouplingGearRatio(kCoupleRatio);
 
     // sim constants
-    public static final double kSimLoopPeriod = 0.005;
+    public   double kSimLoopPeriod = 0.005;
 
     // Front Left
-    private static final int kFrontLeftDriveMotorId = 7;
-    private static final int kFrontLeftSteerMotorId = 8;
-    private static final int kFrontLeftEncoderId = 9;
-    private static final double kFrontLeftEncoderOffset = -0.267822265625;
-    private static final boolean kFrontLeftSteerInvert = false;
+    public   int kFrontLeftDriveMotorId = 7;
+    public   int kFrontLeftSteerMotorId = 8;
+    public   int kFrontLeftEncoderId = 9;
+    public   double kFrontLeftEncoderOffset = -0.267822265625;
+    public   boolean kFrontLeftSteerInvert = false;
 
-    private static final double kFrontLeftXPosInches = 10.75;
-    private static final double kFrontLeftYPosInches = 11.5;
+    public   double kFrontLeftXPosInches = 10.75;
+    public   double kFrontLeftYPosInches = 11.5;
 
     // Front Right
-    private static final int kFrontRightDriveMotorId = 1;
-    private static final int kFrontRightSteerMotorId = 2;
-    private static final int kFrontRightEncoderId = 12;
-    private static final double kFrontRightEncoderOffset = -0.228271484375;
-    private static final boolean kFrontRightSteerInvert = false;
+    public   int kFrontRightDriveMotorId = 1;
+    public   int kFrontRightSteerMotorId = 2;
+    public   int kFrontRightEncoderId = 12;
+    public   double kFrontRightEncoderOffset = -0.228271484375;
+    public   boolean kFrontRightSteerInvert = false;
 
-    private static final double kFrontRightXPosInches = 10.75;
-    private static final double kFrontRightYPosInches = -11.5;
+    public   double kFrontRightXPosInches = 10.75;
+    public   double kFrontRightYPosInches = -11.5;
 
     // Back Left
-    private static final int kBackLeftDriveMotorId = 5;
-    private static final int kBackLeftSteerMotorId = 6;
-    private static final int kBackLeftEncoderId = 10;
-    private static final double kBackLeftEncoderOffset = .084716796875;
-    private static final boolean kBackLeftSteerInvert = false;
-    private static final boolean kBackLeftDriveInvert = true;
+    public   int kBackLeftDriveMotorId = 5;
+    public   int kBackLeftSteerMotorId = 6;
+    public   int kBackLeftEncoderId = 10;
+    public   double kBackLeftEncoderOffset = .084716796875;
+    public   boolean kBackLeftSteerInvert = false;
+    public   boolean kBackLeftDriveInvert = true;
 
-    private static final double kBackLeftXPosInches = -10.75;
-    private static final double kBackLeftYPosInches = 11.5;
+    public   double kBackLeftXPosInches = -10.75;
+    public   double kBackLeftYPosInches = 11.5;
 
     // Back Right
-    private static final int kBackRightDriveMotorId = 3;
-    private static final int kBackRightSteerMotorId = 4;
-    private static final int kBackRightEncoderId = 11;
-    private static final double kBackRightEncoderOffset = 0.39990234375;
-    private static final boolean kBackRightSteerInvert = true;
+    public   int kBackRightDriveMotorId = 3;
+    public   int kBackRightSteerMotorId = 4;
+    public   int kBackRightEncoderId = 11;
+    public   double kBackRightEncoderOffset = 0.39990234375;
+    public   boolean kBackRightSteerInvert = true;
 
-    private static final double kBackRightXPosInches = -10.75;
-    private static final double kBackRightYPosInches = -11.5;
+    public   double kBackRightXPosInches = -10.75;
+    public   double kBackRightYPosInches = -11.5;
 
-    public static final double kModuleRadiusMeters =
+    public   double kModuleRadiusMeters =
             Units.inchesToMeters(Math.hypot(kFrontLeftXPosInches, kFrontLeftYPosInches));
 
-    public static final SwerveModuleConstants FrontLeft =
+    @JSONExclude public   SwerveModuleConstants FrontLeft =
             ConstantCreator.createModuleConstants(
                             kFrontLeftSteerMotorId,
                             kFrontLeftDriveMotorId,
@@ -168,7 +186,7 @@ public final class PhoenixDriveConstants {
                             Units.inchesToMeters(kFrontLeftYPosInches),
                             kInvertLeftSide)
                     .withSteerMotorInverted(kFrontLeftSteerInvert);
-    public static final SwerveModuleConstants FrontRight =
+    @JSONExclude public   SwerveModuleConstants FrontRight =
             ConstantCreator.createModuleConstants(
                             kFrontRightSteerMotorId,
                             kFrontRightDriveMotorId,
@@ -178,7 +196,7 @@ public final class PhoenixDriveConstants {
                             Units.inchesToMeters(kFrontRightYPosInches),
                             kInvertRightSide)
                     .withSteerMotorInverted(kFrontRightSteerInvert);
-    public static final SwerveModuleConstants BackLeft =
+    @JSONExclude public   SwerveModuleConstants BackLeft =
             ConstantCreator.createModuleConstants(
                             kBackLeftSteerMotorId,
                             kBackLeftDriveMotorId,
@@ -189,7 +207,7 @@ public final class PhoenixDriveConstants {
                             kInvertLeftSide)
                     .withSteerMotorInverted(kBackLeftSteerInvert)
                     .withDriveMotorInverted(kBackLeftDriveInvert);
-    public static final SwerveModuleConstants BackRight =
+    @JSONExclude public   SwerveModuleConstants BackRight =
             ConstantCreator.createModuleConstants(
                             kBackRightSteerMotorId,
                             kBackRightDriveMotorId,
@@ -200,7 +218,7 @@ public final class PhoenixDriveConstants {
                             kInvertRightSide)
                     .withSteerMotorInverted(kBackRightSteerInvert);
 
-    public static final SwerveDriveKinematics kinematics =
+    @JSONExclude public   SwerveDriveKinematics kinematics =
             new SwerveDriveKinematics(
                     new Translation2d(FrontLeft.LocationX, FrontLeft.LocationY),
                     new Translation2d(FrontLeft.LocationX, FrontRight.LocationY),

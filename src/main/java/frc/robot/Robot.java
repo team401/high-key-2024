@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.constants.ConstantsLoader;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.ModeConstants.Mode;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -49,6 +50,8 @@ public class Robot extends LoggedRobot {
               // new
               // log
           }*/
+
+        ConstantsLoader.loadDriverConstants();
         Logger.start();
     }
 

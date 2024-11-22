@@ -15,12 +15,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.ShootWithGamepad;
-import frc.robot.constants.FeatureFlags;
+import frc.robot.constants.ConstantsLoader;
 import frc.robot.constants.ModeConstants;
-import frc.robot.constants.PhoenixDriveConstants;
-import frc.robot.constants.PhoenixDriveConstants.AlignTarget;
-import frc.robot.constants.ScoringConstants;
 import frc.robot.constants.VisionConstants;
+import frc.robot.constants.PhoenixDriveConstantsSchema.AlignTarget;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.OrchestraSubsystem;
 import frc.robot.subsystems.drive.PhoenixDrive;
@@ -108,22 +106,24 @@ public class RobotContainer {
     }
 
     private void configureSubsystems() {
-        if (FeatureFlags.runDrive) {
+        if (ConstantsLoader.FeatureFlags.runDrive) {
             initDrive();
         }
-        if (FeatureFlags.runVision) {
+        if (ConstantsLoader.FeatureFlags.runVision) {
             initVision();
         }
-        if (FeatureFlags.runScoring) {
+        if (ConstantsLoader.FeatureFlags.runScoring) {
             initScoring();
         }
-        if (FeatureFlags.runIntake) {
+        if (ConstantsLoader.FeatureFlags.runIntake) {
             initIntake();
         }
-        if (FeatureFlags.runScoring && FeatureFlags.runIntake && FeatureFlags.runLEDS) {
+        if (ConstantsLoader.FeatureFlags.runScoring
+                && ConstantsLoader.FeatureFlags.runIntake
+                && ConstantsLoader.FeatureFlags.runLEDS) {
             initLEDs();
         }
-        if (FeatureFlags.runOrchestra) {
+        if (ConstantsLoader.FeatureFlags.runOrchestra) {
             initOrchestra();
         }
     }
@@ -133,32 +133,32 @@ public class RobotContainer {
             case REAL:
                 drive =
                         new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
+                                ConstantsLoader.PhoenixDriveConstants.DrivetrainConstants,
+                                ConstantsLoader.PhoenixDriveConstants.FrontLeft,
+                                ConstantsLoader.PhoenixDriveConstants.FrontRight,
+                                ConstantsLoader.PhoenixDriveConstants.BackLeft,
+                                ConstantsLoader.PhoenixDriveConstants.BackRight);
                 logger = new Telemetry(6);
                 break;
             case SIM:
                 drive =
                         new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
+                                ConstantsLoader.PhoenixDriveConstants.DrivetrainConstants,
+                                ConstantsLoader.PhoenixDriveConstants.FrontLeft,
+                                ConstantsLoader.PhoenixDriveConstants.FrontRight,
+                                ConstantsLoader.PhoenixDriveConstants.BackLeft,
+                                ConstantsLoader.PhoenixDriveConstants.BackRight);
 
                 logger = new Telemetry(6);
                 break;
             case REPLAY:
                 drive =
                         new PhoenixDrive(
-                                PhoenixDriveConstants.DrivetrainConstants,
-                                PhoenixDriveConstants.FrontLeft,
-                                PhoenixDriveConstants.FrontRight,
-                                PhoenixDriveConstants.BackLeft,
-                                PhoenixDriveConstants.BackRight);
+                                ConstantsLoader.PhoenixDriveConstants.DrivetrainConstants,
+                                ConstantsLoader.PhoenixDriveConstants.FrontLeft,
+                                ConstantsLoader.PhoenixDriveConstants.FrontRight,
+                                ConstantsLoader.PhoenixDriveConstants.BackLeft,
+                                ConstantsLoader.PhoenixDriveConstants.BackRight);
 
                 logger = new Telemetry(6);
                 break;
@@ -171,7 +171,7 @@ public class RobotContainer {
                 tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
                 break;
             case SIM:
-                if (FeatureFlags.runDrive) {
+                if (ConstantsLoader.FeatureFlags.runDrive) {
                     tagVision =
                             new VisionLocalizer(
                                     new CameraContainerSim(
@@ -227,14 +227,14 @@ public class RobotContainer {
                 orchestraSubsystem =
                         new OrchestraSubsystem(
                                 "music/mii_channel.chrp"); // TODO: Add music files to deploy!
-                if (FeatureFlags.runScoring) {
+                if (ConstantsLoader.FeatureFlags.runScoring) {
                     orchestraSubsystem.addInstruments(
                             scoringSubsystem.getAimerIO().getOrchestraMotors());
                     orchestraSubsystem.addInstruments(
                             scoringSubsystem.getShooterIO().getOrchestraMotors());
                 }
 
-                if (FeatureFlags.runDrive) {
+                if (ConstantsLoader.FeatureFlags.runDrive) {
                     orchestraSubsystem.addInstrument(drive.getModule(0).getDriveMotor());
                     orchestraSubsystem.addInstrument(drive.getModule(0).getSteerMotor());
                     orchestraSubsystem.addInstrument(drive.getModule(1).getDriveMotor());
@@ -250,7 +250,7 @@ public class RobotContainer {
     }
 
     private void configureSuppliers() {
-        if (FeatureFlags.runScoring) {
+        if (ConstantsLoader.FeatureFlags.runScoring) {
             Supplier<Pose2d> poseSupplier;
             if (drive != null) {
                 poseSupplier = () -> drive.getState().Pose;
@@ -262,7 +262,7 @@ public class RobotContainer {
             scoringSubsystem.setDriveAlignedSupplier(() -> drive.isDriveAligned());
         }
 
-        if (FeatureFlags.runIntake) {
+        if (ConstantsLoader.FeatureFlags.runIntake) {
             BooleanSupplier shooterHasNote;
             BooleanSupplier shooterInIntakePosition;
             if (scoringSubsystem != null) {
@@ -282,7 +282,7 @@ public class RobotContainer {
             intakeSubsystem.setShooterAtIntakePosition(shooterInIntakePosition);
         }
 
-        if (FeatureFlags.runVision) {
+        if (ConstantsLoader.FeatureFlags.runVision) {
             if (drive != null) {
                 tagVision.setCameraConsumer(
                         (m) -> drive.addVisionMeasurement(m.pose(), m.timestamp(), m.variance()));
@@ -291,8 +291,8 @@ public class RobotContainer {
             }
         }
 
-        if (FeatureFlags.runLEDS) {
-            if (FeatureFlags.runVision) {
+        if (ConstantsLoader.FeatureFlags.runLEDS) {
+            if (ConstantsLoader.FeatureFlags.runVision) {
                 // leds.setVisionWorkingSupplier(() -> tagVision.coprocessorConnected());
             } else {
                 leds.setVisionWorkingSupplier(() -> false);
@@ -349,7 +349,7 @@ public class RobotContainer {
             }
         }
 
-        if (FeatureFlags.runIntake) {
+        if (ConstantsLoader.FeatureFlags.runIntake) {
             masher.b()
                     .onTrue(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.INTAKE)))
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
@@ -374,7 +374,7 @@ public class RobotContainer {
                     .onFalse(new InstantCommand(() -> intakeSubsystem.run(IntakeAction.NONE)));
         }
 
-        if (FeatureFlags.runScoring) {
+        if (ConstantsLoader.FeatureFlags.runScoring) {
             scoringSubsystem.setDefaultCommand(
                     new ShootWithGamepad(
                             () -> rightJoystick.getHID().getRawButton(4),
@@ -385,7 +385,7 @@ public class RobotContainer {
                             masher.getHID()::getBButton,
                             scoringSubsystem,
                             () -> drive.getAlignTarget()));
-            // FeatureFlags.runDrive ? drivetrain::getAlignTarget : () -> AlignTarget.NONE));
+            // gs.runDrive ? drivetrain::getAlignTarget : () -> AlignTarget.NONE));
 
             rightJoystick
                     .button(11)
@@ -416,7 +416,7 @@ public class RobotContainer {
 
             masher.povUp();
         }
-        if (FeatureFlags.runDrive) {
+        if (ConstantsLoader.FeatureFlags.runDrive) {
             masher.povUp()
                     .onTrue(new InstantCommand(() -> drive.setAlignTarget(AlignTarget.SPEAKER)));
 
@@ -498,9 +498,9 @@ public class RobotContainer {
             case "tuning":
                 break;
             case "tuning-shooter":
-                SmartDashboard.putNumber("Test-Mode/shooter/kP", ScoringConstants.shooterkP);
-                SmartDashboard.putNumber("Test-Mode/shooter/kI", ScoringConstants.shooterkI);
-                SmartDashboard.putNumber("Test-Mode/shooter/kD", ScoringConstants.shooterkD);
+                SmartDashboard.putNumber("Test-Mode/shooter/kP", ConstantsLoader.ScoringConstants.shooterkP);
+                SmartDashboard.putNumber("Test-Mode/shooter/kI", ConstantsLoader.ScoringConstants.shooterkI);
+                SmartDashboard.putNumber("Test-Mode/shooter/kD", ConstantsLoader.ScoringConstants.shooterkD);
 
                 SmartDashboard.putNumber("Test-Mode/shooter/setpointPosition", 0.25);
                 SmartDashboard.putNumber("Test-Mode/shooter/volts", 2.0);
@@ -519,13 +519,13 @@ public class RobotContainer {
                                                 scoringSubsystem.setPID(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/shooter/kP",
-                                                                ScoringConstants.shooterkP),
+                                                                ConstantsLoader.ScoringConstants.shooterkP),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/shooter/kI",
-                                                                ScoringConstants.shooterkI),
+                                                                ConstantsLoader.ScoringConstants.shooterkI),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/shooter/kD",
-                                                                ScoringConstants.shooterkD),
+                                                                ConstantsLoader.ScoringConstants.shooterkD),
                                                         1)))
                         .onTrue(
                                 new InstantCommand(
@@ -583,18 +583,18 @@ public class RobotContainer {
                                 new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(0)));
                 break;
             case "tuning-aimer":
-                SmartDashboard.putNumber("Test-Mode/aimer/kP", ScoringConstants.aimerkP);
-                SmartDashboard.putNumber("Test-Mode/aimer/kI", ScoringConstants.aimerkI);
-                SmartDashboard.putNumber("Test-Mode/aimer/kD", ScoringConstants.aimerkD);
+                SmartDashboard.putNumber("Test-Mode/aimer/kP", ConstantsLoader.ScoringConstants.aimerkP);
+                SmartDashboard.putNumber("Test-Mode/aimer/kI", ConstantsLoader.ScoringConstants.aimerkI);
+                SmartDashboard.putNumber("Test-Mode/aimer/kD", ConstantsLoader.ScoringConstants.aimerkD);
 
-                SmartDashboard.putNumber("Test-Mode/aimer/kG", ScoringConstants.aimerkG);
-                SmartDashboard.putNumber("Test-Mode/aimer/kS", ScoringConstants.aimerkS);
+                SmartDashboard.putNumber("Test-Mode/aimer/kG", ConstantsLoader.ScoringConstants.aimerkG);
+                SmartDashboard.putNumber("Test-Mode/aimer/kS", ConstantsLoader.ScoringConstants.aimerkS);
 
                 SmartDashboard.putNumber(
-                        "Test-Mode/aimer/profileMaxVelocity", ScoringConstants.aimerCruiseVelocity);
+                        "Test-Mode/aimer/profileMaxVelocity", ConstantsLoader.ScoringConstants.aimerCruiseVelocity);
                 SmartDashboard.putNumber(
                         "Test-Mode/aimer/profileMaxAcceleration",
-                        ScoringConstants.aimerAcceleration);
+                        ConstantsLoader.ScoringConstants.aimerAcceleration);
 
                 SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.25);
                 SmartDashboard.putNumber("Test-Mode/aimer/volts", 2.0);
@@ -612,13 +612,13 @@ public class RobotContainer {
                                                 scoringSubsystem.setPID(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kP",
-                                                                ScoringConstants.aimerkP),
+                                                                ConstantsLoader.ScoringConstants.aimerkP),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kI",
-                                                                ScoringConstants.aimerkI),
+                                                                ConstantsLoader.ScoringConstants.aimerkI),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kD",
-                                                                ScoringConstants.aimerkD),
+                                                                ConstantsLoader.ScoringConstants.aimerkD),
                                                         0)))
                         .onTrue(
                                 new InstantCommand(
@@ -626,11 +626,11 @@ public class RobotContainer {
                                                 scoringSubsystem.setMaxProfileProperties(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/profileMaxVelocity",
-                                                                ScoringConstants
+                                                                ConstantsLoader.ScoringConstants
                                                                         .aimerCruiseVelocity),
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/profileMaxAcceleration",
-                                                                ScoringConstants.aimerAcceleration),
+                                                                ConstantsLoader.ScoringConstants.aimerAcceleration),
                                                         0)))
                         .onTrue(
                                 new InstantCommand(
@@ -638,12 +638,12 @@ public class RobotContainer {
                                                 scoringSubsystem.setFF(
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kS",
-                                                                ScoringConstants.aimerkS),
+                                                                ConstantsLoader.ScoringConstants.aimerkS),
                                                         0.0,
                                                         0.0,
                                                         SmartDashboard.getNumber(
                                                                 "Test-Mode/aimer/kG",
-                                                                ScoringConstants.aimerkG),
+                                                                ConstantsLoader.ScoringConstants.aimerkG),
                                                         0)))
                         .onTrue(
                                 new InstantCommand(
@@ -707,7 +707,7 @@ public class RobotContainer {
             case "tuning-amp":
                 SmartDashboard.putNumber(
                         "Test-Mode/amp/aimerSetpointPosition",
-                        ScoringConstants.ampAimerAngleRotations);
+                        ConstantsLoader.ScoringConstants.ampAimerAngleRotations);
 
                 // Let us drive
                 CommandScheduler.getInstance().cancelAll();
@@ -760,7 +760,7 @@ public class RobotContainer {
     }
 
     private void setUpDriveWithJoysticks() {
-        if (FeatureFlags.runDrive) {
+        if (ConstantsLoader.FeatureFlags.runDrive) {
             drive.setDefaultCommand(new DriveWithJoysticks(drive, leftJoystick, rightJoystick));
         }
     }

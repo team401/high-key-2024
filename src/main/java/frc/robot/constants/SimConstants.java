@@ -1,5 +1,5 @@
 package frc.robot.constants;
 
-public final class SimConstants {
-    public static final double loopTime = 0.02;
+public  class SimConstants {
+    public  static double loopTime = 0.02;
 }

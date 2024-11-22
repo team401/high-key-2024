@@ -22,18 +22,18 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.constants.ScoringConstants;
+import frc.robot.constants.ConstantsLoader;
 import java.util.ArrayList;
 import java.util.List;
 import org.littletonrobotics.junction.Logger;
 
 public class AimerIORoboRio implements AimerIO {
-    private final TalonFX aimerMotor = new TalonFX(ScoringConstants.aimerMotorId);
+    private final TalonFX aimerMotor = new TalonFX(ConstantsLoader.ScoringConstants.aimerMotorId);
 
     MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0.0);
     private ControlRequest request;
 
-    private final CANcoder aimerEncoder = new CANcoder(ScoringConstants.aimerEncoderId);
+    private final CANcoder aimerEncoder = new CANcoder(ConstantsLoader.ScoringConstants.aimerEncoderId);
 
     private final Timer timer = new Timer();
 
@@ -63,7 +63,7 @@ public class AimerIORoboRio implements AimerIO {
     public AimerIORoboRio() {
         aimerMotor.setNeutralMode(NeutralModeValue.Coast);
 
-        setStatorCurrentLimit(ScoringConstants.aimerCurrentLimit);
+        setStatorCurrentLimit(ConstantsLoader.ScoringConstants.aimerCurrentLimit);
 
         CANcoderConfiguration cancoderConfiguration = new CANcoderConfiguration();
         // TODO: Check all of these values
@@ -71,34 +71,34 @@ public class AimerIORoboRio implements AimerIO {
                 AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
         cancoderConfiguration.MagnetSensor.SensorDirection =
                 SensorDirectionValue.CounterClockwise_Positive;
-        cancoderConfiguration.MagnetSensor.MagnetOffset = ScoringConstants.aimerEncoderOffset;
+        cancoderConfiguration.MagnetSensor.MagnetOffset = ConstantsLoader.ScoringConstants.aimerEncoderOffset;
 
         aimerEncoder.getConfigurator().apply(cancoderConfiguration);
 
         talonFXConfigs.Feedback.FeedbackRemoteSensorID = aimerEncoder.getDeviceID();
         talonFXConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         talonFXConfigs.Feedback.SensorToMechanismRatio =
-                ScoringConstants.aimerEncoderToMechanismRatio;
-        talonFXConfigs.Feedback.RotorToSensorRatio = ScoringConstants.aimerRotorToSensorRatio;
+                ConstantsLoader.ScoringConstants.aimerEncoderToMechanismRatio;
+        talonFXConfigs.Feedback.RotorToSensorRatio = ConstantsLoader.ScoringConstants.aimerRotorToSensorRatio;
         talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         talonFXConfigs.CurrentLimits.StatorCurrentLimitEnable = true;
-        talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit;
+        talonFXConfigs.CurrentLimits.StatorCurrentLimit = ConstantsLoader.ScoringConstants.aimerCurrentLimit;
 
         Slot0Configs slot0Configs = talonFXConfigs.Slot0;
         slot0Configs.GravityType = GravityTypeValue.Arm_Cosine;
 
-        slot0Configs.kS = ScoringConstants.aimerkS;
-        slot0Configs.kV = ScoringConstants.aimerkV;
-        slot0Configs.kA = ScoringConstants.aimerkA;
-        slot0Configs.kG = ScoringConstants.aimerkG;
+        slot0Configs.kS = ConstantsLoader.ScoringConstants.aimerkS;
+        slot0Configs.kV = ConstantsLoader.ScoringConstants.aimerkV;
+        slot0Configs.kA = ConstantsLoader.ScoringConstants.aimerkA;
+        slot0Configs.kG = ConstantsLoader.ScoringConstants.aimerkG;
 
-        slot0Configs.kP = ScoringConstants.aimerkP;
-        slot0Configs.kI = ScoringConstants.aimerkI;
-        slot0Configs.kD = ScoringConstants.aimerkD;
+        slot0Configs.kP = ConstantsLoader.ScoringConstants.aimerkP;
+        slot0Configs.kI = ConstantsLoader.ScoringConstants.aimerkI;
+        slot0Configs.kD = ConstantsLoader.ScoringConstants.aimerkD;
 
         MotionMagicConfigs motionMagicConfigs = talonFXConfigs.MotionMagic;
-        motionMagicConfigs.MotionMagicCruiseVelocity = ScoringConstants.aimerCruiseVelocity;
-        motionMagicConfigs.MotionMagicAcceleration = ScoringConstants.aimerAcceleration;
+        motionMagicConfigs.MotionMagicCruiseVelocity = ConstantsLoader.ScoringConstants.aimerCruiseVelocity;
+        motionMagicConfigs.MotionMagicAcceleration = ConstantsLoader.ScoringConstants.aimerAcceleration;
 
         aimerMotor.getConfigurator().apply(talonFXConfigs);
     }
@@ -130,13 +130,13 @@ public class AimerIORoboRio implements AimerIO {
         this.minAngleClamp =
                 MathUtil.clamp(
                         minAngleClamp,
-                        ScoringConstants.aimMinAngleRotations,
-                        ScoringConstants.aimMaxAngleRotations);
+                        ConstantsLoader.ScoringConstants.aimMinAngleRotations,
+                        ConstantsLoader.ScoringConstants.aimMaxAngleRotations);
         this.maxAngleClamp =
                 MathUtil.clamp(
                         maxAngleClamp,
-                        ScoringConstants.aimMinAngleRotations,
-                        ScoringConstants.aimMaxAngleRotations);
+                        ConstantsLoader.ScoringConstants.aimMinAngleRotations,
+                        ConstantsLoader.ScoringConstants.aimMaxAngleRotations);
     }
 
     @Override
@@ -249,15 +249,15 @@ public class AimerIORoboRio implements AimerIO {
 
         if (lockNegativeAtHome
                 && getEncoderPosition()
-                        < ScoringConstants.aimMinAngleRotations
-                                + ScoringConstants.intakeAngleToleranceRotations
+                        < ConstantsLoader.ScoringConstants.aimMinAngleRotations
+                                + ConstantsLoader.ScoringConstants.intakeAngleToleranceRotations
                 && !override) {
             // talonFXConfigs.CurrentLimits.StatorCurrentLimit =
             //        ScoringConstants.aimerCurrentLimit / 5;
             // aimerMotor.getConfigurator().apply(talonFXConfigs);
-            request = new VoltageOut(ScoringConstants.aimLockVoltage);
+            request = new VoltageOut(ConstantsLoader.ScoringConstants.aimLockVoltage);
         } else {
-            talonFXConfigs.CurrentLimits.StatorCurrentLimit = ScoringConstants.aimerCurrentLimit;
+            talonFXConfigs.CurrentLimits.StatorCurrentLimit = ConstantsLoader.ScoringConstants.aimerCurrentLimit;
             // aimerMotor.getConfigurator().apply(talonFXConfigs);
             motionMagicVoltage.withPosition(goalAngleRot);
             request = motionMagicVoltage;

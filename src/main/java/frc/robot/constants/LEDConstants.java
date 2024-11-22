@@ -2,7 +2,7 @@ package frc.robot.constants;
 
 public class LEDConstants {
 
-    public static final int ledPort = 0;
+    public  static int ledPort = 0;
 
-    public static final int ledLength = 30;
+    public  static int ledLength = 30;
 }

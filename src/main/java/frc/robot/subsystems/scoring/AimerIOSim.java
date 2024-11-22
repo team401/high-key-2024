@@ -9,7 +9,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.constants.ScoringConstants;
+import frc.robot.constants.ConstantsLoader;
 import frc.robot.constants.SimConstants;
 
 public class AimerIOSim implements AimerIO {
@@ -25,18 +25,18 @@ public class AimerIOSim implements AimerIO {
                     3 / 2 * Math.PI);
     private final PIDController controller =
             new PIDController(
-                    ScoringConstants.aimerkP, ScoringConstants.aimerkI, ScoringConstants.aimerkD);
+                    ConstantsLoader.ScoringConstants.aimerkP, ConstantsLoader.ScoringConstants.aimerkI, ConstantsLoader.ScoringConstants.aimerkD);
     private final ArmFeedforward feedforward =
             new ArmFeedforward(
-                    ScoringConstants.aimerkS,
-                    ScoringConstants.aimerkG,
-                    ScoringConstants.aimerkV,
-                    ScoringConstants.aimerkA);
+                    ConstantsLoader.ScoringConstants.aimerkS,
+                    ConstantsLoader.ScoringConstants.aimerkG,
+                    ConstantsLoader.ScoringConstants.aimerkV,
+                    ConstantsLoader.ScoringConstants.aimerkA);
     private final TrapezoidProfile profile =
             new TrapezoidProfile(
                     new TrapezoidProfile.Constraints(
-                            ScoringConstants.aimerCruiseVelocity,
-                            ScoringConstants.aimerAcceleration));
+                            ConstantsLoader.ScoringConstants.aimerCruiseVelocity,
+                            ConstantsLoader.ScoringConstants.aimerAcceleration));
 
     private final Timer timer = new Timer();
 
@@ -83,9 +83,9 @@ public class AimerIOSim implements AimerIO {
         // These two lines look like they should make the minimum angle 0.0 rotations,
         // which would mean that the arm could no longer go below horizontal.
         this.minAngleClamp =
-                MathUtil.clamp(minAngleClamp, 0.0, ScoringConstants.aimMaxAngleRotations);
+                MathUtil.clamp(minAngleClamp, 0.0, ConstantsLoader.ScoringConstants.aimMaxAngleRotations);
         this.maxAngleClamp =
-                MathUtil.clamp(maxAngleClamp, 0.0, ScoringConstants.aimMaxAngleRotations);
+                MathUtil.clamp(maxAngleClamp, 0.0, ConstantsLoader.ScoringConstants.aimMaxAngleRotations);
     }
 
     @Override
@@ -130,8 +130,8 @@ public class AimerIOSim implements AimerIO {
         double controlSetpoint =
                 MathUtil.clamp(
                         trapezoidSetpoint.position,
-                        ScoringConstants.aimMinAngleRotations,
-                        ScoringConstants.aimMaxAngleRotations);
+                        ConstantsLoader.ScoringConstants.aimMinAngleRotations,
+                        ConstantsLoader.ScoringConstants.aimMaxAngleRotations);
         double velocitySetpoint = trapezoidSetpoint.velocity;
 
         if (override) {

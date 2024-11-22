@@ -5,7 +5,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.constants.ConversionConstants;
-import frc.robot.constants.ScoringConstants;
+import frc.robot.constants.ConstantsLoader;
 import frc.robot.constants.SimConstants;
 
 public class ShooterIOSim implements ShooterIO {
@@ -17,20 +17,20 @@ public class ShooterIOSim implements ShooterIO {
 
     private final PIDController shooterLeftController =
             new PIDController(
-                    ScoringConstants.shooterkP,
-                    ScoringConstants.shooterkI,
-                    ScoringConstants.shooterkD);
+                    ConstantsLoader.ScoringConstants.shooterkP,
+                    ConstantsLoader.ScoringConstants.shooterkI,
+                    ConstantsLoader.ScoringConstants.shooterkD);
     private final PIDController shooterRightController =
             new PIDController(
-                    ScoringConstants.shooterkP,
-                    ScoringConstants.shooterkI,
-                    ScoringConstants.shooterkD);
+                    ConstantsLoader.ScoringConstants.shooterkP,
+                    ConstantsLoader.ScoringConstants.shooterkI,
+                    ConstantsLoader.ScoringConstants.shooterkD);
 
     private final SimpleMotorFeedforward shooterFeedforward =
             new SimpleMotorFeedforward(
-                    ScoringConstants.shooterkS,
-                    ScoringConstants.shooterkV,
-                    ScoringConstants.shooterkA);
+                    ConstantsLoader.ScoringConstants.shooterkS,
+                    ConstantsLoader.ScoringConstants.shooterkV,
+                    ConstantsLoader.ScoringConstants.shooterkA);
 
     private boolean override = false;
 
@@ -45,7 +45,7 @@ public class ShooterIOSim implements ShooterIO {
     @Override
     public void setShooterVelocityRPM(double velocity) {
         shooterLeftGoalVelRPM = velocity;
-        shooterRightGoalVelRPM = velocity * ScoringConstants.shooterOffsetAdjustment;
+        shooterRightGoalVelRPM = velocity * ConstantsLoader.ScoringConstants.shooterOffsetAdjustment;
     }
 
     @Override

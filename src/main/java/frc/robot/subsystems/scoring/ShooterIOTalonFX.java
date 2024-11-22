@@ -9,17 +9,18 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkLimitSwitch;
+
+import frc.robot.constants.ConstantsLoader;
 import frc.robot.constants.ConversionConstants;
-import frc.robot.constants.ScoringConstants;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShooterIOTalonFX implements ShooterIO {
     private final CANSparkFlex kicker =
-            new CANSparkFlex(ScoringConstants.kickerMotorId, MotorType.kBrushless);
+            new CANSparkFlex(ConstantsLoader.ScoringConstants.kickerMotorId, MotorType.kBrushless);
 
-    private final TalonFX shooterLeft = new TalonFX(ScoringConstants.shooterLeftMotorId);
-    private final TalonFX shooterRight = new TalonFX(ScoringConstants.shooterRightMotorId);
+    private final TalonFX shooterLeft = new TalonFX(ConstantsLoader.ScoringConstants.shooterLeftMotorId);
+    private final TalonFX shooterRight = new TalonFX(ConstantsLoader.ScoringConstants.shooterRightMotorId);
 
     private final Slot0Configs slot0 = new Slot0Configs();
 
@@ -43,22 +44,22 @@ public class ShooterIOTalonFX implements ShooterIO {
         TalonFXConfigurator shooterLeftConfig = shooterLeft.getConfigurator();
         shooterLeftConfig.apply(
                 new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(ScoringConstants.shooterCurrentLimit)
+                        .withStatorCurrentLimit(ConstantsLoader.ScoringConstants.shooterCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
         TalonFXConfigurator shooterRightConfig = shooterRight.getConfigurator();
         shooterRightConfig.apply(
                 new CurrentLimitsConfigs()
-                        .withStatorCurrentLimit(ScoringConstants.shooterCurrentLimit)
+                        .withStatorCurrentLimit(ConstantsLoader.ScoringConstants.shooterCurrentLimit)
                         .withStatorCurrentLimitEnable(true));
 
-        slot0.withKP(ScoringConstants.shooterkP);
-        slot0.withKI(ScoringConstants.shooterkI);
-        slot0.withKD(ScoringConstants.shooterkD);
+        slot0.withKP(ConstantsLoader.ScoringConstants.shooterkP);
+        slot0.withKI(ConstantsLoader.ScoringConstants.shooterkI);
+        slot0.withKD(ConstantsLoader.ScoringConstants.shooterkD);
 
-        slot0.withKS(ScoringConstants.shooterkS);
-        slot0.withKV(ScoringConstants.shooterkV);
-        slot0.withKA(ScoringConstants.shooterkA);
+        slot0.withKS(ConstantsLoader.ScoringConstants.shooterkS);
+        slot0.withKV(ConstantsLoader.ScoringConstants.shooterkV);
+        slot0.withKA(ConstantsLoader.ScoringConstants.shooterkA);
 
         shooterLeft.getConfigurator().apply(slot0);
         shooterRight.getConfigurator().apply(slot0);
@@ -67,7 +68,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     @Override
     public void setShooterVelocityRPM(double velocity) {
         goalLeftVelocityRPM = velocity;
-        goalRightVelocityRPM = velocity * ScoringConstants.shooterOffsetAdjustment;
+        goalRightVelocityRPM = velocity * ConstantsLoader.ScoringConstants.shooterOffsetAdjustment;
     }
 
     @Override
