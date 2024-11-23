@@ -168,7 +168,10 @@ public class RobotContainer {
     private void initVision() {
         switch (ModeConstants.currentMode) {
             case REAL:
-                tagVision = new VisionLocalizer(new CameraContainerReal(VisionConstants.cameras));
+                tagVision =
+                        new VisionLocalizer(
+                                new CameraContainerReal(
+                                        VisionConstants.cameras, VisionConstants.fieldLayout));
                 break;
             case SIM:
                 if (FeatureFlags.runDrive) {
@@ -176,6 +179,7 @@ public class RobotContainer {
                             new VisionLocalizer(
                                     new CameraContainerSim(
                                             VisionConstants.cameras,
+                                            VisionConstants.fieldLayout,
                                             new Pose2d(),
                                             PhoenixDriveConstants.kinematics,
                                             logger::getModuleStates));

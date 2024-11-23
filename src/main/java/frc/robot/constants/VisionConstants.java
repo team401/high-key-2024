@@ -1,7 +1,6 @@
 package frc.robot.constants;
 
-import coppercore.vision.Camera.CameraTrustZone;
-import coppercore.vision.CoreVisionConstants.CameraParams;
+import coppercore.vision.CameraParams;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -49,8 +48,7 @@ public final class VisionConstants {
                             Rotation2d.fromDegrees(70),
                             new Transform3d(
                                     new Translation3d(0.0328422, -0.3103626, 0.430911),
-                                    new Rotation3d(0, -0.261799, 0.0)),
-                            CameraTrustZone.MIDDLE));
+                                    new Rotation3d(0, -0.261799, 0.0))));
 
     //     new CameraParams(
     //             "Back-Right", // Back Right
