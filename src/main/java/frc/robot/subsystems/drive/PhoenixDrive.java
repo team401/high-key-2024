@@ -414,7 +414,8 @@ public class PhoenixDrive extends SwerveDrivetrain implements Subsystem {
 
         Logger.recordOutput(
                 "drive/alignment/goalAlignment", goalRotation.plus(new Rotation2d(Math.PI)));
-        Logger.recordOutput("drive/alignment/currentAlignemnt", getState().Pose.getRotation());
+        if (state.Pose != null)
+            Logger.recordOutput("drive/alignment/currentAlignemnt", state.Pose.getRotation());
         Logger.recordOutput("drive/alignment/isDriveAligned", isDriveAligned());
     }
 
