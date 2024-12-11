@@ -79,7 +79,10 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	implementation 'com.github.team401:coppercore:main-SNAPSHOT'
+	implementation 'io.github.team401.coppercore:math:2024.11.29-beta'
+	implementation 'io.github.team401.coppercore:controls:2024.11.29-beta'
+	implementation 'io.github.team401.coppercore:geometry:2024.11.29-beta'
+
 }
 
 test {
@@ -122,10 +125,6 @@ indent       = "  "
 }
 
 repositories {
-	maven { url 'https://jitpack.io' }
-}
-
-repositories {
 	maven {
 		url = uri("https://maven.pkg.github.com/Mechanical-Advantage/AdvantageKit")
 		credentials {
@@ -134,6 +133,7 @@ repositories {
 		}
 	}
 	mavenLocal()
+	mavenCentral()
 }
 
 spotless {
