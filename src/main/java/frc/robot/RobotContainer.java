@@ -177,7 +177,7 @@ public class RobotContainer {
                 tagVision = new VisionLocalizer(drive::addPhotonVisionMeasurement, VisionConstants.fieldLayout, new double[0], new VisionIOPhotonReal("front", new Transform3d()));
                 break;
             case SIM:
-                tagVision = new VisionLocalizer(drive::addPhotonVisionMeasurement, VisionConstants.fieldLayout, new double[0], new VisionIOPhotonSim("front", new Transform3d(), () -> drive.getState().Pose, VisionConstants.fieldLayout));
+                tagVision = new VisionLocalizer(drive::addPhotonVisionMeasurement, VisionConstants.fieldLayout, new double[0], new VisionIOPhotonSim("front", new Transform3d(), drive::getSimGroundTruthPose, VisionConstants.fieldLayout));
         //     case SIM:
         //         if (FeatureFlags.runDrive) {
         //             tagVision =

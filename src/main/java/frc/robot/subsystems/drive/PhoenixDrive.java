@@ -19,13 +19,17 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -72,6 +76,17 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
             new SwerveRequest.SysIdSwerveRotation();
     private final SwerveRequest.SysIdSwerveSteerGains SteerCharacterization =
             new SwerveRequest.SysIdSwerveSteerGains();
+
+    // sim related
+    private Timer dtTimer = new Timer();
+    private SwerveModulePosition[] lastModulePositions =
+    new SwerveModulePosition[] {
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition()
+    };
+    private Pose2d latestOdometryPose = new Pose2d();
 
     // private SysIdRoutine SysIdRoutineTranslation =
     //         new SysIdRoutine(
@@ -129,6 +144,7 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        latestOdometryPose = new Pose2d();
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         thetaController.setTolerance(PhoenixDriveConstants.alignToleranceRadians);
@@ -436,6 +452,11 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
         }
         // sets request with velocity and rotational rate (alignment or right joystick)
         applyGoalSpeeds();
+
+        if(Utils.isSimulation()) {
+            updateOdometry();
+            Logger.recordOutput("Drive/GroundTruthPose", latestOdometryPose);
+        }
     }
 
       /** Adds a new timestamped vision measurement. */
@@ -446,4 +467,29 @@ public class PhoenixDrive extends SwerveDrivetrain implements DriveTemplate {
     this.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
   }
+
+   /** Updates the robot's odometry based on the latest swerve module states. */
+    private void updateOdometry() {
+        SwerveModuleState[] states = this.getState().ModuleStates;
+        double dt = dtTimer.get();
+        dtTimer.reset();
+        dtTimer.start();
+
+        SwerveModulePosition[] deltas = new SwerveModulePosition[4];
+        for (int i = 0; i < states.length; i++) {
+            deltas[i] =
+                    new SwerveModulePosition(
+                            states[i].speedMetersPerSecond * dt
+                                    - lastModulePositions[i].distanceMeters,
+                            states[i].angle.minus(lastModulePositions[i].angle));
+        }
+        Twist2d twist = this.getKinematics().toTwist2d(deltas);
+        latestOdometryPose = latestOdometryPose.exp(twist);
+
+        Logger.recordOutput("Vision/GroundTruth", latestOdometryPose);
+    }
+
+    public Pose2d getSimGroundTruthPose() {
+        return latestOdometryPose;
+    }
 }
