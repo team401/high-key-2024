@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.ModeConstants;
@@ -54,7 +55,18 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
+                // Switch thread to high priority to improve loop timing
+        Threads.setCurrentThreadPriority(true, 99);
+
+        // Runs the Scheduler. This is responsible for polling buttons, adding
+        // newly-scheduled commands, running already-scheduled commands, removing
+        // finished or interrupted commands, and running subsystem periodic() methods.
+        // This must be called from the robot's periodic block in order for anything in
+        // the Command-based framework to work.
         CommandScheduler.getInstance().run();
+
+        // Return to normal thread priority
+        Threads.setCurrentThreadPriority(false, 10);
     }
 
     @Override
@@ -66,9 +78,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void testInit() {
         CommandScheduler.getInstance().cancelAll();
-
-        m_robotContainer.enabledInit();
-        m_robotContainer.testInit();
     }
 
     @Override
@@ -76,7 +85,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
@@ -94,13 +103,10 @@ public class Robot extends LoggedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-
-        m_robotContainer.teleopInit();
     }
 
     @Override
     public void driverStationConnected() {
-        m_robotContainer.onDSConnect();
     }
 
     @Override
