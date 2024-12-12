@@ -51,6 +51,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import coppercore.vision.VisionIOPhotonReal;
+import coppercore.vision.VisionIOPhotonSim;
 import coppercore.vision.VisionLocalizer;
 
 public class RobotContainer {
@@ -173,8 +174,10 @@ public class RobotContainer {
     private void initVision() {
         switch (ModeConstants.currentMode) {
             case REAL:
-                tagVision = new VisionLocalizer(drive::addPhotonVisionMeasurement, VisionConstants.fieldLayout, new double[4], new VisionIOPhotonReal("front", new Transform3d()));
+                tagVision = new VisionLocalizer(drive::addPhotonVisionMeasurement, VisionConstants.fieldLayout, new double[0], new VisionIOPhotonReal("front", new Transform3d()));
                 break;
+            case SIM:
+                tagVision = new VisionLocalizer(drive::addPhotonVisionMeasurement, VisionConstants.fieldLayout, new double[0], new VisionIOPhotonSim("front", new Transform3d(), () -> drive.getState().Pose, VisionConstants.fieldLayout));
         //     case SIM:
         //         if (FeatureFlags.runDrive) {
         //             tagVision =
