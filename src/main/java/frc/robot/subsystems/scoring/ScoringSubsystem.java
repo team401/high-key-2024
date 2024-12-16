@@ -1,5 +1,10 @@
 package frc.robot.subsystems.scoring;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.Logger;
+
 import coppercore.controls.Tunable;
 import coppercore.math.InterpolateDouble;
 import edu.wpi.first.math.VecBuilder;
@@ -23,9 +28,6 @@ import frc.robot.constants.ScoringConstants;
 import frc.robot.utils.AllianceUtil;
 import frc.robot.utils.FieldFinder;
 import frc.robot.utils.FieldFinder.FieldLocations;
-import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 
 public class ScoringSubsystem extends SubsystemBase implements Tunable {
     private final ShooterIO shooterIo;
@@ -551,10 +553,11 @@ public class ScoringSubsystem extends SubsystemBase implements Tunable {
         Logger.recordOutput(
                 "scoring/Aimer3d",
                 new Pose3d(
+                        -0.03,
                         0,
-                        0,
-                        0,
-                        new Rotation3d(0, (aimerInputs.aimGoalAngleRot) * 2 * Math.PI, 0)));
+                        0.58,
+                        new Rotation3d(
+                                Math.PI / 2, (aimerInputs.aimGoalAngleRot) * 2 * Math.PI, 0)));
 
         Logger.recordOutput("scoring/readyToShoot", readyToShoot);
         Logger.recordOutput("scoring/overrideShoot", overrideShoot);
