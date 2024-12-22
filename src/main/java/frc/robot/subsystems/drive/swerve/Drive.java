@@ -22,6 +22,8 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
+
+import coppercore.wpilib_interface.DriveTemplate;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -53,7 +55,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-public class Drive extends SubsystemBase {
+public class Drive implements DriveTemplate {
   // TunerConstants doesn't include these constants, so they are declared locally
   static final double ODOMETRY_FREQUENCY =
       new CANBus(TunerConstants.DrivetrainConstants.CANBusName).isNetworkFD() ? 250.0 : 100.0;
@@ -104,6 +106,8 @@ public class Drive extends SubsystemBase {
   private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
 
+  private ChassisSpeeds goalSpeeds = new ChassisSpeeds();
+
   public Drive(
       GyroIO gyroIO,
       ModuleIO flModuleIO,
@@ -123,16 +127,16 @@ public class Drive extends SubsystemBase {
     PhoenixOdometryThread.getInstance().start();
 
     // Configure AutoBuilder for PathPlanner
-    AutoBuilder.configure(
-        this::getPose,
-        this::setPose,
-        this::getChassisSpeeds,
-        this::runVelocity,
-        new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
-        PP_CONFIG,
-        () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
-        this);
+    // AutoBuilder.configure(
+    //     this::getPose,
+    //     this::setPose,
+    //     this::getChassisSpeeds,
+    //     this::setGoalSpeeds,
+    //     new PPHolonomicDriveController(
+    //         new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+    //     PP_CONFIG,
+    //     () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+    //     this);
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback(
         (activePath) -> {
@@ -209,10 +213,16 @@ public class Drive extends SubsystemBase {
 
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
+
+      runVelocity();
     }
 
     // Update gyro alert
     // gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+  }
+
+  public void setGoalSpeeds(ChassisSpeeds speeds, boolean fieldCentric) {
+      this.goalSpeeds = speeds;
   }
 
   /**
@@ -220,9 +230,9 @@ public class Drive extends SubsystemBase {
    *
    * @param speeds Speeds in meters/sec
    */
-  public void runVelocity(ChassisSpeeds speeds) {
+  public void runVelocity() {
     // Calculate module setpoints
-    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
+    ChassisSpeeds discreteSpeeds = ChassisSpeeds.discretize(goalSpeeds, 0.02);
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(discreteSpeeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, TunerConstants.kSpeedAt12Volts);
 
@@ -248,7 +258,7 @@ public class Drive extends SubsystemBase {
 
   /** Stops the drive. */
   public void stop() {
-    runVelocity(new ChassisSpeeds());
+    setGoalSpeeds(new ChassisSpeeds(), true);
   }
 
   /**

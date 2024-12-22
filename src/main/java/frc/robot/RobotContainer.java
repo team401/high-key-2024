@@ -11,11 +11,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.VisionConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.DemoDrive;
+import frc.robot.subsystems.drive.swerve.Drive;
+import frc.robot.subsystems.drive.swerve.GyroIO;
+import frc.robot.subsystems.drive.swerve.ModuleIOSim;
 import coppercore.vision.VisionIO;
 import coppercore.vision.VisionIOPhotonReal;
 import coppercore.vision.VisionIOPhotonSim;
 import coppercore.vision.VisionLocalizer;
+import coppercore.wpilib_interface.DriveWithJoysticks;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,7 +31,7 @@ import coppercore.vision.VisionLocalizer;
 public class RobotContainer {
   private final VisionLocalizer vision;
 
-  private final DemoDrive drive = new DemoDrive(); // Demo drive subsystem, sim only
+  private final Drive swerveDrive;
   private final CommandGenericHID keyboard = new CommandGenericHID(0); // Keyboard 0 on port 0
   public static Transform3d robotToCamera0 =
       new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, 0.0));
@@ -35,34 +40,37 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    switch (ModeConstants.currentMode) {
-      case REAL:
         // Real robot, instantiate hardware IO implementations
-        vision =
-            new VisionLocalizer(
-                drive::addVisionMeasurement,
-                VisionConstants.fieldLayout,
-                new double[0],
-                new VisionIOPhotonReal("front", robotToCamera0),
-                new VisionIOPhotonReal("back", robotToCamera1));
-        break;
-      case SIM:
+        // vision =
+        //     new VisionLocalizer(
+        //         drive::addVisionMeasurement,
+        //         VisionConstants.fieldLayout,
+        //         new double[0],
+        //         new VisionIOPhotonReal("front", robotToCamera0),
+        //         new VisionIOPhotonReal("back", robotToCamera1));
+        // break;
         // Sim robot, instantiate physics sim IO implementations
+        swerveDrive = new Drive(
+           new GyroIO() {},
+           new ModuleIOSim(TunerConstants.FrontLeft), 
+           new ModuleIOSim(TunerConstants.FrontRight), 
+           new ModuleIOSim(TunerConstants.BackLeft), 
+           new ModuleIOSim(TunerConstants.BackRight)
+        );
         vision =
             new VisionLocalizer(
-                drive::addVisionMeasurement,
+                swerveDrive::addVisionMeasurement,
                 VisionConstants.fieldLayout,
                 new double[0],
-                new VisionIOPhotonSim("front", robotToCamera0, drive::getPose, VisionConstants.fieldLayout),
-                new VisionIOPhotonSim("back", robotToCamera1, drive::getPose, VisionConstants.fieldLayout));
-        break;
+                new VisionIOPhotonSim("front", robotToCamera0, swerveDrive::getPose, VisionConstants.fieldLayout),
+                new VisionIOPhotonSim("back", robotToCamera1, swerveDrive::getPose, VisionConstants.fieldLayout));
 
-      default:
-        // Replayed robot, disable IO implementations
-        // (Use same number of dummy implementations as the real robot)
-        vision = new VisionLocalizer(drive::addVisionMeasurement, VisionConstants.fieldLayout, new double[0], new VisionIO() {}, new VisionIO() {});
-        break;
-    }
+      // default:
+      //   // Replayed robot, disable IO implementations
+      //   // (Use same number of dummy implementations as the real robot)
+        
+      //   vision = new VisionLocalizer(swerveDrive::addVisionMeasurement, VisionConstants.fieldLayout, new double[0], new VisionIO() {}, new VisionIO() {});
+      //   break;
 
     // Configure the button bindings
     configureButtonBindings();
@@ -76,6 +84,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Joystick drive command
+    swerveDrive.setDefaultCommand(new DriveWithJoysticks(swerveDrive, null, null, 0, 0, 0));
     drive.setDefaultCommand(
         Commands.run(
             () -> {
