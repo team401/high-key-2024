@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import coppercore.controls.LoggedTunableNumber;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -66,6 +67,31 @@ public class RobotContainer {
     VisionLocalizer tagVision;
 
     SendableChooser<String> testModeChooser = new SendableChooser<String>();
+    private LoggedTunableNumber shooterkP;
+    private LoggedTunableNumber shooterkI;
+    private LoggedTunableNumber shooterkD;
+
+    private LoggedTunableNumber shooterkS;
+    private LoggedTunableNumber shooterkV;
+    private LoggedTunableNumber shooterkA;
+
+    private LoggedTunableNumber tunableShooterRPM;
+    private LoggedTunableNumber tunableShooterVolts;
+
+    private LoggedTunableNumber aimerkP;
+    private LoggedTunableNumber aimerkI;
+    private LoggedTunableNumber aimerkD;
+
+    private LoggedTunableNumber aimerkS;
+    private LoggedTunableNumber aimerkV;
+    private LoggedTunableNumber aimerkA;
+    private LoggedTunableNumber aimerkG;
+
+    private LoggedTunableNumber aimerProfileMaxVelocity;
+    private LoggedTunableNumber aimerProfileMaxAcceleration;
+
+    private LoggedTunableNumber tunableAimerPosition;
+    private LoggedTunableNumber tunableAimerVolts;
 
     public RobotContainer() {
         configureSubsystems();
@@ -494,47 +520,63 @@ public class RobotContainer {
         // Reset bindings
         masher = new CommandXboxController(2);
 
+        shooterkP =
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/PID/shooterkP", ScoringConstants.shooterkP);
+        shooterkI =
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/PID/shooterkI", ScoringConstants.shooterkI);
+        shooterkD =
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/PID/shooterkD", ScoringConstants.shooterkD);
+
+        shooterkS =
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/FF/shooterkS", ScoringConstants.shooterkS);
+        shooterkV =
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/FF/shooterkV", ScoringConstants.shooterkV);
+        shooterkA =
+                new LoggedTunableNumber(
+                        "Shooter-Tunables/FF/shooterkA", ScoringConstants.shooterkA);
+
+        tunableShooterRPM = new LoggedTunableNumber("Shooter-Tunables/shooterTunableRPM", 0.0);
+        tunableShooterVolts = new LoggedTunableNumber("Shooter-Tunables/shooterTunableVolts", 0.0);
+
+        aimerkP = new LoggedTunableNumber("Aimer-Tunables/PID/aimerkP", ScoringConstants.aimerkP);
+        aimerkI = new LoggedTunableNumber("Aimer-Tunables/PID/aimerkI", ScoringConstants.aimerkI);
+        aimerkD = new LoggedTunableNumber("Aimer-Tunables/PID/aimerkD", ScoringConstants.aimerkD);
+
+        aimerkS = new LoggedTunableNumber("Aimer-Tunables/FF/aimerkS", ScoringConstants.aimerkS);
+        aimerkV = new LoggedTunableNumber("Aimer-Tunables/FF/aimerkV", ScoringConstants.aimerkV);
+        aimerkA = new LoggedTunableNumber("Aimer-Tunables/FF/aimerkA", ScoringConstants.aimerkA);
+        aimerkG = new LoggedTunableNumber("Aimer-Tunables/FF/aimerkG", ScoringConstants.aimerkG);
+
+        aimerProfileMaxVelocity =
+                new LoggedTunableNumber(
+                        "Aimer-Tunables/ProfileTuning/MaxVelocity",
+                        ScoringConstants.aimerCruiseVelocity);
+        aimerProfileMaxAcceleration =
+                new LoggedTunableNumber(
+                        "Aimer-Tunables/ProfileTuning/MaxAcceleration",
+                        ScoringConstants.aimerAcceleration);
+
+        tunableAimerPosition = new LoggedTunableNumber("Aimer-Tunables/aimerTunablePosition", 0.0);
+        tunableAimerVolts = new LoggedTunableNumber("Aimer-Tunables/aimerTunableVolts", 0.0);
+
         switch (testModeChooser.getSelected()) {
             case "tuning":
                 break;
             case "tuning-shooter":
-                SmartDashboard.putNumber("Test-Mode/shooter/kP", ScoringConstants.shooterkP);
-                SmartDashboard.putNumber("Test-Mode/shooter/kI", ScoringConstants.shooterkI);
-                SmartDashboard.putNumber("Test-Mode/shooter/kD", ScoringConstants.shooterkD);
-
-                SmartDashboard.putNumber("Test-Mode/shooter/setpointPosition", 0.25);
-                SmartDashboard.putNumber("Test-Mode/shooter/volts", 2.0);
-
                 scoringSubsystem.setAction(ScoringAction.OVERRIDE);
-
-                // TODO: Add Tunables to coppercore!
                 masher.a().onTrue(new TuneS(scoringSubsystem, 1));
-
                 masher.b().onTrue(new TuneG(scoringSubsystem, 1));
-
                 masher.y()
                         .onTrue(
                                 new InstantCommand(
                                         () ->
-                                                scoringSubsystem.setPID(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/shooter/kP",
-                                                                ScoringConstants.shooterkP),
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/shooter/kI",
-                                                                ScoringConstants.shooterkI),
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/shooter/kD",
-                                                                ScoringConstants.shooterkD),
-                                                        1)))
-                        .onTrue(
-                                new InstantCommand(
-                                        () ->
                                                 scoringSubsystem.runToPosition(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/shooter/setpointPosition",
-                                                                0.25),
-                                                        1)))
+                                                        tunableShooterRPM.getAsDouble(), 1)))
                         .onTrue(
                                 new InstantCommand(
                                         () ->
@@ -545,29 +587,19 @@ public class RobotContainer {
                                         () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
                 break;
             case "tuning-shot":
-                scoringSubsystem.setAction(ScoringAction.TUNING);
-                SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.0);
-                SmartDashboard.putNumber("Test-Mode/shooter/setpointRPM", 2000);
-
+                scoringSubsystem.setAction(ScoringAction.OVERRIDE);
                 setUpDriveWithJoysticks();
-
                 masher.y()
                         .onTrue(
                                 new InstantCommand(
                                         () ->
                                                 scoringSubsystem.runToPosition(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/setpointPosition",
-                                                                0.0),
-                                                        0)))
+                                                        tunableAimerPosition.getAsDouble(), 0)))
                         .onTrue(
                                 new InstantCommand(
                                         () ->
                                                 scoringSubsystem.runToPosition(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/shooter/setpointRPM",
-                                                                2000),
-                                                        2)))
+                                                        tunableShooterRPM.getAsDouble(), 1)))
                         .onTrue(
                                 new InstantCommand(
                                         () ->
@@ -583,22 +615,6 @@ public class RobotContainer {
                                 new InstantCommand(() -> scoringSubsystem.setTuningKickerVolts(0)));
                 break;
             case "tuning-aimer":
-                SmartDashboard.putNumber("Test-Mode/aimer/kP", ScoringConstants.aimerkP);
-                SmartDashboard.putNumber("Test-Mode/aimer/kI", ScoringConstants.aimerkI);
-                SmartDashboard.putNumber("Test-Mode/aimer/kD", ScoringConstants.aimerkD);
-
-                SmartDashboard.putNumber("Test-Mode/aimer/kG", ScoringConstants.aimerkG);
-                SmartDashboard.putNumber("Test-Mode/aimer/kS", ScoringConstants.aimerkS);
-
-                SmartDashboard.putNumber(
-                        "Test-Mode/aimer/profileMaxVelocity", ScoringConstants.aimerCruiseVelocity);
-                SmartDashboard.putNumber(
-                        "Test-Mode/aimer/profileMaxAcceleration",
-                        ScoringConstants.aimerAcceleration);
-
-                SmartDashboard.putNumber("Test-Mode/aimer/setpointPosition", 0.25);
-                SmartDashboard.putNumber("Test-Mode/aimer/volts", 2.0);
-
                 scoringSubsystem.setAction(ScoringAction.OVERRIDE);
 
                 masher.a().onTrue(new TuneS(scoringSubsystem, 0));
@@ -609,72 +625,8 @@ public class RobotContainer {
                         .onTrue(
                                 new InstantCommand(
                                         () ->
-                                                scoringSubsystem.setPID(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/kP",
-                                                                ScoringConstants.aimerkP),
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/kI",
-                                                                ScoringConstants.aimerkI),
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/kD",
-                                                                ScoringConstants.aimerkD),
-                                                        0)))
-                        .onTrue(
-                                new InstantCommand(
-                                        () ->
-                                                scoringSubsystem.setMaxProfileProperties(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/profileMaxVelocity",
-                                                                ScoringConstants
-                                                                        .aimerCruiseVelocity),
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/profileMaxAcceleration",
-                                                                ScoringConstants.aimerAcceleration),
-                                                        0)))
-                        .onTrue(
-                                new InstantCommand(
-                                        () ->
-                                                scoringSubsystem.setFF(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/kS",
-                                                                ScoringConstants.aimerkS),
-                                                        0.0,
-                                                        0.0,
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/kG",
-                                                                ScoringConstants.aimerkG),
-                                                        0)))
-                        .onTrue(
-                                new InstantCommand(
-                                        () ->
                                                 scoringSubsystem.runToPosition(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/setpointPosition",
-                                                                0.0),
-                                                        0)))
-                        .onTrue(
-                                new InstantCommand(
-                                        () ->
-                                                scoringSubsystem.setAction(
-                                                        ScoringAction.TEMPORARY_SETPOINT)))
-                        .onFalse(
-                                new InstantCommand(
-                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
-
-                masher.povUp()
-                        .onTrue(new InstantCommand(() -> scoringSubsystem.runToPosition(1.1, 0)))
-                        .onTrue(
-                                new InstantCommand(
-                                        () ->
-                                                scoringSubsystem.setAction(
-                                                        ScoringAction.TEMPORARY_SETPOINT)))
-                        .onFalse(
-                                new InstantCommand(
-                                        () -> scoringSubsystem.setAction(ScoringAction.OVERRIDE)));
-
-                masher.povDown()
-                        .onTrue(new InstantCommand(() -> scoringSubsystem.runToPosition(0.0, 0)))
+                                                        tunableAimerPosition.getAsDouble(), 0)))
                         .onTrue(
                                 new InstantCommand(
                                         () ->
@@ -689,32 +641,14 @@ public class RobotContainer {
                                 new InstantCommand(
                                         () ->
                                                 scoringSubsystem.setVolts(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/volts", 2.0),
-                                                        0)))
+                                                        tunableAimerVolts.getAsDouble(), 0)))
                         .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
 
-                masher.rightBumper()
-                        .onTrue(
-                                new InstantCommand(
-                                        () ->
-                                                scoringSubsystem.setVolts(
-                                                        -SmartDashboard.getNumber(
-                                                                "Test-Mode/aimer/volts", 2.0),
-                                                        0)))
-                        .onFalse(new InstantCommand(() -> scoringSubsystem.setVolts(0, 0)));
                 break;
             case "tuning-amp":
-                SmartDashboard.putNumber(
-                        "Test-Mode/amp/aimerSetpointPosition",
-                        ScoringConstants.ampAimerAngleRotations);
-
                 // Let us drive
                 CommandScheduler.getInstance().cancelAll();
                 setUpDriveWithJoysticks();
-
-                // Reset bindings
-                masher = new CommandXboxController(2);
 
                 // Let us intake
                 masher.b()
@@ -731,10 +665,7 @@ public class RobotContainer {
                                 new InstantCommand(
                                         () ->
                                                 scoringSubsystem.runToPosition(
-                                                        SmartDashboard.getNumber(
-                                                                "Test-Mode/amp/aimerSetpointPosition",
-                                                                0.0),
-                                                        0)))
+                                                        tunableAimerPosition.getAsDouble(), 0)))
                         .onTrue(
                                 new InstantCommand(
                                         () ->
@@ -757,6 +688,41 @@ public class RobotContainer {
                                                         0.0)));
                 break;
         }
+    }
+
+    public void testPeriodic() {
+        LoggedTunableNumber.ifChanged(
+                hashCode(),
+                (pid) -> scoringSubsystem.setPID(pid[0], pid[1], pid[2], 1),
+                shooterkP,
+                shooterkI,
+                shooterkD);
+        LoggedTunableNumber.ifChanged(
+                hashCode(),
+                (FF) -> scoringSubsystem.setFF(FF[0], FF[1], FF[2], 0, 1),
+                shooterkS,
+                shooterkV,
+                shooterkA);
+
+        LoggedTunableNumber.ifChanged(
+                hashCode(),
+                (pid) -> scoringSubsystem.setPID(pid[0], pid[1], pid[2], 0),
+                aimerkP,
+                aimerkI,
+                aimerkD);
+        LoggedTunableNumber.ifChanged(
+                hashCode(),
+                (FF) -> scoringSubsystem.setFF(FF[0], FF[1], FF[2], FF[3], 0),
+                aimerkS,
+                aimerkV,
+                aimerkA,
+                aimerkG);
+        LoggedTunableNumber.ifChanged(
+                hashCode(),
+                (MaxProfile) ->
+                        scoringSubsystem.setMaxProfileProperties(MaxProfile[0], MaxProfile[1], 0),
+                aimerProfileMaxVelocity,
+                aimerProfileMaxAcceleration);
     }
 
     private void setUpDriveWithJoysticks() {
