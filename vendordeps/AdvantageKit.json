@@ -5,7 +5,7 @@
     "uuid": "d820cc26-74e3-11ec-90d6-0242ac120003",
     "frcYear": "2024",
     "mavenUrls": [],
-    "jsonUrl": "https://github.com/Mechanical-Advantage/AdvantageKit/releases/latest/download/AdvantageKit.json",
+    "jsonUrl": "https://github.com/Mechanical-Advantage/AdvantageKit/releases/tag/v4.0.0-beta-1/download/AdvantageKit.json",
     "javaDependencies": [
         {
             "groupId": "org.littletonrobotics.akit.junction",
