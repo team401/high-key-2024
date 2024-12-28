@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.constants.ModeConstants;
 import frc.robot.constants.VisionConstants;
 import frc.robot.generated.TunerConstants;
@@ -37,6 +38,9 @@ public class RobotContainer {
       new Transform3d(0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, 0.0));
   public static Transform3d robotToCamera1 =
       new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI));
+
+  private final CommandJoystick leftJoystick = new CommandJoystick(0);
+  private final CommandJoystick righJoystick = new CommandJoystick(1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -74,6 +78,8 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    
   }
 
   /**
@@ -84,13 +90,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Joystick drive command
-    swerveDrive.setDefaultCommand(new DriveWithJoysticks(swerveDrive, null, null, 0, 0, 0));
-    drive.setDefaultCommand(
-        Commands.run(
-            () -> {
-              drive.run(-keyboard.getRawAxis(1), -keyboard.getRawAxis(0));
-            },
-            drive));
+    swerveDrive.setDefaultCommand(new DriveWithJoysticks(swerveDrive, leftJoystick, righJoystick, 6, 6, 0.05));
 
     // // Auto aim command example
     // @SuppressWarnings("resource")
